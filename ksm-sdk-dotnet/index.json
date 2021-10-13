@@ -1,0 +1,26 @@
+{
+  "title": "KSM SDK: .NET",
+  "description": "",
+  "details": {
+    "steps": [
+      {
+        "title": "Hello World C#",
+        "text": "step1.md"
+      },
+      {
+        "title": "Adding KSM",
+        "text": "step2.md"
+      }
+    ]
+    
+  },
+  "environment": {
+    "showide": false,
+    "hideintro": true,
+    "hidefinish": true,
+    "uilayout": "editor-terminal"
+  },
+  "backend": {
+    "imageid": "dotnet:3.1"
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "title": "KSM Integration: PowerShell",
+  "description": "",
+  "details": {
+    "steps": [
+      {
+        "title": "Install PowerShell",
+        "text": "step0.md"
+      },
+      {
+        "title": "Configure KSM",
+        "text": "step1.md"
+      },
+      {
+        "title": "Usage",
+        "text": "step2.md"
+      }
+    ],
+    "intro": {
+      "text": "intro.md",
+      "code": "install-powershell-ubuntu.sh"
+    }
+  },
+  "environment": {
+    "showide": true,
+    "hideintro": true, 
+    "hidefinish": true,
+    "uilayout": "terminal"
+  },
+  "backend": {
+    "imageid": "ubuntu"
+  }
+}

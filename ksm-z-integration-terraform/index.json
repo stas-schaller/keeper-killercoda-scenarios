@@ -1,0 +1,41 @@
+{
+  "title": "KSM Integration: Terraform",
+  "description": "",
+  "details": {
+    "steps": [
+      {
+        "title": "Install KSM Terraform Provider",
+        "text": "step1.md"
+      },
+      {
+        "title": "Create Terraform configuration",
+        "text": "step2.md"
+      },
+      {
+        "title": "Synchronize changes",
+        "text": "step3.md"
+      },
+      {
+        "title": "Advanced example: MySQL Server setup",
+        "text": "step5.md"
+      },
+      {
+        "title": "Cleanup resources",
+        "text": "step6.md"
+      }
+    ],
+    "intro": {
+      "text": "intro.md",
+      "code": "install-terraform-ubuntu.sh"
+    }
+  },
+  "environment": {
+    "showide": true,
+    "hideintro": true, 
+    "hidefinish": true,
+    "uilayout": "terminal"
+  },
+  "backend": {
+    "imageid": "ubuntu"
+  }
+}

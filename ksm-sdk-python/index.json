@@ -1,0 +1,24 @@
+{
+  "title": "KSM SDK: Python",
+  "description": "",
+  "details": {
+    "steps": [
+      {
+        "title": "Step 1",
+        "text": "step1.md"
+      },
+      {
+        "title": "Step 2 - With Cache",
+        "text": "step2.md"
+      }
+    ]
+  },
+  "environment": {
+    "hideintro": true, 
+    "hidefinish": true,
+    "uilayout": "vscode-terminal-split"
+  },
+  "backend": {
+    "imageid": "python:3.8"
+  }
+}

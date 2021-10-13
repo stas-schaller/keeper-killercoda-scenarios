@@ -1,0 +1,29 @@
+{
+  "noindex": true,
+  "title": "KSM Integration: Ansible",
+  "description": "",
+  "details": {
+    "steps": [
+      {
+        "title": "Install Ansible",
+        "text": "step1.md",
+        "code": "install-ansible-ubuntu.sh"
+      },
+      {
+        "title": "",
+        "text": "step2.md"
+      }
+    ],
+    "intro": {
+      "text": "intro.md"
+    }
+  },
+  "environment": {
+    "hideintro": true,
+    "hidefinish": true,
+    "uilayout": "editor-terminal"
+  },
+  "backend": {
+    "imageid": "python:3.8"
+  }
+}

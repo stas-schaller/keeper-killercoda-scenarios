@@ -1,0 +1,37 @@
+{
+  "title": "Secrets Management in Commander",
+  "description": "",
+  "details": {
+    "steps": [
+      {
+        "title": "Disclaimer & Login",
+        "text": "step1.md"
+      },
+      {
+        "title": "Application Management",
+        "text": "step2.md"
+      },
+      {
+        "title": "Application Secrets",
+        "text": "step3.md"
+      },
+      {
+        "title": "Application Clients/Devices",
+        "text": "step4.md"
+      }
+    ],
+    "intro": {
+      "text": "intro.md",
+      "code": "install-commander.sh"
+    }
+  },
+  "environment": {
+    "showide": false,
+    "hideintro": true, 
+    "hidefinish": true,
+    "uilayout": "terminal"
+  },
+  "backend": {
+    "imageid": "python:3.8"
+  }
+}

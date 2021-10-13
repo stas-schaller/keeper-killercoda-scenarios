@@ -1,0 +1,26 @@
+{
+  "title": "KSM SDK: GoLang",
+  "description": "",
+  "details": {
+    "steps": [
+      {
+        "title": "Hello KSM",
+        "text": "step1.md"
+      }
+    ],
+    "intro": {
+      "text": "intro.md",
+      "code": "install-golang-ubuntu.sh"
+
+    }
+  },
+  "environment": {
+    "uieditorpath": "/root/ksm-sample",
+    "hideintro": true, 
+    "hidefinish": true,
+    "uilayout": "vscode-terminal-split"
+  },
+  "backend": {
+    "imageid": "ubuntu:2004"
+  }
+}

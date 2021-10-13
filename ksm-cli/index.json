@@ -1,0 +1,29 @@
+{
+  "noindex": true,
+  "title": "Secrets Manager CLI",
+  "environment": {
+    "hideintro": true,
+    "hidefinish": true,
+    "uilayout": "editor-terminal"
+  },
+  "details": {
+    "steps": [
+      {
+        "title": "Step 1 - Pre-requisites",
+        "text": "step1.md"
+      },
+      {
+        "title": "Step 2 - KSM Secrets Setup",
+        "text": "step2.md"
+      }
+    ],
+    "intro": {
+      "text": "intro.md",
+      "code": "foreground.sh",
+      "credits": ""
+    }
+  },
+  "backend": {
+    "imageid": "python:3.8"
+  }
+}
