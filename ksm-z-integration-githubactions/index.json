@@ -1,0 +1,29 @@
+{
+  "noindex": true,
+  "title": "KSM Integration: GitHub Actions",
+  "description": "",
+  "details": {
+    "steps": [
+      {
+        "title": "Configure Secrets",
+        "text": "step1.md",
+        "code": "install-prereqs.sh"
+      },
+      {
+        "title": "Configure GitHub Action",
+        "text": "step2.md"
+      }
+    ],
+    "intro": {
+      "text": "intro.md"
+    }
+  },
+  "environment": {
+    "hideintro": true,
+    "hidefinish": true,
+    "uilayout": "terminal"
+  },
+  "backend": {
+    "imageid": "python:3.8"
+  }
+}

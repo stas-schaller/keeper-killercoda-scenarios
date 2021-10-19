@@ -20,8 +20,16 @@ namespace ConsoleApp1
 
         private static async Task GetSecrets()
         {
-            var storage = new LocalConfigStorage("ksm-config-demo1.json");
-            SecretsManagerClient.InitializeStorage(storage, "thkNOvIfLwntTdWNKMSKjALM2GqQ6mbvPMmfd1AB3N8", "keepersecurity.com");
+
+            // Method 1: In-Memory config
+            //           Make sure to escape special characters in JSON config
+            var KSM_CONFIG = "{\"hostname\": \"keepersecurity.eu\", \"c[...]xt1Qhc=\"}"
+            var storage = new InMemoryStorage(KSM_CONFIG);
+
+            // Method 2: File storage
+            //var storage = new LocalConfigStorage("ksm-config-demo1.json");
+            //SecretsManagerClient.InitializeStorage(storage, "thkNOvIfLwntTdWNKMSKjALM2GqQ6mbvPMmfd1AB3N8", "keepersecurity.com");
+
             var options = new SecretsManagerOptions(storage);
 
             // Get all secrets

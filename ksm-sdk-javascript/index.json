@@ -1,8 +1,6 @@
 {
   "title": "KSM SDK: JavaScript",
   "description": "",
-  "difficulty": "Beginner",
-  "time": "2",
   "details": {
     "steps": [
       {
@@ -34,7 +32,10 @@
     }
   },
   "environment": {
-    "uilayout": "terminal"
+    "uieditorpath": "/root/ksm-sample-js",
+    "hideintro": true,
+    "hidefinish": true,
+    "uilayout": "vscode-terminal-split"
   },
   "backend": {
     "imageid": "nodejs:12"

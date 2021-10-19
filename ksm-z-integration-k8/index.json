@@ -1,0 +1,25 @@
+{
+  "noindex": true,
+  "title": "KSM Integration: Kubernetes",
+  "description": "",
+  "details": {
+    "steps": [
+      {
+        "title": "Setup Secret",
+        "text": "step1.md",
+        "code": "install-prereqs.sh"
+      }
+    ],
+    "intro": {
+      "text": "intro.md"
+    }
+  },
+  "environment": {
+    "hideintro": true,
+    "hidefinish": true,
+    "uilayout": "editor-terminal"
+  },
+  "backend": {
+    "imageid": "kubernetes-cluster-running:1.18"
+  }
+}

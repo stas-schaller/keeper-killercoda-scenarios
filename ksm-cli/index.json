@@ -4,17 +4,21 @@
   "environment": {
     "hideintro": true,
     "hidefinish": true,
-    "uilayout": "editor-terminal"
+    "uilayout": "terminal"
   },
   "details": {
     "steps": [
       {
-        "title": "Step 1 - Pre-requisites",
+        "title": "Pre-requisites",
         "text": "step1.md"
       },
       {
-        "title": "Step 2 - KSM Secrets Setup",
+        "title": "KSM Secrets Setup",
         "text": "step2.md"
+      },
+      {
+        "title": "Other commands example",
+        "text": "step3.md"
       }
     ],
     "intro": {
