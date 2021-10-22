@@ -4,23 +4,29 @@
   "details": {
     "steps": [
       {
-        "title": "Hello KSM",
+        "title": "Install Package",
         "text": "step1.md"
+      },
+      {
+        "title": "Sample: One-Time Token",
+        "text": "step2.md"
+      },
+      {
+        "title": "Sample: Initialized Config",
+        "text": "step3.md"
       }
     ],
     "intro": {
-      "text": "intro.md",
-      "code": "install-golang-ubuntu.sh"
-
+      "text": "intro.md"
     }
   },
   "environment": {
     "uieditorpath": "/root/ksm-sample",
     "hideintro": true, 
     "hidefinish": true,
-    "uilayout": "vscode-terminal-split"
+    "uilayout": "editor-terminal"
   },
   "backend": {
-    "imageid": "ubuntu:2004"
+    "imageid": "golang:1.14"
   }
 }

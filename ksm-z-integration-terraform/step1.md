@@ -1,9 +1,42 @@
-Wait for the Terraform to be installed
 
-## Create local plugin folder
-`mkdir -p ~/.terraform.d/plugins/github.com/keeper-security/keeper`{{execute}}
+<pre class="file" data-filename="main.tf" data-target="replace">
+terraform {
+  required_version = ">= 1.0.0"
+  required_providers {
+    secretsmanager = {
+      source  = "keeper-security/secretsmanager"
+      version = ">= 1.0.0"
+    }
+  }
+}
 
-## Download KSM Terraform provider file
-`wget https://github.com/Keeper-Security/terraform-provider-keeper/releases/download/v0.1.4/terraform-provider-keeper_0.1.4_linux_amd64.zip --directory-prefix ~/.terraform.d/plugins/github.com/keeper-security/keeper`{{execute}}
+provider "secretsmanager" {
+  credential = "[CONFIG JSON or BASE64]"
+  # credential = file("~/.keeper/config.json")
+}
 
- > *Note: If you are installing this provider in your environment, make sure you are downloading provider for your environment. See list of available provider files [HERE](https://github.com/Keeper-Security/terraform-provider-keeper/releases)*
+data "secretsmanager_login" "kc-secret" {
+  path       = "[UID TO LOGIN TYPE RECORD]" # QabbPIdM8Unw4hwVM-F8VQ
+}
+
+output "kc_secret_login" {
+  value = data.secretsmanager_login.kc-secret.login
+}
+
+output "kc_secret_password" {
+  value = data.secretsmanager_login.kc-secret.password
+  sensitive = true
+}
+</pre>
+
+## Replace credentials in main.tf file
+
+## Inialize Terraform
+`terraform init`{{execute}}
+
+Execute Terraform steps
+`terraform apply -auto-approve`{{execute}}
+
+View terraform state file.
+`terraform.tfstate`{{open}}
+

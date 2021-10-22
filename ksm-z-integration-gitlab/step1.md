@@ -21,7 +21,6 @@ This can be achieved by adding following line to the `before_script:` area:
 before_script:
 - python3 -V  # Python3 and pip module are required in the image
 - python3 -m pip install keeper-secrets-manager-cli
-- export KSM_CONFIG=$KSM_APP1_CONFIG # This line will inject secret as
 ```
 
 

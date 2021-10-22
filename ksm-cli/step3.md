@@ -1,4 +1,4 @@
-Using KSM CLI with Config from the environment variables
+##Using KSM CLI with Config from the environment variables
 
 Set config to environment variable with the initialized config
 

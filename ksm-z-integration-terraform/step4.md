@@ -1,80 +1,79 @@
+Create and navigate to the new folder where we will place new Terraform configuration file
 
-Create script file
-`touch main.tf`{{execute}}
-
-
-Open file in Editor:
-`main.tf`{{open}}
-
-
+Create Terraform configuration file
 
 <pre class="file" data-filename="main.tf" data-target="replace">
 terraform {
-  required_version = ">= 1.0.0"
   required_providers {
-    keeper = {
-      source  = "github.com/keeper-security/keeper"
-      version = ">= 0.1.0"
+    docker = {
+      source  = "kreuzwerker/docker"
+      version = "2.15.0"
     }
-    local = {
-      source = "hashicorp/local"
-      version = "2.1.0"
+
+    secretsmanager = {
+      source  = "keeper-security/secretsmanager"
+      version = ">= 1.0.0"
     }
   }
 }
 
-provider "local" { }
-provider "keeper" {
-  credential = "<CONFIG JSON or BASE64>"
+# Configure the docker provider
+provider "docker" {}
+
+provider "secretsmanager" {
+  # This is where KSM's configuration file will be injected securely. It is up to the user
+  # to properly secure this configuration string or file and inected it securely.
+  credential = "[CONFING BASE64]"
   # credential = file("~/.keeper/credential")
 }
 
-data "keeper_secret_login" "kc-secret" {
-  path       = "<UID TO LOGIN TYPE RECORD>"
+data "secretsmanager_login" "tf_mysql" {
+  path       = "[LOGIN RECORD UID]" 
 }
 
-resource "local_file" "out" {
-    filename        = "${path.module}/out.txt"
-    file_permission = "0644"
-    content         = <<EOT
-UID:    ${ data.keeper_secret_login.kc-secret.path }
-Type:   ${ data.keeper_secret_login.kc-secret.type }
-Title:  ${ data.keeper_secret_login.kc-secret.title }
-Notes:  ${ data.keeper_secret_login.kc-secret.notes }
-======
-
-Login:    ${ data.keeper_secret_login.kc-secret.login }
-Password: ${ data.keeper_secret_login.kc-secret.password }
-URL:      ${ data.keeper_secret_login.kc-secret.url }
-
-TOTP:
------
-%{ for t in data.keeper_secret_login.kc-secret.totp ~}
-URL:    ${ t.url }
-Token:  ${ t.token }
-TTL:    ${ t.ttl }
-
-%{ endfor ~}
-
-FileRefs:
----------
-%{ for fr in data.keeper_secret_login.kc-secret.file_ref ~}
-UID:      ${ fr.uid }
-Title:    ${ fr.title }
-Name:     ${ fr.name }
-Type:     ${ fr.type }
-Size:     ${ fr.size }
-Last Modified:  ${ fr.last_modified }
-URL:            ${ fr.url }
-
-Content/Base64: ${ fr.content_base64 }
-
-
-%{ endfor ~}
-EOT
+# Create a docker image resource
+# -> same as 'docker pull mysql:latest'
+resource "docker_image" "mysql" {
+  name         = "mysql:latest"
+  keep_locally = true
 }
 
-output "db_secret_login" {
-  value = data.keeper_secret_login.kc-secret.login
+# Create a docker container resource
+# -> same as 'docker run --name mysql -e MYSQL_ROOT_PASSWORD=[PASSWORD FROM KEEPER RECORD]} -p3306:3306 -d mysql:latest'
+resource "docker_container" "mysql" {
+  name    = "mysql"
+  image   = docker_image.mysql.latest
+  env     = ["MYSQL_ROOT_PASSWORD=${data.secretsmanager_login.tf_mysql.password}"]
+
+  ports {
+    external = 3306
+    internal = 3306
+  }
 }
+
 </pre>
+
+Initialize and apply Terraform Configuration
+`terraform init && terraform apply`{{execute}}
+
+In order to connect to MySQL, we need to install MySQL Client
+
+`apt install -y mysql-client-core-5.7`{{execute}}
+
+Connect to MySQL:
+
+`mysql -h 127.0.0.1 -P 3306 --protocol=tcp -p`{{execute}}
+
+Enter your password from Keeper's record in the CLI prompt.
+
+Once connected to MySQL server you should see
+
+```bash
+mysql>
+```
+
+To exit from MySQL shell just type `exit;`{{execute}}
+
+Now, try to change password to the db in Keeper and re-apply the changes by executing `terraform apply`{{execute}} and then connect to the MySQL
+`mysql -h 127.0.0.1 -P 3306 --protocol=tcp -p`{{execute}}
+and enter new password

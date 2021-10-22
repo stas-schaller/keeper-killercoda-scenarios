@@ -22,13 +22,12 @@ namespace ConsoleApp1
         {
 
             // Method 1: In-Memory config
-            //           Make sure to escape special characters in JSON config
-            var KSM_CONFIG = "{\"hostname\": \"keepersecurity.eu\", \"c[...]xt1Qhc=\"}"
-            var storage = new InMemoryStorage(KSM_CONFIG);
+            // var KSM_CONFIG = "eyJob3N0bm[...]BXZXdmMDNMTEdlb2VpMD0ifQ==";
+            // var storage = new InMemoryStorage(KSM_CONFIG);
 
             // Method 2: File storage
-            //var storage = new LocalConfigStorage("ksm-config-demo1.json");
-            //SecretsManagerClient.InitializeStorage(storage, "thkNOvIfLwntTdWNKMSKjALM2GqQ6mbvPMmfd1AB3N8", "keepersecurity.com");
+            var storage = new LocalConfigStorage("ksm-config-demo1.json");
+            SecretsManagerClient.InitializeStorage(storage, "US:thkNOvIfLwntTdWNKMSKjALM2GqQ6mbvPMmfd1AB3N8");
 
             var options = new SecretsManagerOptions(storage);
 
@@ -42,3 +41,6 @@ namespace ConsoleApp1
     }
 }
 </pre>
+
+Build and run project
+`dotnet run`{{execute}}

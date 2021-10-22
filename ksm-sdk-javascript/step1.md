@@ -1,18 +1,31 @@
+### Setup Node environment
+
+Initialize NPM project.json file (manually):
+
+<pre class="file" data-filename="package.json" data-target="replace">
+
+{
+    "name": "ksm-sample-js",
+    "version": "1.0.0",
+    "scripts": {
+        "start": "node index.js"
+    }
+}
+</pre>
 
 
-
-Create "Hello World" application:
-
-<pre class="file" data-filename="app.js" data-target="replace">
+<pre class="file" data-filename="index.js" data-target="replace">
 console.log("Hello World");
 </pre>
 
 
 Execute the code:
 
-`node app.js`{{execute}}
+`npm start`{{execute}}
 
 Output:
 
 > Hello World
 
+Now that we have working NodeJS application, navigate to the next page to 
+create application with KSM JavaScript SDK
