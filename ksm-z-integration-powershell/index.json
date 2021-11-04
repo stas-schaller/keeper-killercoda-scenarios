@@ -22,7 +22,7 @@
     }
   },
   "environment": {
-    "showide": true,
+    "showide": false,
     "hideintro": true, 
     "hidefinish": true,
     "uilayout": "terminal"

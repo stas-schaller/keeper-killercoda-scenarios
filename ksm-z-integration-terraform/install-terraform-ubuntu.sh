@@ -16,4 +16,4 @@ apt install -y terraform
 
 # echo "Terraform was installed" >> /opt/.backgroundfinished
 
-mkdir ~/terraform-example && cd ~/terraform-example
+cd ~/terraform-example
