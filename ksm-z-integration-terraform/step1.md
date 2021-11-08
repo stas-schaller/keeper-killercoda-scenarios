@@ -16,7 +16,7 @@ provider "secretsmanager" {
 }
 
 data "secretsmanager_login" "kc-secret" {
-  path       = "[UID TO LOGIN TYPE RECORD]" # QabbPIdM8Unw4hwVM-F8VQ
+  path       = "[UID TO LOGIN TYPE RECORD]"
 }
 
 output "kc_secret_login" {
@@ -29,9 +29,16 @@ output "kc_secret_password" {
 }
 </pre>
 
-## Replace credentials in main.tf file
+### Replace credentials in main.tf file
 
-## Inialize Terraform
+- Replace `[CONFIG JSON or BASE64]` that was obtained via Commander
+- Replace `[UID TO LOGIN TYPE RECORD]` with your UID
+
+### Navigate to the example folder
+
+`cd terraform-example`{{execute}}
+
+## Initialize Terraform
 `terraform init`{{execute}}
 
 Execute Terraform steps

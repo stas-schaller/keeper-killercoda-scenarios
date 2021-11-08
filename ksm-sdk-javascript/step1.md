@@ -6,7 +6,7 @@ Initialize NPM project.json file (manually):
 
 {
     "name": "ksm-sample-js",
-    "version": "1.0.0",
+    "version": "0.0.1",
     "scripts": {
         "start": "node index.js"
     }

@@ -2,7 +2,6 @@
 
 # Install PowerShell using Snap
 # -----------------------------
-#apt-get update -y
 #apt-get install snap snapd -y
 #snap install powershell --classic
 #Install PowerShell from Ubuntu Repository

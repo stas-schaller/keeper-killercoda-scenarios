@@ -3,23 +3,16 @@ Install KSM SDK
 
 `pip3 install -U keeper-secrets-manager-core`{{execute}}
 
+Sample code to connect to Keeper and retrieve all records that are shared to the application.
 
-Create sample application file
-`touch main.py`{{execute}}
+> Note: Replace `[ONE TIME ACCESS TOKEN]` in the code with the One-Time Token generated via Web Vault or Commander
 
-
-Open file in Editor:
-
-`main.py`{{open}}
-
-Sample code
-```python
+<pre class="file" data-filename="main.py" data-target="replace">
 from keeper_secrets_manager_core import SecretsManager
 from keeper_secrets_manager_core.storage import FileKeyValueStorage
 
 secrets_manager = SecretsManager(
-    hostname='keepersecurity.com',
-    token='<One Time Access Token>',
+    token='[ONE TIME ACCESS TOKEN]',
     config=FileKeyValueStorage('ksm-config.json')
 )
 
@@ -29,7 +22,8 @@ all_secrets = secrets_manager.get_secrets()
 # print out all records
 for secret in all_secrets:
     print(secret.dict)
+</pre>
 
-```{{copy}}
+Run the application:
 
 `python3 main.py`{{execute}}

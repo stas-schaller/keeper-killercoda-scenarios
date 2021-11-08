@@ -19,7 +19,3 @@
 [Go here](generate-one-time-token.html) for instructions to generate One-Time Token
 
 `Register-KeeperVault -Name MyKeeperVault -LocalVaultName MyLocalStore -OneTimeToken [ONE-TIME TOKEN]`{{copy}}
-
-### 6. Set Keeper Vault as default vault
-
-`Set-SecretVaultDefault MyLocalStore`{{execute}}

@@ -8,7 +8,6 @@ Modify `Program.cs`{{open}} file
 using System;
 using System.Threading.Tasks;
 using SecretsManager;
-using System.Text.Json;
 
 namespace ConsoleApp1
 {
@@ -35,13 +34,19 @@ namespace ConsoleApp1
             // Get all secrets
             var secrets = await SecretsManagerClient.GetSecrets(options);
 
-            // Get first record
             var firstRecord = secrets.Records[0]; 
 
-            // Turn record to json string
-            string jsonString = JsonSerializer.Serialize(firstRecord, new JsonSerializerOptions { WriteIndented = true });
+            Console.Write(firstRecord);
 
-            Console.WriteLine(jsonString);
+            var secrets = await SecretsManagerClient.GetSecrets(options, new []{"jvUbA86LjuiV3W1IKxL5OA"});
+
+            var firstRecord = secrets.Records[0];
+            var oneTimeCodeUrl = Notation.GetValue(secrets, "keeper://jvUbA86LjuiV3W1IKxL5OA/field/oneTimeCode");
+            
+            var oneTimeCode = CryptoUtils.GetTotpCode(oneTimeCodeUrl);
+
+            Console.Write(oneTimeCode);
+
         }
     }
 }

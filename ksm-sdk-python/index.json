@@ -8,7 +8,7 @@
         "text": "step1.md"
       },
       {
-        "title": "Step 2 - With Cache",
+        "title": "Step 2 - KSM With Cache",
         "text": "step2.md"
       }
     ]
@@ -16,7 +16,7 @@
   "environment": {
     "hideintro": true, 
     "hidefinish": true,
-    "uilayout": "vscode-terminal-split"
+    "uilayout": "editor-terminal"
   },
   "backend": {
     "imageid": "python:3.8"

@@ -19,6 +19,7 @@
     }
   },
   "environment": {
+    "uieditorpath": "/root/my-playbooks",
     "hideintro": true,
     "hidefinish": true,
     "uilayout": "editor-terminal"

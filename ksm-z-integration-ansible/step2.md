@@ -1,6 +1,6 @@
-### Create folder where Ansible playbooks will be stored:
+### In CLI navigate to the folder where configuration and playbooks will be stored:
 
-`mkdir my-playbooks && cd my-playbooks`{{execute}}
+`cd my-playbooks`{{execute}}
 
 ### Initialize config file for plugin ot use
 

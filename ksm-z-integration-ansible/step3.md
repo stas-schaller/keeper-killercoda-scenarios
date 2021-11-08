@@ -2,7 +2,7 @@
 
 
 
-<pre class="file" data-filename="playbook-dbserver.yml" data-target="replace">
+<pre class="file" data-filename="my-playbooks/playbook-dbserver.yml" data-target="replace">
 - hosts: 127.0.0.1
   user: root
   sudo: true

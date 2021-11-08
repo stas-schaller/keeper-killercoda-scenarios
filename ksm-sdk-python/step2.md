@@ -1,22 +1,17 @@
 KSM Python SDK with Cache
 
-Create sample application file
-`touch main-cache.py`{{execute}}
+In the code below we will retrieve records from Keeper which will be used in local file cache.
 
-Open file in Editor:
+> Note: Replace `[ONE TIME ACCESS TOKEN]` in the code with the One-Time Token generated via Web Vault or Commander
 
-`main-cache.py`{{open}}
 
-Sample code
-
-```python
+<pre class="file" data-filename="main-cache.py" data-target="replace">
 from keeper_secrets_manager_core import SecretsManager
 from keeper_secrets_manager_core.core import KSMCache
 from keeper_secrets_manager_core.storage import FileKeyValueStorage
 
 secrets_manager = SecretsManager(
-    hostname='keepersecurity.com',
-    token='<One Time Access Token>',
+    token='[ONE TIME ACCESS TOKEN]',
     config=FileKeyValueStorage('ksm-config.json'),
     custom_post_function=KSMCache.caching_post_function
 )
@@ -27,7 +22,8 @@ all_secrets = secrets_manager.get_secrets()
 # print out all records
 for secret in all_secrets:
     print(secret.dict)
-    
-```{{copy}}
+</pre>
+
+Run the application:
 
 `python3 main-cache.py`{{execute}}
