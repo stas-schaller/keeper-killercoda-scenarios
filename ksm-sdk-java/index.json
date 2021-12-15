@@ -1,28 +1,31 @@
 {
-  "title": "KSM SDK: Python",
+  "title": "KSM SDK: Java",
   "description": "",
   "details": {
     "steps": [
       {
-        "title": "Setup",
+        "title": "Setup and List Records",
         "text": "step1.md"
       },
       {
-        "title": "Caching",
+        "title": "Create Simple a Record",
         "text": "step2.md"
       },
       {
-        "title": "Record Creation (Simple)",
+        "title": "Create Advanced a Record",
         "text": "step3.md"
       }
-    ]
+    ],
+    "intro": {
+      "text": "intro.md"
+    }
   },
   "environment": {
-    "hideintro": true, 
+    "hideintro": true,
     "hidefinish": true,
     "uilayout": "editor-terminal"
   },
   "backend": {
-    "imageid": "python:3.8"
+    "imageid": "openjdk:15"
   }
 }

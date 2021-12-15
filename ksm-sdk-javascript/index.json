@@ -4,12 +4,12 @@
   "details": {
     "steps": [
       {
-        "title": "Step 1",
+        "title": "Setup and Retrieve Secrets",
         "text": "step1.md",
         "code": "init.sh"
       },
       {
-        "title": "Step 2",
+        "title": "Create Secret",
         "text": "step2.md"
       }
     ],

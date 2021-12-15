@@ -22,7 +22,7 @@ provider "docker" {}
 
 provider "secretsmanager" {
   # This is where KSM's configuration file will be injected securely. It is up to the user
-  # to properly secure this configuration string or file and inected it securely.
+  # to properly secure this configuration string or file and inject it securely.
   credential = "[CONFING BASE64]"
   # credential = file("~/.keeper/credential")
 }

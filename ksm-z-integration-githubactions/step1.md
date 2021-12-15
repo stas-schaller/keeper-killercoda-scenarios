@@ -9,7 +9,7 @@ Generate Config JSON or Base64 String:
 
 **Wait for Commander to finish installation**
 
-`sm client add --app [APP NAME] --unlock-ip --config-init json`
+`sm client add --app [APP NAME] --unlock-ip --config-init json`{{copy}}
 
 You should get following output:
 

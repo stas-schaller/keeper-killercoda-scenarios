@@ -1,0 +1,29 @@
+{
+  "title": "KSM Integration: Hashicorp Vault",
+  "description": "",
+  "details": {
+    "steps": [
+      {
+        "title": "Configure",
+        "text": "step1.md"
+      },
+      {
+        "title": "KSM Commands",
+        "text": "step2.md"
+      }
+    ],
+    "intro": {
+      "text": "intro.md",
+      "code": "install-hashicorp-vault-ubuntu.sh"
+    }
+  },
+  "environment": {
+    "uieditorpath": "/root/hashicorp-vault",
+    "hideintro": true,
+    "hidefinish": true,
+    "uilayout": "editor-terminal"
+  },
+  "backend": {
+    "imageid": "ubuntu"
+  }
+}

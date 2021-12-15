@@ -4,7 +4,7 @@
 
 ### Initialize config file for plugin ot use
 
-`keeper_ansible --keeper_token XX:YYYYYY`{{copy}}
+`keeper_ansible --keeper_token [ONE TIME TOKEN]`{{copy}}
 
 ### Create sample Ansible playbook
 
@@ -42,4 +42,4 @@ Change `[RECORD UID]` to your record UIDs
 
 ### View password that was inserted into a file
 
-`cat /tmp/my_password`
+`cat /tmp/my_password`{{execute}}

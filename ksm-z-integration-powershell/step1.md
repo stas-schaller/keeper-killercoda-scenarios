@@ -18,4 +18,6 @@
 
 [Go here](generate-one-time-token.html) for instructions to generate One-Time Token
 
+_Note: Make sure permission for the new Application is set to "Editable" if you want to modify secrets_
+
 `Register-KeeperVault -Name MyKeeperVault -LocalVaultName MyLocalStore -OneTimeToken [ONE-TIME TOKEN]`{{copy}}

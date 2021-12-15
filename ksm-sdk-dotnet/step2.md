@@ -1,8 +1,7 @@
-Install KSM Package:
 
-`dotnet add package Keeper.SecretsManager`{{execute}}
 
-Modify `Program.cs`{{open}} file
+### 1. Overwrite existing application code
+_Note: This will erase your existing code_
 
 <pre class="file" data-filename="ksm-sample-project/Program.cs" data-target="replace">
 using System;
@@ -14,38 +13,43 @@ namespace ConsoleApp1
 {
     public static class Program
     {
+        const string FOLDER_UID = "[FOLDER UID]";
+
         private static void Main()
         {
-            GetSecrets().Wait();
+            CreateLoginRecord().Wait();
         }
 
-        private static async Task GetSecrets()
+        private static async Task CreateLoginRecord()
         {
-
-            // Method 1: In-Memory config
-            // var KSM_CONFIG = "eyJob3N0bm[...]BXZXdmMDNMTEdlb2VpMD0ifQ==";
-            // var storage = new InMemoryStorage(KSM_CONFIG);
-
-            // Method 2: File storage
-            var storage = new LocalConfigStorage("ksm-config-demo1.json");
-            SecretsManagerClient.InitializeStorage(storage, "US:thkNOvIfLwntTdWNKMSKjALM2GqQ6mbvPMmfd1AB3N8");
-
+            
+            // Note: Reusing configuration that was generated in the first step
+            var storage = new LocalConfigStorage("ksm-config-demo.json");
             var options = new SecretsManagerOptions(storage);
 
-            // Get all secrets
-            var secrets = await SecretsManagerClient.GetSecrets(options);
+            var newRecord = new KeeperRecordData();
+            newRecord.type = "login";
+            newRecord.title = "Sample Katacoda KSM Record";
+            newRecord.fields = new[]
+            {
+                new KeeperRecordField { type = "login", value = new[] { "username@email.com" } },
+                new KeeperRecordField { type = "password", value = new[] { "Pa$$word123" } },
+            };
+            newRecord.notes = "\tThis record was created\n\tvia KSM Katacoda .NET C# Example";
 
-            // Get first record
-            var firstRecord = secrets.Records[0]; 
-
-            // Turn record to json string
-            string jsonString = JsonSerializer.Serialize(firstRecord, new JsonSerializerOptions { WriteIndented = true });
-
-            Console.WriteLine(jsonString);
+            var recordUid = await SecretsManagerClient.CreateSecret(options, FOLDER_UID, newRecord);
+            
+            Console.WriteLine("Saved record UID: [" + recordUid + "]");
         }
     }
 }
 </pre>
 
-Build and run project
+### 4. Replace Token
+
+Replace the following placeholders:
+
+- `[FOLDER UID]` - UID of the shared folder that is shared to the Application
+
+### 5. Build and run project
 `dotnet run`{{execute}}

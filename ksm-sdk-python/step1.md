@@ -13,7 +13,7 @@ from keeper_secrets_manager_core.storage import FileKeyValueStorage
 
 secrets_manager = SecretsManager(
     token='[ONE TIME ACCESS TOKEN]',
-    config=FileKeyValueStorage('ksm-config.json')
+    config=FileKeyValueStorage('ksm-config1.json')
 )
 
 # get all records

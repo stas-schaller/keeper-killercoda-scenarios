@@ -1,42 +1,56 @@
 
+### 1. Create New Script file
 
-
-
-Add KSM JavaScript Dependency
-
-`npm install @keeper-security/secrets-manager-core`{{execute}}
-
-
-Let's replace our index.js file with the new code that will use newly installed dependency and print out some details about retrieved secrets.
-
-<pre class="file" data-filename="index.js" data-target="replace">
-
+<pre class="file" data-filename="create-record.js" data-target="replace">
 const {
-    getSecrets,
-    initializeStorage,
-    localConfigStorage,
-    downloadFile,
-    updateSecret
-} = require('@keeper-security/secrets-manager-core')
+    createSecret, 
+    initializeStorage, 
+    localConfigStorage } = require("@keeper-security/secrets-manager-core");
 
-const fs = require("fs")
+// oneTimeToken is used only once to initialize the storage
+// after the first run, subsequent calls will use myksmconfig.json
+const ONE_TIME_TOKEN = "[ONE TIME TOKEN]"
 
-const getKeeperRecords = async () => {
-    const storage = localConfigStorage("config.json")
-    await initializeStorage(storage, "[ONE TIME TOKEN]")
-    const {records} = await getSecrets({storage: storage})
-    console.log(records)
+// Folder WHERE where the new record will be stored
+const FOLDER_UID = "[FOLDER UID]"
 
-    const firstRecord = records[0]
-    const firstRecordPassword = firstRecord.data.fields.find(x => x.type === 'password')
-    console.log(firstRecordPassword.value[0])
+async function createNewKeeperRecord() {
+
+    const storage = localConfigStorage("myksmconfig.json")
+    initializeStorage(storage, ONE_TIME_TOKEN)
+    const options = { storage: storage }
+
+    let newRec = {
+        "title": "My JavaScript Record 1",
+        "type": "login",
+        "fields": [
+            {
+                "type": "login", "value": [ "My Username" ]
+            },
+            {
+                "type": "password", "value": [ "AAAaaa123!zz" ]
+            }
+        ],
+
+        "notes": "\tThis record was created\n\tvia KSM Katacoda JavaScript Example "
+    }
+
+    let newRecUid = await createSecret(options, FOLDER_UID, newRec)
+    
+    console.log("Record was successfully created. UID=[" + newRecUid.replace('==', '') + "]")
+
 }
 
-getKeeperRecords().finally()
+createNewKeeperRecord().finally()
 </pre>
 
-Now, replace `[ONE TIME TOKEN]` with the one time token you generated using Web Vault or Commander. See instructions [HERE](https://docs.keeper.io/secrets-manager/secrets-manager/about/one-time-token)
+### 2. Replace Token
 
-Once One time token is replaced, we are ready to execute the code and see our first real results:
+Replace the following placeholders:
 
-`npm start`{{execute}}
+- `[ONE TIME TOKEN]` - with the code you have generated in the Keeper Web Vault
+- `[FOLDER UID]` - UID of the shared folder that is shared to the Application where this record will be stored
+
+### 3. Execute the code:
+
+`node create-record.js`{{execute}}

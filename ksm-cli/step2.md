@@ -18,3 +18,7 @@ with the One-Time Access Token for your Client Device.
 For more commands and options you can see our documentation [HERE](https://docs.keeper.io/secrets-manager/secrets-manager/secrets-manager-command-line-interface)
 
 In the next step, you will see how to configure access to KSM CLI using already initialized config json as an environment variable
+
+## Update a password
+
+`ksm secret update --uid [UID] --field password=MyNewPassword`{{copy}}

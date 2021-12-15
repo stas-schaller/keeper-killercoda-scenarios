@@ -4,12 +4,17 @@
   "details": {
     "steps": [
       {
-        "title": "Hello World C#",
-        "text": "step1.md"
+        "title": "Setup and List Records",
+        "text": "step1.md",
+        "code": "init.sh"
       },
       {
-        "title": "Adding KSM",
+        "title": "Create a Record (Simple Login)",
         "text": "step2.md"
+      },
+      {
+        "title": "Create a Record (Advanced Custom Type)",
+        "text": "step3.md"
       }
     ]
     

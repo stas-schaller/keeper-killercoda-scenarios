@@ -14,7 +14,7 @@
 
 # Set a Value to a Secret
 
-`Set-Secret "[SECRET NAME].[FIELD NAME]" <VALUE TO SET>`{{copy}}
+`Set-Secret "[SECRET NAME].[FIELD NAME]" -Secret [VALUE TO SET] -Vault MyKeeperVault`{{copy}}
 
 # Download a File
 
