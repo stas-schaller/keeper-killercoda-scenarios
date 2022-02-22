@@ -6,12 +6,16 @@
   "details": {
     "steps": [
       {
-        "title": "Step 1",
+        "title": "Step 1: Pre-requisites",
         "text": "step1.md"
       },
       {
-        "title": "Step 2",
+        "title": "Step 2: Start DB Service",
         "text": "step2.md"
+      },
+      {
+        "title": "Step 3: Connect to DB",
+        "text": "step3.md"
       }
     ],
     "intro": {
@@ -22,6 +26,7 @@
     }
   },
   "environment": {
+    "uieditorpath": "/root/workdir",
     "uilayout": "editor-terminal",
     "uimessage1": "\u001b[32mYour Interactive Bash Terminal.\u001b[m\r\n",
     "hideintro": true,
