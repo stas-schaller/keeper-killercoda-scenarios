@@ -16,7 +16,7 @@
 
 ### 5. Register the Keeper Vault
 
-[Go here](generate-one-time-token.html) for instructions to generate One-Time Token
+[Go here](https://docs.keeper.io/secrets-manager/secrets-manager/quick-start-guide#create-a-secrets-manager-client-device) for instructions to generate One-Time Token
 
 _Note: Make sure permission for the new Application is set to "Editable" if you want to modify secrets_
 

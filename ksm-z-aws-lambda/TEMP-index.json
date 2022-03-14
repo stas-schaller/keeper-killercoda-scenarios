@@ -1,0 +1,28 @@
+{
+  "title": "KSM Integration: AWS Lambda (JS)",
+  "description": "",
+  "details": {
+    "steps": [
+      {
+        "title": "Setup",
+        "text": "step1.md"
+      },
+      {
+        "title": "Caching",
+        "text": "step2.md"
+      },
+      {
+        "title": "Record Creation (Simple)",
+        "text": "step3.md"
+      }
+    ]
+  },
+  "environment": {
+    "hideintro": true,
+    "hidefinish": true,
+    "uilayout": "editor-terminal"
+  },
+  "backend": {
+    "imageid": "python:3.8"
+  }
+}
