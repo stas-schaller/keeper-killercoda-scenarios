@@ -10,7 +10,9 @@ Wait for the terminal finish installing Hashicorp Vault
 
 ### 2. Download plugin binary
 
-`wget -q https://github.com/Keeper-Security/secrets-manager/releases/download/vault-plugin-secrets-ksm-v0.1.0/vault-plugin-secrets-ksm_0.1.0_linux_amd64.zip`{{execute}}
+> Note: The link below might be out of date, make sure to check our [Release page](https://github.com/Keeper-Security/secrets-manager/releases/latest) for the newest version to download
+
+`wget -q https://github.com/Keeper-Security/secrets-manager/releases/download/vault-plugin-secrets-ksm%2Fv1.0.0/vault-plugin-secrets-ksm_1.0.0_linux_amd64.zip`{{execute}}
 
 ### 3. Unzip and copy KSM Vault plugin binary into the plugins folder
 
