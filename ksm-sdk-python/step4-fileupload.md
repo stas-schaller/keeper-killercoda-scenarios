@@ -19,10 +19,13 @@ new_login_record.notes = 'This is a Python\nrecord creation example'
 
 new_record_uid = secrets_manager.create_secret('[FOLDER UID]', new_login_record)
 
+print(f'New record uid [{new_record_uid}]')
+
 record_to_have_attached_file = secrets_manager.get_secrets(new_record_uid)[0]
 
-file_path = 'ksm-config4.json'
+file_path = '/root/ksm-config4.json'
 
+# Perform the file upload
 secrets_manager.upload_file_path(record_to_have_attached_file, file_path)
 
 
