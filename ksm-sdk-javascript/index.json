@@ -5,8 +5,7 @@
     "steps": [
       {
         "title": "Setup and Retrieve Secrets",
-        "text": "step1.md",
-        "code": "init.sh"
+        "text": "step1.md"
       },
       {
         "title": "Create Secret",
@@ -14,7 +13,8 @@
       }
     ],
     "intro": {
-      "text": "intro.md"
+      "text": "intro.md",
+      "code": "init.sh"
     },
     "finish": {
       "text": "finish.md"
