@@ -7,6 +7,11 @@ Make sure you have following installed:
 - Python 3 - `python3 --version`{{execute}}
 - Pip - `pip3 --version`{{execute}}
 
+Install Python:
+
+`apt install python3-pip -y`{{execute}}
+`pip3 install pyOpenSSL --upgrade`{{execute}}
+
 # Install Commander
 
 
