@@ -14,7 +14,8 @@
       ],
     "intro": {
         "text": "intro.md",
-        "credits": ""
+        "credits": "",
+        "code": "install-commander.sh"
     }
   },
 
