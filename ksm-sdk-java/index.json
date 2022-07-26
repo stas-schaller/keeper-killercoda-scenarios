@@ -17,7 +17,8 @@
       }
     ],
     "intro": {
-      "text": "intro.md"
+      "text": "intro.md",
+      "foreground": "init.sh"
     }
   },
   "environment": {
@@ -26,6 +27,6 @@
     "uilayout": "editor-terminal"
   },
   "backend": {
-    "imageid": "python"
+    "imageid": "ubuntu"
   }
 }

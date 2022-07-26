@@ -9,9 +9,10 @@ gradle init \
 --test-framework junit
 ```{{execute}}
 
-### 2. Replace `build.gradle` with KSM dependency:
 
-<pre class="file" data-filename="build.gradle" data-target="replace">
+### 2. Replace `build.gradle` with the code below:
+
+```
 plugins {
     id 'java'
     id 'application'
@@ -25,18 +26,23 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.keepersecurity.secrets-manager:core:16.2.+'
+    implementation 'com.keepersecurity.secrets-manager:core:16.3.+'
 }
 
 application {
     // Define the main class for the application.
     mainClassName = project.hasProperty("mainClass") ? project.getProperty("mainClass") : "NULL"
 }
-</pre>
+```{{copy}}
 
 ### 3. Create Java class to list records:
 
-<pre class="file" data-filename="src/main/java/com/keepersecurity/ksmsample/KSMListRecords.java" data-target="replace">
+#### Create file
+`touch src/main/java/com/keepersecurity/ksmsample/KSMListRecords.java`{{execute}}
+
+#### Place code below into the created file, which is under `src/main/java/com/keepersecurity/ksmsample/`
+
+```
 package com.keepersecurity.ksmsample;
 
 import com.keepersecurity.secretsManager.core.*;
@@ -47,9 +53,9 @@ public class KSMListRecords {
 
     public static void getSecrets(){
         // oneTimeToken is used only once to initialize the storage
-        // after the first run, subsequent calls will use ksm-config.txt
+        // after the first run, subsequent calls will use ksm-config1.json
         String oneTimeToken = "[ONE TIME TOKEN]";
-        LocalConfigStorage storage = new LocalConfigStorage("ksm-config1.txt");
+        LocalConfigStorage storage = new LocalConfigStorage("ksm-config1.json");
         try {
             initializeStorage(storage, oneTimeToken);
             SecretsManagerOptions options = new SecretsManagerOptions(storage);
@@ -57,7 +63,7 @@ public class KSMListRecords {
             KeeperSecrets secrets = SecretsManager.getSecrets(options);
 
             //get records from secrets
-            List&lt;KeeperRecord&gt; records = secrets.getRecords();
+            List<KeeperRecord> records = secrets.getRecords();
 
             for (KeeperRecord record : records) {
                 System.out.println(record.getRecordUid());
@@ -72,7 +78,7 @@ public class KSMListRecords {
         getSecrets();
     }
 }
-</pre>
+```{{copy}}
 
 ### 4. Modify code
 
