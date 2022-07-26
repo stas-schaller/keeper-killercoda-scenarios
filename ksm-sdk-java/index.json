@@ -26,6 +26,6 @@
     "uilayout": "editor-terminal"
   },
   "backend": {
-    "imageid": "openjdk:15"
+    "imageid": "python"
   }
 }

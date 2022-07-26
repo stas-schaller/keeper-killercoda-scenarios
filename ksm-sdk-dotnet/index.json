@@ -26,6 +26,6 @@
     "uilayout": "editor-terminal"
   },
   "backend": {
-    "imageid": "dotnet:3.1"
+    "imageid": "ubuntu:2004"
   }
 }
