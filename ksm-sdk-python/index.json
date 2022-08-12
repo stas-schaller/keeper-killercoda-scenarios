@@ -5,7 +5,8 @@
     "steps": [
       {
         "title": "Setup",
-        "text": "step1.md"
+        "text": "step1.md",
+        "code": "init.sh"
       },
       {
         "title": "Caching",

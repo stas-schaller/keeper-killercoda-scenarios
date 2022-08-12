@@ -1,8 +1,3 @@
-
-Install KSM SDK
-
-`pip3 install -U keeper-secrets-manager-core`{{execute}}
-
 Sample code to connect to Keeper and retrieve all records that are shared to the application.
 
 > Note: Replace `[ONE TIME ACCESS TOKEN]` in the code with the One-Time Token generated via Web Vault or Commander
