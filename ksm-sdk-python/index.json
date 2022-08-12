@@ -5,8 +5,7 @@
     "steps": [
       {
         "title": "Setup",
-        "text": "step1.md",
-        "code": "init.sh"
+        "text": "step1.md"
       },
       {
         "title": "Caching",
@@ -20,7 +19,12 @@
         "title": "Record Creation and File Upload (Simple)",
         "text": "step4-fileupload.md"
       }
-    ]
+    ],
+    "intro": {
+      "text": "intro.md",
+      "code": "init.sh"
+    }
+
   },
   "environment": {
     "hideintro": true, 

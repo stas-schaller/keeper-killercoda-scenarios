@@ -1,5 +1,7 @@
 
-<pre class="file" data-filename="main-create-record-upload-file.py" data-target="replace">
+Create file `touch main-create-record-upload-file.py`{{execute}} and paste code below:
+
+```python
 from keeper_secrets_manager_core import SecretsManager
 from keeper_secrets_manager_core.dto.dtos import RecordCreate, RecordField
 from keeper_secrets_manager_core.storage import FileKeyValueStorage
@@ -27,9 +29,7 @@ file_path = '/root/ksm-config4.json'
 
 # Perform the file upload
 secrets_manager.upload_file_path(record_to_have_attached_file, file_path)
-
-
-</pre>
+```{{copy}}
 
 ### 2. Modify code
 

@@ -1,6 +1,8 @@
 ### 1. Create new Python file
 
-<pre class="file" data-filename="main-cache.py" data-target="replace">
+Create file `touch main-cache.py`{{execute}} and paste code below:
+
+```python
 from keeper_secrets_manager_core import SecretsManager
 from keeper_secrets_manager_core.core import KSMCache
 from keeper_secrets_manager_core.storage import FileKeyValueStorage
@@ -17,7 +19,7 @@ all_secrets = secrets_manager.get_secrets()
 # print out all records
 for secret in all_secrets:
     print(secret.dict)
-</pre>
+```
 
 ### 2. Modify code
 

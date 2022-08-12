@@ -1,5 +1,7 @@
 
-<pre class="file" data-filename="main-create-record.py" data-target="replace">
+Create file `touch main-create-record.py`{{execute}} and paste code below:
+
+```python
 from keeper_secrets_manager_core import SecretsManager
 from keeper_secrets_manager_core.dto.dtos import RecordCreate, RecordField
 from keeper_secrets_manager_core.storage import FileKeyValueStorage
@@ -18,8 +20,7 @@ new_login_record.fields = [
 new_login_record.notes = 'This is a Python\nrecord creation example'
 
 secrets_manager.create_secret('[FOLDER UID]', new_login_record)
-
-</pre>
+```{{copy}}
 
 ### 2. Modify code
 
