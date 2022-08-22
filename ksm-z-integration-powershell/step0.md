@@ -1,5 +1,3 @@
 Wait for the PowerShell to finish installing
 
-Open PowerShell once installed:
-
-`pwsh`{{execute}}
+You should be automatically logged in to the Powershell terminal. If that won't work, enter `pwsh`{{execute}} in the terminal
