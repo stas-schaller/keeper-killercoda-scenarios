@@ -27,5 +27,8 @@
   },
   "backend": {
     "imageid": "ubuntu:2004"
+  },
+  "interface": {
+    "layout": "ide"
   }
 }
