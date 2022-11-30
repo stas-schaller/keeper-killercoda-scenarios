@@ -9,3 +9,7 @@ EU:  `keeper shell --server keepersecurity.eu`{{execute}}
 AU:  `keeper shell --server keepersecurity.com.au`{{execute}}
 
 GOV: `keeper shell --server govcloud.keepersecurity.us`{{execute}}
+
+CA: `keeper shell --server keepersecurity.ca`{{execute}}
+
+JP: `keeper shell --server keepersecurity.jp`{{execute}}
