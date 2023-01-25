@@ -18,6 +18,10 @@
       {
         "title": "Record Creation and File Upload (Simple)",
         "text": "step4-fileupload.md"
+      },
+      {
+        "title": "Retrieve Records using In-Memery Storage",
+        "text": "step5-inmemorystorage.md"
       }
     ],
     "intro": {
