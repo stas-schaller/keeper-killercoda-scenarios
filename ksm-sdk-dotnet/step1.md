@@ -6,10 +6,13 @@
 
 `dotnet add package Keeper.SecretsManager`{{execute}}
 
+### 3. Create a simple application file
 
-### 3. Modify a program file
+`touch ksm-sample-project/Program.cs`{{execute}}
 
-<pre class="file" data-filename="ksm-sample-project/Program.cs" data-target="replace">
+### 3. Modify a program file located in `ksm-sample-project/Program.cs`
+
+```
 using System;
 using System.Threading.Tasks;
 using SecretsManager;
@@ -47,7 +50,7 @@ namespace ConsoleApp1
         }
     }
 }
-</pre>
+```
 
 ### 4. Replace Token
 
