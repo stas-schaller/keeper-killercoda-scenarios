@@ -26,7 +26,7 @@
     "uilayout": "editor-terminal"
   },
   "backend": {
-    "imageid": "ubuntu:2004"
+    "imageid": "ubuntu"
   },
   "interface": {
     "layout": "ide"
