@@ -1,0 +1,26 @@
+{
+  "title": "KSM Integration: External Secrets (K8s",
+  "description": "",
+  "details": {
+    "steps": [
+      {
+        "title": "Configure",
+        "text": "step1.md"
+      },
+      {
+        "title": "KSM Commands",
+        "text": "step2.md"
+      }
+    ],
+    "intro": {
+      "text": "intro.md"
+    }
+  },
+  "environment": {
+    "hideintro": true,
+    "hidefinish": true
+  },
+  "backend": {
+    "imageid": "kubernetes-kubeadm-1node"
+  }
+}
