@@ -1,29 +1,36 @@
 
+### Option 1: Install chart from Helm repo
+
+Not released yet.
+Once released, you can install the chart from the Helm repo. See details [here](https://external-secrets.io/v0.7.2/provider/aws-secrets-manager/)
+
+### Option 2: Install chart from source
 
 
-### Option 2: Install chart from local build
+Clone repository
+`git clone https://github.com/enreach-labs/external-secrets.git`{{exec}}
 
+Navigate to the cloned repository
+`cd external-secrets/`{{exec}}
 
-`git clone https://github.com/enreach-labs/external-secrets.git`
-
-`cd external-secrets/`
-
+Build the chart
 `make helm.build`
 
-`helm install external-secrets \
+<!-- `helm install external-secrets \
 ./bin/chart/external-secrets.tgz \
 -n external-secrets \
---create-namespace`
+--create-namespace` -->
 
-```shell
+
+Install the chart (fixed command)
+```
 helm install external-secrets \
 ./bin/chart/external-secrets.tgz \
 --repo https://charts.external-secrets.io \
 --set image.tag=main \
 --set webhook.image.tag=main \
 --set certController.image.tag=main
-
-```
+```{{exec}}
 
 ### Create Kubernetes Secret to store KSM Config Base64
 
