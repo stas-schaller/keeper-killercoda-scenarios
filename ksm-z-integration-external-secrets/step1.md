@@ -3,21 +3,14 @@
 
 ```
 helm repo add external-secrets https://charts.external-secrets.io
-```
+```{{execute}}
 
 ```
 helm install external-secrets \
 external-secrets/external-secrets \
 -n external-secrets \
 --create-namespace
-```
-
-### Create Kubernetes Secret to store KSM Config Base64
-
-`echo -n 'config-base64' > ./ksm_config`
-
-`kubectl create secret generic ksm-config-secret --from-file=./ksm_config`
-
+```{{execute}}
 
 ### Create Secret to store KSM Config Base64
  
@@ -34,7 +27,7 @@ type: Opaque
 data:
   ksm_config: "T3BlbkFJIGlzIGF3ZXNvbWUh"  # Base64 encoded KSM Config
 EOF
-```
+```{{execute}}
 
 
 ```shell
@@ -52,7 +45,7 @@ spec:
       folderID: "_6JvsBA4hruiICteQe6TFA"  # UID of the shared folder in KeeperSecurity where the records 
                                           #   are stored. Make sure the folder is shared into the KSM Application
 EOF
-```
+```{{execute}}
 
 ```shell
 kubectl apply -f - <<EOF
@@ -81,83 +74,58 @@ spec:
                                           #   the password field in Keeper Security into the k8s Secret under the key password
 
 EOF
-```
+```{{execute}}
+
 
 Sample Deployment to use the secret and print them out on a web page
 Here, we will install reloader to auto reload the container if the password was changed in Keeper Security
 
-Steps to install install it:
-`helm repo add stakater https://stakater.github.io/stakater-charts`
-`helm repo update`
-`helm install stakater/reloader --generate-name`
-
+Steps to install it:
+`helm repo add stakater https://stakater.github.io/stakater-charts`{{execute}}
+`helm repo update`{{execute}}
+`helm install stakater/reloader --generate-name`{{execute}}
 
 ```shell
 kubectl apply -f - <<EOF
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: nginx-deployment
+  name: my-deployment
   annotations:
     # This is to add auto reload of the container if new password was generated - https://github.com/stakater/Reloader#secret
     # In this case, we are using the secret name "my-external-secrets-secretstore-test1" as the annotation to trigger the reload
     secret.reloader.stakater.com/reload: "my-external-secrets-secretstore-test1"
+
 spec:
   selector:
     matchLabels:
-      app: nginx
+      app: my-app
   replicas: 1                         # tells Kubernetes to run 1 instance of this application
   template:
     metadata:
       labels:
-        app: nginx
+        app: my-app
     spec:
       containers:
         - name: samplepythonapp       # name of the container
-          image: python:3.17-alpine
+          image: mendhak/http-https-echo
           ports:
-            - containerPort: 80
+            - containerPort: 3000
           env:
-            - name: SOME_ENV_VAR_VALUE
-              valueFrom:
-                secretKeyRef:
-                  name: my-external-secrets-secretstore-test1
-                  key: password
-          command: ["python", "-c", "import os; from http.server import HTTPServer, BaseHTTPRequestHandler; class Handler(BaseHTTPRequestHandler): def do_GET(self): self.send_response(200); self.send_header('Content-type', 'text/html'); self.end_headers(); self.wfile.write(bytes('<html><body><h2>Environment Variables:</h2>', 'utf-8')); for k, v in os.environ.items(): self.wfile.write(bytes('<p>{0}={1}</p>'.format(k, v), 'utf-8')); self.wfile.write(bytes('</body></html>', 'utf-8')); HTTPServer(('', 80), Handler).serve_forever();"]
-EOF
-```
-
-
-```shell
-kubectl apply -f - <<EOF
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: nginx-deployment
-spec:
-  selector:
-    matchLabels:
-      app: nginx
-  replicas: 1                         # tells Kubernetes to run 1 instance of this application
-  template:
-    metadata:
-      labels:
-        app: nginx
-    spec:
-      containers:
-        - name: samplepythonapp       # name of the container
-          image: python:3.17-alpine
-          ports:
-            - containerPort: 80
-          env:
+            - name: ECHO_INCLUDE_ENV_VARS
+              value: "1"
+            - name: HTTP_PORT
+              value: "3000"
             - name: DEMO_GREETING
               value: "Hello from the environment"
             - name: DEMO_FAREWELL
               value: "Such a sweet sorrow"
-              
-          command: ["python", "-c", "import os; from http.server import HTTPServer, BaseHTTPRequestHandler; class Handler(BaseHTTPRequestHandler): def do_GET(self): self.send_response(200); self.send_header('Content-type', 'text/html'); self.end_headers(); self.wfile.write(bytes('<html><body><h2>Environment Variables:</h2>', 'utf-8')); for k, v in os.environ.items(): self.wfile.write(bytes('<p>{0}={1}</p>'.format(k, v), 'utf-8')); self.wfile.write(bytes('</body></html>', 'utf-8')); HTTPServer(('', 80), Handler).serve_forever();"]
+        
+      nodeSelector:
+        kubernetes.io/os: linux
+    
 EOF
-```
+```{{execute}}
 
 
 ```shell
@@ -171,14 +139,13 @@ spec:
     app: my-app
   ports:
     - name: http
-      port: 80
-      targetPort: 80
+      port: 3000
+      targetPort: 3000
       protocol: TCP
       nodePort: 30000
   type: NodePort
 EOF
-```
+```{{execute}}
 
-[ACCESS 80]({{TRAFFIC_HOST1_80}})
-[ACCESS 30000]({{TRAFFIC_HOST1_30000}})
+[View Running Service]({{TRAFFIC_HOST1_30000}})
 
