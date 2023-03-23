@@ -19,7 +19,7 @@ metadata:
   annotations:
     # This is to add auto reload of the container if new password was generated - https://github.com/stakater/Reloader#secret
     # In this case, we are using the secret name "my-external-secrets-secretstore-test1" as the annotation to trigger the reload
-    secret.reloader.stakater.com/reload: "my-external-secrets-secretstore-test1"
+    secret.reloader.stakater.com/reload: "my-external-secrets-values"
 
 spec:
   selector:
