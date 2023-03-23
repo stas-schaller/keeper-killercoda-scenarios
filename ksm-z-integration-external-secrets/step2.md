@@ -52,12 +52,12 @@ spec:
             - name: USERNAME_FROM_KEEPER    # tells Kubernetes to use the value of the username field in the k8s Secret as the value of the environment variable USERNAME_FROM_KEEPER
               valueFrom:
                 secretKeyRef:
-                    name: my-external-secrets-secretstore-test1
+                    name: my-external-secrets-values
                     key: username
             - name: PASSWORD_FROM_KEEPER    # tells Kubernetes to use the value of the password field in the k8s Secret as the value of the environment variable PASSWORD_FROM_KEEPER
               valueFrom:
                 secretKeyRef:
-                    name: my-external-secrets-secretstore-test1
+                    name: my-external-secrets-values
                     key: password
       nodeSelector:
         kubernetes.io/os: linux

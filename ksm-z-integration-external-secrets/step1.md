@@ -62,16 +62,18 @@ kind: ExternalSecret
 metadata:
  name: ksm-external-secret
 spec:
- refreshInterval: 1m                      # rate how often SecretManager pulls KeeperSecurity. In this case every minute
- secretStoreRef:                          # tells External Secrets where to store the secrets once fetched from Keeper Security
+ refreshInterval: 30s                     # rate how often SecretManager pulls KeeperSecurity. 
+                                          #   In this case every 30 seconds, for the example. 
+                                          #   We recoment this value to be 30 minutes or more.
+ secretStoreRef:                          # reference to the SecretStore defined above to authenticate against Keeper Security
    kind: SecretStore                      # tells External Secrets the type of the secret store, should be same as the one defined above
-   name: my-external-secrets-secretstore  # name of the SecretStore defined above
+   name: my-external-secrets-secretstore  
 
  dataFrom:                                # tells External Secrets which record to use to fetch from Keeper Secrets Manager (KSM)
    - extract:
        key: "[RECORD UID]"                # UID of the record in Keeper where the secrets are going to be fetched from
  target:                                  # tells External Secrets the target location where to store the secrets once fetched from Keeper Security
-   name: my-external-secrets-secretstore-test1 # name of the k8s Secret to be created
+   name: my-external-secrets-values       # name of the k8s Secret to be created
    creationPolicy: Owner                  # tells External Secrets to create the k8s Secret if it doesn't exist
    template:
      engineVersion: v2          
