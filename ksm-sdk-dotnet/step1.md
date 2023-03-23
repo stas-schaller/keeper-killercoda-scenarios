@@ -10,7 +10,7 @@
 
 `touch ksm-sample-project/Program.cs`{{execute}}
 
-### 3. Modify a program file located in `ksm-sample-project/Program.cs`
+### 4. Modify a program file located in `ksm-sample-project/Program.cs`
 
 ```
 using System;
