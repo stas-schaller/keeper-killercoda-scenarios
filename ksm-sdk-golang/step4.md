@@ -1,8 +1,21 @@
-Caching
+# Caching
 
 Currently caching is only available as a beta feature.
 
-Install the beta version of the SDK:
+
+## Create new folder
+
+`mkdir ksm-example-cache`{{execute}}
+
+## Change directory
+
+`cd ksm-example-cache`{{execute}}
+
+## Initialize go module
+
+`go mod init ksm-example-cache`{{execute}}
+
+## Install the beta version of the SDK that includes caching
 
 `go get github.com/keeper-security/secrets-manager-go/core@beta-caching`{{execute}}
 
@@ -28,6 +41,10 @@ func main() {
 }
 
 ```
+
+## Run Go Mod Tidy to find all referenced to the imported packages
+
+`go mod tidy`{{execute}}
 
 ## Run application
 
