@@ -1,6 +1,4 @@
-# Caching
-
-Currently caching is only available as a beta feature.
+This catching mechanism is still in beta state. To use it, you need to install the beta version of the SDK that includes caching.
 
 
 ## Create new folder
