@@ -117,8 +117,9 @@ func main() {
 
 ```
 
-> Note: Replace `[RECORD UID 1]` with the UID of the record you want to retrieve.
-> Note: Replace `[KSM CONFIG BASE 64]` with the base64 encoded KSM config.
+> Note:
+> - Replace `[RECORD UID 1]` with the UID of the record you want to use for testing.
+> - Replace `[KSM CONFIG BASE 64]` with the base64 encoded KSM config.
 
 ## Run Go Mod Tidy to find all referenced to the imported packages
 
