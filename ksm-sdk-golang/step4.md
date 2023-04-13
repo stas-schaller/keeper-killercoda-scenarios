@@ -45,8 +45,8 @@ func main() {
 
 	// PreferCache: false - by default
 	options := &ksm.ClientOptions{
-		Config: ksm.NewFileKeyValueStorage("ksm-config.json"), // either use token or copy valid config here
-		// Config: ksm.NewMemoryKeyValueStorage("eyJ..==") // read-only config
+		// Config: ksm.NewFileKeyValueStorage("ksm-config.json"), // either use token or copy valid config here
+		Config: ksm.NewMemoryKeyValueStorage("[KSM CONFIG BASE 64") // read-only config
 		PreferCache: true, // can be reset/revoked at runtime too: sm.PreferCache = true
 	}
 
@@ -62,7 +62,7 @@ func main() {
 	sm.PreferCache = true                 // can be reset/revoked at runtime too
 	_ = sm.SetCache(ksm.NewMemoryCache()) // no need to cache starting nil
 	// built-in cache implementations: NewMemoryCache(), NewFileCache()
-	recs, err := sm.GetSecrets([]string{"oESwwjIqbo-MsoED0vT4Cg"})
+	recs, err := sm.GetSecrets([]string{"[RECORD UID 1]"})
 	if err != nil {
 		klog.Error("error retrieving records: " + err.Error())
 	}
@@ -70,17 +70,17 @@ func main() {
 
 	recs[0].SetTitle(recs[0].Title() + ".")
 	sm.Save(recs[0]) // backend updates but not the local cache
-	recs, err = sm.GetSecrets([]string{"oESwwjIqbo-MsoED0vT4Cg"})
+	recs, err = sm.GetSecrets([]string{"[RECORD UID 1]"})
 	fmt.Println(recs[0].Title(), err) // still old/cached title
 
 	// time to update cache
 	mc1 := sm.SetCache(ksm.NewMemoryCache())                      // new empty cache, but mc1 holds old cache
-	recs, err = sm.GetSecrets([]string{"oESwwjIqbo-MsoED0vT4Cg"}) // cache new/latest title
+	recs, err = sm.GetSecrets([]string{"[RECORD UID 1]"}) // cache new/latest title
 	fmt.Println(recs[0].Title(), err)                             // new title
 	// record updates should succeed here (assuming no external vault modifications)
 
 	sm.SetCache(mc1) // restore prev. cache
-	recs, err = sm.GetSecrets([]string{"oESwwjIqbo-MsoED0vT4Cg"})
+	recs, err = sm.GetSecrets([]string{"[RECORD UID 1]"})
 	fmt.Println(recs[0].Title(), err) // old title
 	// record update should fail here - cache keeps old record revision
 	// Old cached rec will get Out-Of-Sync error due record revisions mismatch
@@ -88,7 +88,7 @@ func main() {
 	mc2 := sm.SetCache(nil)          // no caching (even if sm.PreferCache = true)
 	cache, _ := mc2.GetCachedValue() // store in online or offline storage - memcache loads w/ SaveCachedValue
 	fmt.Print(cache[:8])             // or
-	recs, _ = sm.GetSecrets([]string{"oESwwjIqbo-MsoED0vT4Cg"})
+	recs, _ = sm.GetSecrets([]string{"[RECORD UID 1]"})
 	recs[0].SetTitle(strings.TrimRight(recs[0].Title(), "."))
 	sm.Save(recs[0]) // restore original title
 
@@ -116,6 +116,9 @@ func main() {
 }
 
 ```
+
+> Note: Replace `[RECORD UID 1]` with the UID of the record you want to retrieve.
+> Note: Replace `[KSM CONFIG BASE 64]` with the base64 encoded KSM config.
 
 ## Run Go Mod Tidy to find all referenced to the imported packages
 
