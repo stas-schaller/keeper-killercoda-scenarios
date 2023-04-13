@@ -26,18 +26,93 @@ Currently caching is only available as a beta feature.
 ```golang
 package main
 
-// Import Secrets Manager
-import ksm "github.com/keeper-security/secrets-manager-go/core"
+import (
+	"fmt"
+	"os"
+	"strings"
+
+	ksm "github.com/keeper-security/secrets-manager-go/core"
+	klog "github.com/keeper-security/secrets-manager-go/core/logger"
+)
+
+// go get github.com/keeper-security/secrets-manager-go/core@beta-caching
+// This PoC is currently available only in the beta-caching branch
 
 func main() {
+	// klog.SetLogLevel(klog.CriticalLevel) // == klog.SetLogLevel(io.Discard)
+	klog.SetLogLevel(klog.DebugLevel)
+	klog.Info("Secrets Manager Started")
 
-    sm := ksm.NewSecretsManagerFromSettings("[ONE TIME TOKEN]", "", true)
+	// PreferCache: false - by default
+	options := &ksm.ClientOptions{
+		Config: ksm.NewFileKeyValueStorage("ksm-config.json"), // either use token or copy valid config here
+		// Config: ksm.NewMemoryKeyValueStorage("eyJ..==") // read-only config
+		PreferCache: true, // can be reset/revoked at runtime too: sm.PreferCache = true
+	}
 
-    allRecords, _ := sm.GetSecrets([]string{})          // Retrieve all records from Secrets Manager
-    
-    password := allRecords[0].Password()                // Get password from first record
+	sm := ksm.NewSecretsManager(options)
 
-    print("My password from Keeper: ", password, "\n")  // WARNING: Avoid logging sensitive data
+	// NB! Avoid using record filters with caching - cache keeps filtered records only!
+	// ex. cache record UID1 use same cache with different filter to get UID2 gets empty result
+
+	// NB! Cache keeps only last response from GetSecrets (updated by every GetSecrets call)
+	// ex. GetSecrets([]string{}) ... GetSecrets([]string{"UID1"}) - UID1 only in cache
+
+	// SetCache test
+	sm.PreferCache = true                 // can be reset/revoked at runtime too
+	_ = sm.SetCache(ksm.NewMemoryCache()) // no need to cache starting nil
+	// built-in cache implementations: NewMemoryCache(), NewFileCache()
+	recs, err := sm.GetSecrets([]string{"oESwwjIqbo-MsoED0vT4Cg"})
+	if err != nil {
+		klog.Error("error retrieving records: " + err.Error())
+	}
+	fmt.Println(recs[0].Title())
+
+	recs[0].SetTitle(recs[0].Title() + ".")
+	sm.Save(recs[0]) // backend updates but not the local cache
+	recs, err = sm.GetSecrets([]string{"oESwwjIqbo-MsoED0vT4Cg"})
+	fmt.Println(recs[0].Title(), err) // still old/cached title
+
+	// time to update cache
+	mc1 := sm.SetCache(ksm.NewMemoryCache())                      // new empty cache, but mc1 holds old cache
+	recs, err = sm.GetSecrets([]string{"oESwwjIqbo-MsoED0vT4Cg"}) // cache new/latest title
+	fmt.Println(recs[0].Title(), err)                             // new title
+	// record updates should succeed here (assuming no external vault modifications)
+
+	sm.SetCache(mc1) // restore prev. cache
+	recs, err = sm.GetSecrets([]string{"oESwwjIqbo-MsoED0vT4Cg"})
+	fmt.Println(recs[0].Title(), err) // old title
+	// record update should fail here - cache keeps old record revision
+	// Old cached rec will get Out-Of-Sync error due record revisions mismatch
+
+	mc2 := sm.SetCache(nil)          // no caching (even if sm.PreferCache = true)
+	cache, _ := mc2.GetCachedValue() // store in online or offline storage - memcache loads w/ SaveCachedValue
+	fmt.Print(cache[:8])             // or
+	recs, _ = sm.GetSecrets([]string{"oESwwjIqbo-MsoED0vT4Cg"})
+	recs[0].SetTitle(strings.TrimRight(recs[0].Title(), "."))
+	sm.Save(recs[0]) // restore original title
+
+	// If caching is disabled but cache is set it will still cache every/last GetSecrets
+	// but will use cached data only if there's no network connectivity and backend is inaccessible
+	// If there's no cache then failure to connect to the backend will result in an error
+	sm.PreferCache = false
+	// ~SetCache test
+
+	// To minimize htis to the backend - retrieve all/unfiltered records shared to the KSM app
+	allRecords, err := sm.GetSecrets([]string{})
+	if err != nil {
+		klog.Error("error retrieving all records: " + err.Error())
+		os.Exit(1)
+	}
+
+	// main loop - branches out based on record's purpose
+	for _, r := range allRecords {
+		klog.Println("\tTitle: " + r.Title())
+		// branch based on record contents
+		// if r.Uid  == "UID1" || r.Title() == "database1" {...}
+	}
+
+	klog.Info("Secrets Manager Finished")
 }
 
 ```
