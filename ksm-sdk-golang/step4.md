@@ -48,7 +48,7 @@ func main() {
 	// PreferCache: false - by default
 	options := &ksm.ClientOptions{
 		// Config: ksm.NewFileKeyValueStorage("ksm-config.json"), // either use token or copy valid config here
-		Config: ksm.NewMemoryKeyValueStorage("[KSM CONFIG BASE 64") // read-only config
+		Config: ksm.NewMemoryKeyValueStorage("[KSM CONFIG BASE64]"), // read-only config
 		PreferCache: true, // can be reset/revoked at runtime too: sm.PreferCache = true
 	}
 
@@ -119,8 +119,8 @@ func main() {
 
 ```{{copy}}
 
-> Note:
-> - Replace `[RECORD UID 1]` with the UID of the record you want to use for testing.
+> Note: <br />
+> - Replace `[RECORD UID 1]` with the UID of the record you want to use for testing. <br />
 > - Replace `[KSM CONFIG BASE 64]` with the base64 encoded KSM config.
 
 ## Run Go Mod Tidy to find all referenced to the imported packages
