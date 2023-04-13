@@ -23,6 +23,8 @@ Currently caching is only available as a beta feature.
 
 `touch ksm-example-cache.go`{{execute}}
 
+## Paste the following code into the file
+
 ```golang
 package main
 
@@ -115,7 +117,7 @@ func main() {
 	klog.Info("Secrets Manager Finished")
 }
 
-```
+```{{copy}}
 
 > Note:
 > - Replace `[RECORD UID 1]` with the UID of the record you want to use for testing.
