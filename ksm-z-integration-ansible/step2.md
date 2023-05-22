@@ -8,7 +8,7 @@
 
 ### Send correct permissions for the config file, to avoid warnings
 
-`chmod 600 configfile.json`{{execute}}
+`chmod 600 client-config.json`{{execute}}
 
 ### Create sample Ansible playbook
 
