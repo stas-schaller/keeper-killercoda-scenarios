@@ -1,4 +1,4 @@
-### Wait for Ansible to be installed.
+### Wait for Ansible to be installed...
 
 Install Keeper Ansible plugin
 
