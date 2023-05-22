@@ -1,15 +1,18 @@
 ### In CLI navigate to the folder where configuration and playbooks will be stored:
 
-`cd my-playbooks`{{execute}}
+`mkdir my-playbooks && cd my-playbooks`{{execute}}
 
 ### Initialize config file for plugin ot use
 
-`keeper_ansible --keeper_token [ONE TIME TOKEN]`{{copy}}
+`keeper_ansible --token [ONE TIME TOKEN]`{{copy}}
 
 ### Create sample Ansible playbook
 
-<pre class="file" data-filename="ksm-sample-playbook.yml" data-target="replace">
+`touch ksm-sample-playbook.yml`{{execute}}
 
+### Edit sample Ansible playbook, copy and paste the following content:
+
+```
 ---
 - name: KSM Plugin Sample Playbook
   hosts: 127.0.0.1
@@ -32,7 +35,7 @@
       debug:
         var: my_login.value
         verbosity: 0
-</pre>
+```
 
 Change `[RECORD UID]` to your record UIDs
 
