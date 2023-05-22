@@ -6,7 +6,7 @@
 
 `keeper_ansible --token [ONE TIME TOKEN]`{{copy}}
 
-### Send correct permissions for the config file, to avoid warnings
+### Set correct permissions for the config file, to avoid warnings:
 
 `chmod 600 client-config.json`{{execute}}
 
@@ -39,7 +39,7 @@
       debug:
         var: my_login.value
         verbosity: 0
-```
+```{{copy}}
 
 Change `[RECORD UID]` to your record UIDs
 
