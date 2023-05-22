@@ -6,8 +6,7 @@
     "steps": [
       {
         "title": "Install Ansible",
-        "text": "step1.md",
-        "code": "install-ansible-ubuntu.sh"
+        "text": "step1.md"
       },
       {
         "title": "",
@@ -15,7 +14,8 @@
       }
     ],
     "intro": {
-      "text": "intro.md"
+      "text": "intro.md",
+      "code": "install-ansible-ubuntu.sh"
     }
   },
   "environment": {

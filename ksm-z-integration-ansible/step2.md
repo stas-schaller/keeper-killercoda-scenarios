@@ -6,6 +6,10 @@
 
 `keeper_ansible --token [ONE TIME TOKEN]`{{copy}}
 
+### Send correct permissions for the config file, to avoid warnings
+
+`chmod 600 configfile.json`{{execute}}
+
 ### Create sample Ansible playbook
 
 `touch ksm-sample-playbook.yml`{{execute}}
