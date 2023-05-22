@@ -11,4 +11,4 @@ wget https://bootstrap.pypa.io/get-pip.py && \
 sudo python3 get-pip.py && \
 rm get-pip.py && \
 python3 -m pip install pyOpenSSL --upgrade && \
-python3 -m pip install -U keeper-secrets-manager-core ansible
+python3 -m pip install -U ansible
