@@ -41,9 +41,6 @@ output "kc_secret_password" {
 - Replace `[CONFIG JSON or BASE64]` that was obtained via Commander
 - Replace `[UID TO LOGIN TYPE RECORD]` with your UID
 
-### Navigate to the example folder
-
-`cd terraform-example`{{execute}}
 
 ## Initialize Terraform
 `terraform init`{{execute}}
