@@ -17,4 +17,4 @@
 snap install terraform --classic
 # echo "Terraform was installed" >> /opt/.backgroundfinished
 
-cd ~/terraform-example
+mkdir ~/terraform-example && cd ~/terraform-example && touch main.tf

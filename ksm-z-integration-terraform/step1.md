@@ -3,10 +3,15 @@
 `mkdir terraform-example && cd terraform-example`{{execute}}
 
 
-### Create new file `main.tf`{{open}} and paste the following code.
+### Create new file `main.tf' 
+
+touch main.tf
 
 
-<pre class="file" data-filename="main.tf" data-target="replace">
+### Paste the following code into the file
+
+
+```terraform
 terraform {
   required_version = ">= 1.0.0"
   required_providers {
@@ -34,7 +39,7 @@ output "kc_secret_password" {
   value = data.secretsmanager_login.kc-secret.password
   sensitive = true
 }
-</pre>
+```
 
 ### Replace credentials in main.tf file
 
