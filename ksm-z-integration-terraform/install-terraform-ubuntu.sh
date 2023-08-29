@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Install apt
+wget http://security.ubuntu.com/ubuntu/pool/main/a/apt/apt_2.6.0ubuntu0.1_amd64.deb -O apt.deb
+sudo dpkg -i apt.deb
 # Install Terraform CLI in Ubuntu
 # Source: https://learn.hashicorp.com/tutorials/terraform/install-cli
 apt update -y

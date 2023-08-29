@@ -1,3 +1,10 @@
+### Create a new directory for the example and navigate into it.
+
+`mkdir terraform-example && cd terraform-example`{{execute}}
+
+
+### Create new file `main.tf`{{open}} and paste the following code.
+
 
 <pre class="file" data-filename="main.tf" data-target="replace">
 terraform {

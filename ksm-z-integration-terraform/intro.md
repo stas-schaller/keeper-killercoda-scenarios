@@ -1,1 +1,1 @@
-In this tutorial we will go through the simple usecase of using Keeper Secret Manager Terraform plugin
+In this tutorial we will go through the simple use-case of using Keeper Secret Manager Terraform plugin
