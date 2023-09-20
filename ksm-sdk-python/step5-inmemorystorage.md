@@ -1,6 +1,4 @@
 
-# In-Memory Configuration Storage
-
 Create a new KSM Application device. Select "Method" for the authentication to be "Configuration File" and copy the base64 encoded config.
 
 Securely store that string in your application. For this example we will use an environment variable.
