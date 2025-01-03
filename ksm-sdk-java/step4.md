@@ -92,3 +92,31 @@ public class KSMFileOperations {
     }
 }
 ```{{copy}}
+
+###2. Create Test File
+
+Let's create a test file to upload:
+
+```
+echo "This is a test file" > myFile.txt
+```{{execute}}
+
+
+### 4. Modify the Code
+
+Replace the following placeholders in the code:
+- `[RECORD_UID]` - with the UID of the record where you want to upload/download files
+
+### 5. Execute Upload Operation
+
+Run the code to upload the file:
+
+```
+gradle -PmainClass=com.keepersecurity.ksmsample.KSMFileOperations run
+```{{execute}}
+
+### Key Points:
+- File uploads require an existing record to attach the file to
+- Files can be retrieved using either the file name or file UID
+- The SDK supports downloading both files and their thumbnails
+- Binary file content is automatically encrypted/decrypted by the SDK

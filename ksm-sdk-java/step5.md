@@ -113,3 +113,33 @@ public class KSMFolderOperations {
     }
 }
 ```{{copy}}
+
+### 2. Modify the Code
+Replace the following placeholders in the code:
+
+- [SHARED_FOLDER_UID] - UID of the parent shared folder
+- [FOLDER_UID] - UID of the folder to update/delete
+
+### 3. List All Folders
+
+Run the code to list existing folders:
+
+```
+gradle -PmainClass=com.keepersecurity.ksmsample.KSMFolderOperations run
+```{{execute}}
+
+### 4. Create a New Folder
+
+Run the code to create a new folder:
+
+```
+gradle -PmainClass=com.keepersecurity.ksmsample.KSMFolderOperations run --args="create"
+```{{execute}}
+
+### 5. Update Folder Name
+
+Run the code to update a folder's name:
+
+```
+gradle -PmainClass=com.keepersecurity.ksmsample.KSMFolderOperations run --args="update"
+```{{execute}}
