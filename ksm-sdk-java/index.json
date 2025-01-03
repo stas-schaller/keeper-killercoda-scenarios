@@ -14,6 +14,18 @@
       {
         "title": "Create Advanced a Record",
         "text": "step3.md"
+      },
+      {
+        "title": "Update a Record",
+        "text": "step4.md"
+      },
+      {
+        "title": "Delete a Record",
+        "text": "step5.md"
+      },
+      {
+        "title": "List Records",
+        "text": "step6.md"
       }
     ],
     "intro": {
