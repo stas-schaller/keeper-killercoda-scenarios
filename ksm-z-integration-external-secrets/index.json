@@ -1,24 +1,31 @@
 {
   "title": "KSM Integration: External Secrets (K8s)",
-  "description": "",
+  "description": "Learn how to integrate Keeper Security Manager (KSM) with Kubernetes External Secrets Operator to securely manage your Kubernetes secrets.",
   "details": {
     "steps": [
       {
-        "title": "Configure",
-        "text": "step1.md"
+        "title": "Configure External Secrets",
+        "text": "step1.md",
+        "verify": "verify.sh"
       },
       {
-        "title": "KSM Commands",
-        "text": "step2.md"
+        "title": "Deploy and Test",
+        "text": "step2.md",
+        "verify": "verify.sh"
       }
     ],
     "intro": {
-      "text": "intro.md"
+      "text": "intro.md",
+      "background": "background.md"
+    },
+    "finish": {
+      "text": "finish.md"
     }
   },
   "environment": {
-    "hideintro": true,
-    "hidefinish": true
+    "hideintro": false,
+    "hidefinish": false,
+    "uilayout": "terminal"
   },
   "backend": {
     "imageid": "kubernetes-kubeadm-1node"

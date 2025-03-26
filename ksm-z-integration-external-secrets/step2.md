@@ -1,16 +1,28 @@
-### Create Simple Kubernetes Deployment to use the secret and print them out on a web page
+# Step 2: Deploy and Test the Integration
 
-Sample Deployment to use the secret and print them out on a web page
-Here, we will install reloader to auto reload the container if the password was changed in Keeper Security
+In this step, we'll deploy a sample application that uses the secrets from KSM and set up automatic reloading when secrets change.
 
-Steps to install it:
-`helm repo add stakater https://stakater.github.io/stakater-charts`{{execute}}
+## 1. Install Reloader
 
-`helm repo update`{{execute}}
+First, let's install Stakater Reloader, which will automatically reload our application when secrets change:
 
-`helm install stakater/reloader --generate-name`{{execute}}
+```bash
+helm repo add stakater https://stakater.github.io/stakater-charts
+```{{execute}}
 
-```shell
+```bash
+helm repo update
+```{{execute}}
+
+```bash
+helm install stakater/reloader --generate-name
+```{{execute}}
+
+## 2. Deploy Sample Application
+
+We'll deploy a simple web application that displays environment variables, including our KSM secrets:
+
+```bash
 kubectl apply -f - <<EOF
 apiVersion: apps/v1
 kind: Deployment
@@ -64,11 +76,11 @@ spec:
 EOF
 ```{{execute}}
 
-### Punch a hole in the Kubernetes cluster to expose the service
+## 3. Create Service
 
-Create Service to expose the deployment to the outside of the Kubernetes cluster
+Let's create a service to expose our application:
 
-```shell
+```bash
 kubectl apply -f - <<EOF
 apiVersion: v1
 kind: Service
@@ -87,8 +99,24 @@ spec:
 EOF
 ```{{execute}}
 
-### Access the service
+## 4. Test the Integration
 
+You can now access the application at:
 [View Running Service]({{TRAFFIC_HOST1_30000}})
 
-Look for the environment variables `USERNAME_FROM_KEEPER` and `PASSWORD_FROM_KEEPER`. They should be populated with the values from the Keeper Security record.
+The web page will display all environment variables, including:
+- `USERNAME_FROM_KEEPER`: The username from your KSM record
+- `PASSWORD_FROM_KEEPER`: The password from your KSM record
+
+## How it Works
+
+1. External Secrets Operator syncs secrets from KSM to Kubernetes
+2. Our application reads these secrets as environment variables
+3. When secrets change in KSM:
+   - External Secrets Operator updates the Kubernetes secret
+   - Reloader detects the change and restarts the application
+   - The application picks up the new secret values
+
+## Next Steps
+
+You've successfully completed the integration! The application will automatically update whenever secrets change in KSM.
