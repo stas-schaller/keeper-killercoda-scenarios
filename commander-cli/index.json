@@ -1,30 +1,36 @@
 {
   "noindex": true,
-  "title": "Commander CLI",
+  "title": "Keeper Commander CLI Tutorial",
+  "description": "Learn how to use Keeper Commander CLI to manage your password vault from the command line. This interactive tutorial covers authentication, basic commands, and vault navigation across different data centers.",
   "details": {
     "steps": [
         {
-            "title": "Step 1 - Setup & Connect",
+            "title": "Step 1 - Setup & Connect to Keeper",
             "text": "step1.md"
         },
         {
-          "title": "Step 2 - Commander commands",
-          "text": "step2.md"
-      }
-      ],
+            "title": "Step 2 - Authentication & Basic Commands",
+            "text": "step2.md"
+        }
+    ],
     "intro": {
         "text": "intro.md",
-        "credits": "",
+        "credits": "Keeper Security",
         "code": "install-commander.sh"
+    },
+    "finish": {
+        "text": "You have successfully completed the Keeper Commander CLI tutorial! You now know how to connect to different data centers, authenticate, and perform basic vault operations. For more advanced features, check out the Keeper Security documentation."
     }
   },
-
+  "time": "15-20 minutes",
+  "difficulty": "Beginner",
   "environment": {
-    "hideintro": true,
-    "hidefinish": true,
-    "uilayout": "terminal"
+    "hideintro": false,
+    "hidefinish": false,
+    "uilayout": "terminal",
+    "showdashboard": true
   },
   "backend": {
-    "imageid": "python"
+    "imageid": "python:3.11"
   }
 }

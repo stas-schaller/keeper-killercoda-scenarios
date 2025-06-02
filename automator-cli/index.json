@@ -1,0 +1,30 @@
+{
+  "noindex": true,
+  "title": "Automator CLI",
+  "details": {
+    "steps": [
+        {
+            "title": "Step 1 - Setup & Connect",
+            "text": "step1.md"
+        },
+        {
+          "title": "Step 2 - Commander commands",
+          "text": "step2.md"
+      }
+      ],
+    "intro": {
+        "text": "intro.md",
+        "credits": "",
+        "code": "install-commander.sh"
+    }
+  },
+
+  "environment": {
+    "hideintro": true,
+    "hidefinish": true,
+    "uilayout": "terminal"
+  },
+  "backend": {
+    "imageid": "python"
+  }
+}

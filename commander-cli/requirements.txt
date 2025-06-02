@@ -1,1 +1,11 @@
-keepercommander
+# Keeper Commander CLI Dependencies
+# Requires Python 3.11+
+
+keepercommander>=17.0.0
+keeper-secrets-manager-core>=16.0.0
+pyOpenSSL>=23.0.0
+cryptography>=41.0.0
+
+# Additional dependencies for optimal Python 3.11+ performance
+setuptools>=68.0.0
+wheel>=0.41.0
