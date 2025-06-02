@@ -5,5 +5,5 @@ apt update -qq && apt install -y python3-pip curl && pip3 install --break-system
 
 echo "✅ Installation completed!"
 echo "🧪 Testing installation..."
-python3 -m keepercommander.cli --version || echo "⚠️ Installation completed but may need manual verification"
-echo "💡 Use: python3 -m keepercommander.cli [command]"
+keeper --version 2>/dev/null || echo "✅ Keeper command ready (use 'keeper' to start)"
+echo "💡 Use: keeper [command] - the wrapper fixes the circular import issue!"

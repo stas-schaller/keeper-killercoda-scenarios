@@ -5,11 +5,11 @@
 First, verify that Keeper Commander CLI is working:
 
 ```bash
-python3 -m keepercommander.cli --version
+keeper --version
 ```
-`python3 -m keepercommander.cli --version`{{execute}}
+`keeper --version`{{execute}}
 
-**Note**: For all commands in this tutorial, use `python3 -m keepercommander.cli`.
+**Note**: For all commands in this tutorial, use `keeper`.
 
 ## Understanding Keeper Data Centers
 
@@ -21,39 +21,39 @@ Choose the appropriate command based on your account's data center location:
 
 ### 🇺🇸 United States (Default)
 ```bash
-python3 -m keepercommander.cli shell
+keeper shell
 ```
-`python3 -m keepercommander.cli shell`{{execute}}
+`keeper shell`{{execute}}
 
 ### 🇪🇺 European Union
 ```bash
-python3 -m keepercommander.cli shell --server keepersecurity.eu
+keeper shell --server keepersecurity.eu
 ```
-`python3 -m keepercommander.cli shell --server keepersecurity.eu`{{execute}}
+`keeper shell --server keepersecurity.eu`{{execute}}
 
 ### 🇦🇺 Australia
 ```bash
-python3 -m keepercommander.cli shell --server keepersecurity.com.au
+keeper shell --server keepersecurity.com.au
 ```
-`python3 -m keepercommander.cli shell --server keepersecurity.com.au`{{execute}}
+`keeper shell --server keepersecurity.com.au`{{execute}}
 
 ### 🇺🇸 Government Cloud
 ```bash
-python3 -m keepercommander.cli shell --server govcloud.keepersecurity.us
+keeper shell --server govcloud.keepersecurity.us
 ```
-`python3 -m keepercommander.cli shell --server govcloud.keepersecurity.us`{{execute}}
+`keeper shell --server govcloud.keepersecurity.us`{{execute}}
 
 ### 🇨🇦 Canada
 ```bash
-python3 -m keepercommander.cli shell --server keepersecurity.ca
+keeper shell --server keepersecurity.ca
 ```
-`python3 -m keepercommander.cli shell --server keepersecurity.ca`{{execute}}
+`keeper shell --server keepersecurity.ca`{{execute}}
 
 ### 🇯🇵 Japan
 ```bash
-python3 -m keepercommander.cli shell --server keepersecurity.jp
+keeper shell --server keepersecurity.jp
 ```
-`python3 -m keepercommander.cli shell --server keepersecurity.jp`{{execute}}
+`keeper shell --server keepersecurity.jp`{{execute}}
 
 ## What Happens Next
 
