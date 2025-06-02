@@ -17,9 +17,6 @@
         "text": "intro.md",
         "credits": "Keeper Security",
         "code": "install-commander.sh"
-    },
-    "finish": {
-        "text": "You have successfully completed the Keeper Commander CLI tutorial! You now know how to connect to different data centers, authenticate, and perform basic vault operations. For more advanced features, check out the Keeper Security documentation."
     }
   },
   "time": "15-20 minutes",
@@ -31,6 +28,6 @@
     "showdashboard": true
   },
   "backend": {
-    "imageid": "python:3.11"
+    "imageid": "python"
   }
 }
