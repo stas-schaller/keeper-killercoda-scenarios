@@ -1,21 +1,18 @@
 #!/bin/bash
 
-# Update package lists
-apt update
+# Update package lists (if needed)
+apt update -qq
 
-# Install Python 3.11+ and pip if not already installed
-apt install python3 python3-pip python3-venv python3-dev -y
-
-# Verify Python version (should be 3.11+)
-python3 --version
+# Ensure we have the latest pip
+python -m pip install --upgrade pip
 
 # Create a virtual environment to avoid system package conflicts
-python3 -m venv /opt/keeper-env
+python -m venv /opt/keeper-env
 
 # Activate the virtual environment
 source /opt/keeper-env/bin/activate
 
-# Upgrade pip to latest version
+# Upgrade pip and install build tools
 pip install --upgrade pip setuptools wheel
 
 # Install required packages with latest versions
@@ -38,7 +35,7 @@ EOF
 
 chmod +x /usr/local/bin/keeper
 
-echo "✅ Keeper Commander installation completed successfully!"
-echo "🐍 Python version: $(python3 --version)"
-echo "📦 Using virtual environment at: /opt/keeper-env"
-echo "🚀 You can now use 'keeper shell' to start the Commander CLI"
+echo "✅ Keeper Commander CLI installation completed!"
+echo "🐍 Python version: $(python --version)"
+echo "📦 Virtual environment: /opt/keeper-env"
+echo "🚀 Ready to use 'keeper' command!"
