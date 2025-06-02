@@ -1,34 +1,41 @@
 {
-  "title": "KSM Integration: Terraform",
-  "description": "",
+  "title": "KSM Terraform Provider: Comprehensive Guide",
+  "description": "A comprehensive guide to integrating Keeper Secrets Manager with Terraform. Covers setup, authentication, secret retrieval (basic & advanced), lifecycle management (create, update, delete), folder & file operations, and advanced integration examples.",
   "details": {
     "steps": [
       {
-        "title": "Create Terraform configuration",
-        "text": "step1.md"
+        "title": "Step 1: Setup & Basic Secret Retrieval",
+        "text": "step1-setup-retrieval.md"
       },
       {
-        "title": "Synchronize changes",
-        "text": "step2.md"
+        "title": "Step 2: Advanced Secret Retrieval & Data Sources",
+        "text": "step2-advanced-retrieval.md"
       },
       {
-        "title": "Advanced example: MySQL Server setup",
-        "text": "step4.md"
+        "title": "Step 3: Managing Secrets - Create, Update, Delete",
+        "text": "step3-manage-secrets.md"
       },
       {
-        "title": "Cleanup resources",
-        "text": "step5.md"
+        "title": "Step 4: Managing Folders & File Attachments",
+        "text": "step4-manage-folders-files.md"
+      },
+      {
+        "title": "Step 5: Advanced Integration & Cleanup",
+        "text": "step5-integration-cleanup.md"
       }
     ],
     "intro": {
       "text": "intro.md",
       "code": "install-terraform-ubuntu.sh"
+    },
+    "finish": {
+      "text": "finish.md"
     }
   },
   "environment": {
     "uieditorpath": "/root/terraform-example",
-    "hideintro": true,
-    "hidefinish": true,
+    "hideintro": false,
+    "hidefinish": false,
     "uilayout": "editor-terminal"
   },
   "backend": {
