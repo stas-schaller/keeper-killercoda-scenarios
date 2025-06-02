@@ -16,7 +16,8 @@
     "intro": {
         "text": "intro.md",
         "credits": "Keeper Security",
-        "code": "install-commander.sh"
+        "background": "install-commander.sh",
+        "foreground": "setup-message.sh"
     }
   },
   "time": "15-20 minutes",

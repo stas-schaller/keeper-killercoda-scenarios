@@ -39,3 +39,6 @@ echo "✅ Keeper Commander CLI installation completed!"
 echo "🐍 Python version: $(python --version)"
 echo "📦 Virtual environment: /opt/keeper-env"
 echo "🚀 Ready to use 'keeper' command!"
+
+# Signal completion to foreground script
+touch /tmp/keeper-setup-complete
