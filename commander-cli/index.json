@@ -23,7 +23,7 @@
   "difficulty": "Beginner",
   "environment": {
     "hideintro": false,
-    "hidefinish": false,
+    "hidefinish": true,
     "uilayout": "terminal",
     "showdashboard": true
   },

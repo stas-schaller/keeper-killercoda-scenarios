@@ -1,13 +1,13 @@
 #!/bin/bash
 
-# Update package lists (if needed)
+# Update package lists
 apt update -qq
 
-# Ensure we have the latest pip
-python -m pip install --upgrade pip
+# Install required system packages for Python virtual environments
+apt install -y python3-venv python3-pip python3-full
 
 # Create a virtual environment to avoid system package conflicts
-python -m venv /opt/keeper-env
+python3 -m venv /opt/keeper-env
 
 # Activate the virtual environment
 source /opt/keeper-env/bin/activate
