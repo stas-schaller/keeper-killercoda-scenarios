@@ -29,9 +29,14 @@ echo "🛠️ Creating keeper command wrapper..."
 cat > /usr/local/bin/keeper << 'EOF'
 #!/bin/bash
 source /opt/keeper-env/bin/activate
-exec python -m keepercommander.cli "$@"
+exec keeper "$@"
 EOF
 
 chmod +x /usr/local/bin/keeper
 
+echo "🧪 Testing keeper command..."
+source /opt/keeper-env/bin/activate
+keeper --version > /dev/null 2>&1 && echo "✅ keeper command is working!" || echo "⚠️ keeper command needs manual activation"
+
 echo "🎉 Keeper Commander CLI installation completed successfully!"
+echo "💡 If keeper command is not found, run: source /opt/keeper-env/bin/activate"

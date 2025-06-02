@@ -1,5 +1,22 @@
 # Step 1: Setup & Connect to Keeper
 
+## Verify Installation
+
+First, let's verify that Keeper Commander CLI has been installed correctly:
+
+```bash
+keeper --version
+```
+`keeper --version`{{execute}}
+
+**If the command is not found**, activate the virtual environment:
+
+```bash
+source /opt/keeper-env/bin/activate
+keeper --version
+```
+`source /opt/keeper-env/bin/activate`{{execute}}
+
 ## Understanding Keeper Data Centers
 
 Keeper Security operates multiple data centers around the world to ensure optimal performance and compliance with local data residency requirements. Before connecting, you need to specify which data center hosts your Keeper account.
@@ -26,7 +43,7 @@ keeper shell --server keepersecurity.com.au
 ```
 `keeper shell --server keepersecurity.com.au`{{execute}}
 
-### 🏛️ US Government Cloud
+### 🇺🇸 Government Cloud
 ```bash
 keeper shell --server govcloud.keepersecurity.us
 ```
@@ -44,19 +61,22 @@ keeper shell --server keepersecurity.jp
 ```
 `keeper shell --server keepersecurity.jp`{{execute}}
 
-## What Happens Next?
+## What Happens Next
 
-Once you execute the appropriate command:
+When you run the `keeper shell` command:
 
-1. **Connection Established**: Commander will connect to your specified data center
-2. **Interactive Shell**: You'll enter the Keeper Commander interactive shell
-3. **Authentication Required**: You'll need to log in with your credentials
-4. **Ready to Use**: After authentication, you can execute Keeper commands
+1. **Connection Established**: Commander connects to your specified data center
+2. **Authentication Prompt**: You'll be asked for your email and master password
+3. **Two-Factor Authentication**: If enabled, you'll need to provide your 2FA code
+4. **Interactive Shell**: You'll enter the Keeper Commander interactive environment
 
-## Troubleshooting
+## Troubleshooting Connection Issues
 
-- **Connection Issues**: Ensure you're using the correct server for your account
-- **Authentication Problems**: Verify your credentials and account status
-- **Network Errors**: Check your internet connection and firewall settings
+If you encounter connection problems:
 
-Click **Next** when you're ready to proceed with authentication and basic commands!
+- **Check Data Center**: Ensure you're connecting to the correct regional server
+- **Network Access**: Verify your network allows HTTPS connections to Keeper servers
+- **Credentials**: Double-check your email address and master password
+- **2FA**: Ensure your two-factor authentication device is available
+
+**⚠️ Security Reminder**: This is a learning environment. Use test credentials only!
