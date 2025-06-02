@@ -1,37 +1,40 @@
 {
-  "title": "Keeper Secrets Manager Python SDK Tutorial",
-  "description": "Learn to integrate Keeper Secrets Manager into Python applications using the official SDK",
+  "title": "KSM SDK: Python (Comprehensive)",
+  "description": "A comprehensive guide to the Keeper Secrets Manager Python SDK. Covers setup, auth (token, file, Base64 config), caching, record lifecycle (create, retrieve, update, delete), password generation, file operations (upload, download, delete), and folder management (create, list, update, delete).",
   "details": {
     "steps": [
       {
-        "title": "Basic Connection & Retrieval",
+        "title": "Step 1: Connection & Configuration (File, In-Memory)",
         "text": "step1.md"
       },
       {
-        "title": "Caching for Performance",
+        "title": "Step 2: Specific Secret Retrieval & Caching",
         "text": "step2.md"
       },
       {
-        "title": "Creating Records",
+        "title": "Step 3: Creating Records & Password Generation",
         "text": "step3.md"
       },
       {
-        "title": "File Upload & Attachments",
+        "title": "Step 4: Record Updates & File Management",
         "text": "step4-fileupload.md"
       },
       {
-        "title": "In-Memory Configuration",
+        "title": "Step 5: Folder Management & Record Deletion (with Caching)",
         "text": "step5-inmemorystorage.md"
       }
     ],
     "intro": {
       "text": "intro.md",
       "code": "install-ksm-sdk.sh"
+    },
+    "finish": {
+      "text": "finish.md"
     }
   },
   "environment": {
     "hideintro": false, 
-    "hidefinish": true,
+    "hidefinish": false, 
     "uilayout": "editor-terminal"
   },
   "backend": {

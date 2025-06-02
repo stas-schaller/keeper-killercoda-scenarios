@@ -1,15 +1,27 @@
 {
-  "title": "KSM SDK: JavaScript",
-  "description": "",
+  "title": "KSM SDK: JavaScript (Comprehensive)",
+  "description": "A comprehensive guide to integrating Keeper Secrets Manager into Node.js applications using the KSM JavaScript SDK. Covers setup, authentication (token, file, Base64 config), secret retrieval (all, by UID, by Title), field access, record creation (with typed fields & password generation), updates, file management (upload, download, delete reference), record deletion, folder management (create, list, update, delete), in-memory configuration, and client-side caching.",
   "details": {
     "steps": [
       {
-        "title": "Setup and Retrieve Secrets",
+        "title": "Step 1: Setup & Basic Secret Retrieval",
         "text": "step1.md"
       },
       {
-        "title": "Create Secret",
+        "title": "Step 2: Creating Records with Typed Fields & Password Generation",
         "text": "step2.md"
+      },
+      {
+        "title": "Step 3: Specific Records & Field Access",
+        "text": "step3.md"
+      },
+      {
+        "title": "Step 4: Updates, File Management & Record Deletion",
+        "text": "step4.md"
+      },
+      {
+        "title": "Step 5: Folder Management, In-Memory Config & Caching",
+        "text": "step5.md"
       }
     ],
     "intro": {
@@ -23,8 +35,8 @@
   "environment": {
     "uieditorpath": "/root/ksm-sample-js",
     "showide": false,
-    "hideintro": true,
-    "hidefinish": true,
+    "hideintro": false,
+    "hidefinish": false,
     "uilayout": "editor-terminal"
   },
   "backend": {

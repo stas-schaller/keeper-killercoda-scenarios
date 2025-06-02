@@ -10,30 +10,40 @@ This table provides a quick overview of the key features covered in each Keeper 
 | **Initial Connection/Auth**    | ✅         | ✅       | ✅       | ✅       | ✅             | ✅      | ✅      |
 |  - One-Time Token              | ✅         | ✅       | ✅       | ✅       | ✅             | ✅      | ✅      |
 |  - Config File (ksm-config.json)| ✅         | ✅       | ✅       | ✅       | ✅             | ✅      | ✅      |
+|  - Base64/In-Memory Config     | ✅         | ✅       | ✅       | ✅       | ✅             | ✅      | ✅      |
 | **List All Shared Records**    | ✅         | ✅       | ✅       | ✅       | ✅             | ➖      | ✅      |
-| **Get Specific Record by UID** | ✅         | ✅       | ✅       | ✅       | ➖             | ✅      | ✅      |
-| **Get Specific Record by Title**| ✅         | ✅       | ✅       | ✅       | ➖             | ➖      | 🛠️      |
+| **Get Specific Record by UID** | ✅         | ✅       | ✅       | ✅       | ✅             | ✅      | ✅      |
+| **Get Specific Record by Title**| ✅         | ✅       | ✅       | ✅       | ✅             | ➖      | 🛠️      |
 | **Access Record Fields**       | ✅         | ✅       | ✅       | ✅       | ✅             | ✅      | ✅      |
 |  - Standard Fields             | ✅         | ✅       | ✅       | ✅       | ✅             | ✅      | ✅      |
-|  - Custom Fields               | ✅         | ✅       | ✅       | ✅       | ➖             | ➖      | ✅      |
+|  - Custom Fields               | ✅         | ✅       | ✅       | ✅       | ✅             | ➖      | ✅      |
 |  - Notes                       | ✅         | ✅       | ✅       | ✅       | ✅             | ➖      | ➖      |
 | **Record Creation**            | ✅         | ✅       | ✅       | ✅       | ✅             | ➖      | ➖      |
 |  - With Various Field Types    | ✅         | ✅       | ✅       | ✅       | ✅             | ➖      | ➖      |
-| **Folder Creation/Mgmt.**      | ➖         | ✅       | ➖       | ➖             | ➖             | ➖      | ➖      |
-| **File Upload to Record**      | ✅         | ✅       | ✅       | ✅       | ➖             | ➖      | ✅      |
-| **File Download from Record**  | ➖         | ✅       | ➖       | ➖             | ➖             | ✅      | ✅      |
-| **Client-Side Caching**        | ✅         | ✅       | ✅       | ✅       | ➖             | ✅      | ➖      |
-| **In-Memory Configuration**    | ✅         | ✅       | ✅       | ✅       | ➖             | ✅      | ✅      |
+|  - With Password Generation    | ✅         | ✅       | ✅       | ✅       | ✅             | N/A     | N/A     |
+| **Record Update**              | ✅         | ✅       | ✅       | ✅       | ✅             | ➖      | ✅      |
+| **Record Deletion**            | ✅         | ✅       | ✅       | ✅       | ✅             | ➖      | ➖      |
+| **Folder Creation/Mgmt.**      | ✅         | ✅       | ✅       | ✅       | ✅             | ➖      | ➖      |
+|  - Create Folder               | ✅         | ✅       | ✅       | ✅       | ✅             | ➖      | ➖      |
+|  - List Folders                | ✅         | ✅       | ✅       | ✅       | ✅             | ➖      | ➖      |
+|  - Rename Folder               | ✅         | ✅       | ✅       | ✅       | ✅             | ➖      | ➖      |
+|  - Delete Folder               | ✅         | ✅       | ✅       | ✅       | ✅             | ➖      | ➖      |
+| **File Upload to Record**      | ✅         | ✅       | ✅       | ✅       | ✅             | ➖      | ✅      |
+| **File Download from Record**  | ✅         | ✅       | ✅       | ✅       | ✅             | ✅      | ✅      |
+| **File Delete from Record**    | ✅         | ✅       | ✅       | ✅       | ✅             | ➖      | ➖      |
+| **Client-Side Caching**        | ✅         | ✅       | ✅       | ✅       | ✅             | ✅      | ➖      |
 | **CLI/Tool Specific Features** | N/A        | N/A      | N/A      | N/A      | N/A            | ✅      | ✅      |
 
 **Legend:**
 - ✅: Feature is explicitly covered or conceptually explained in the tutorial.
 - ➖: Feature is not explicitly covered or is not applicable to the tool's primary focus in the tutorial.
 - 🛠️: Feature is partially covered, covered via tool-specific means, or conceptually discussed.
+- N/A: Not Applicable.
 
 **Notes:**
 - All SDKs inherently support the full range of KSM capabilities (listing, getting, creating, updating, deleting records/folders/files). The table reflects what is *emphasized and demonstrated within the tutorial steps* of this repository.
 - For CLI tools (KSM CLI), many features are available through their rich command sets, even if not every single one is part of a specific tutorial step.
-- The JavaScript SDK tutorial is less comprehensive in this repository compared to the others as of the last major update, hence more ➖ entries.
+- The JavaScript, Go, Python, and Java SDK tutorials are now highly comprehensive, demonstrating a wide array of features with verified SDK calls.
+- The .NET SDK tutorial has also been significantly updated to cover a broad range of features.
 
 This matrix should help users navigate to the scenario that best fits their learning goals or integration needs.

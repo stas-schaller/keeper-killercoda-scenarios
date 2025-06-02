@@ -1,174 +1,178 @@
-# Step 3: Creating Records & Files, and Advanced Config
+# Step 3: Record Operations, Files & Password Generation
 
-This step covers creating new records with various field types, managing file attachments, and introduces the concept of in-memory configuration for secure deployments using the KSM .NET SDK.
+This step covers creating and updating records, full file management (upload, download, delete), and password generation using the KSM .NET SDK.
 
 ## 1. Prepare Your Environment
 
 -   Ensure a working `ksm-config.json` or a valid One-Time Token for initial setup.
--   Have the UID of a Shared Folder where your KSM application has **"Can Edit"** permissions. New records will be created here.
+-   Have the UID of a Shared Folder where your KSM application has **"Can Edit"** permissions.
 -   Create a sample file for upload, e.g., `dotnet-sample-upload.txt`.
 
 ```bash
-echo "This is a .NET SDK test file for upload." > dotnet-sample-upload.txt
+echo "This is a .NET SDK test file for upload - Version 2." > dotnet-sample-upload.txt
 ```
-`echo "This is a .NET SDK test file for upload." > dotnet-sample-upload.txt`{{execute}}
+`echo "This is a .NET SDK test file for upload - Version 2." > dotnet-sample-upload.txt`{{execute}}
 
-## 2. Create C# Class: CreateAndManageSecrets
+## 2. Create/Modify C# Class: ManageRecordsAndFiles
 
 ```bash
-touch CreateAndManageSecrets.cs
+# Example: touch ManageRecordsAndFiles.cs 
+# Ensure your Program.cs calls the Main method of this class.
 ```
-`touch CreateAndManageSecrets.cs`{{execute}}
+`# We will assume you are modifying an existing class or Program.cs directly for this step.`{{execute}}
 
-### Add the C# Code
+### Add/Modify the C# Code
 
-Paste the following into `CreateAndManageSecrets.cs`. This class demonstrates creating records, adding fields, and uploading files.
+Update your C# file with the following. This code demonstrates record creation with password generation, record updates, and full file lifecycle management.
 
 ```csharp
 using System;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Text.Json;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using SecretsManager;
+using SecretsManager.Storage; // Required for LocalConfigStorage/MemoryKeyValueStorage
 
-public class CreateAndManageSecrets
+public class ManageRecordsAndFiles // Renamed for clarity
 {
     private const string OneTimeToken = "[ONE_TIME_TOKEN_IF_NEEDED]";
     private const string ConfigFileName = "ksm-config.json";
-    // ⚠️ Replace with UID of a Shared Folder with "Can Edit" permissions for your KSM App
-    private const string TargetSharedFolderUid = "[YOUR_SHARED_FOLDER_UID_HERE]";
+    private const string TargetSharedFolderUid = "[YOUR_SHARED_FOLDER_UID_HERE]"; // ⚠️ Replace
     private const string FileToUploadName = "dotnet-sample-upload.txt";
+    private const string DownloadedFileName = "downloaded-dotnet-sample.txt";
 
     public static async Task Main(string[] args)
     {
-        Console.WriteLine("🚀 Creating records, managing files, and discussing advanced config...");
+        Console.WriteLine("🚀 Record Ops, File Management & Password Generation (.NET SDK)...");
         var storage = new LocalConfigStorage(ConfigFileName);
+        SecretsManagerOptions options = null;
 
         try
         {
-            if (!File.Exists(ConfigFileName) || OneTimeToken != "[ONE_TIME_TOKEN_IF_NEEDED]")
+            if (!File.Exists(ConfigFileName) && OneTimeToken != "[ONE_TIME_TOKEN_IF_NEEDED]" && !string.IsNullOrEmpty(OneTimeToken))
             {
-                Console.WriteLine("🔑 Initializing KSM storage...");
+                Console.WriteLine("🔑 Initializing KSM storage with One-Time Token...");
                 SecretsManagerClient.InitializeStorage(storage, OneTimeToken);
             }
-            var options = new SecretsManagerOptions(storage);
+            options = new SecretsManagerOptions(storage);
 
-            // --- 1. Create a New Login Record with Standard and Custom Fields ---
-            Console.WriteLine("\n--- Creating New Login Record ---");
-            var newLoginRecord = new KeeperRecordData
+            // --- 1. Create a New Login Record with Generated Password ---
+            Console.WriteLine("\n--- Creating New Login Record with Generated Password ---");
+            string generatedPassword = SecretsManagerClient.GeneratePassword(length: 20, useUppercase: true, useLowercase: true, useDigits: true, useSpecial: true);
+            Console.WriteLine($"🔒 Generated Password: {generatedPassword} (Note: Do not log passwords in production)");
+
+            var newLoginRecordData = new KeeperRecordData
             {
                 type = "login",
-                title = "My .NET Auto-Created Login",
-                notes = "This record was created by the .NET KSM SDK tutorial.",
+                title = "My .NET SDK Secure Login",
+                notes = "Record with SDK-generated password.",
                 fields = new List<KeeperRecordField>
                 {
-                    new KeeperRecordField { type = "login", value = new object[] { "dotnet_user@example.com" } },
-                    new KeeperRecordField { type = "password", value = new object[] { SecretsManagerClient.GeneratePassword() } }, // Generate a secure password
-                    new KeeperRecordField { type = "url", value = new object[] { "https://autogen.example.com" } }
-                }.ToArray(),
-                custom = new List<KeeperRecordField>
-                {
-                    new KeeperRecordField { type = "text", label = "ServiceID", value = new object[] { "svc-dotnet-12345" } },
-                    new KeeperRecordField { type = "secret", label = "APISecretKey", value = new object[] { SecretsManagerClient.GeneratePassword(24) } } // Custom secret field
+                    new KeeperRecordField { type = "login", value = new object[] { "dotnet.secure@example.com" } },
+                    new KeeperRecordField { type = "password", value = new object[] { generatedPassword } },
+                    new KeeperRecordField { type = "url", value = new object[] { "https://secure.dotnet.example.com" } }
                 }.ToArray()
             };
+            string newRecordUid = await SecretsManagerClient.CreateSecretAsync(options, TargetSharedFolderUid, newLoginRecordData);
+            Console.WriteLine($"✅ Login Record created! UID: {newRecordUid}, Title: {newLoginRecordData.title}");
 
-            string newLoginRecordUid = await SecretsManagerClient.CreateSecretAsync(options, TargetSharedFolderUid, newLoginRecord);
-            Console.WriteLine($"✅ Login Record created successfully! UID: {newLoginRecordUid}, Title: {newLoginRecord.title}");
+            // --- 2. Update the Created Record ---
+            Console.WriteLine("\n--- Updating Record Notes & Adding Custom Field ---");
+            var secretsForUpdate = await SecretsManagerClient.GetSecretsAsync(options, new[] { newRecordUid });
+            var recordToUpdate = secretsForUpdate.Records.FirstOrDefault();
+            if (recordToUpdate != null)
+            {
+                recordToUpdate.Data.notes += "\nUpdated by .NET SDK file/update test.";
+                var customFields = recordToUpdate.Data.custom?.ToList() ?? new List<KeeperRecordField>();
+                customFields.Add(new KeeperRecordField { type = "text", label = "UpdateStatus", value = new object[] { "Updated " + DateTime.Now.ToString() } });
+                recordToUpdate.Data.custom = customFields.ToArray();
+                
+                await SecretsManagerClient.UpdateSecretAsync(options, recordToUpdate);
+                Console.WriteLine($"✅ Record UID: {recordToUpdate.RecordUid} updated successfully.");
+            }
+            else { Console.WriteLine($"❌ Could not fetch record {newRecordUid} for update."); }
 
-            // --- 2. Upload a File to the Newly Created Login Record ---
-            Console.WriteLine("\n--- Uploading File to New Login Record ---");
-            if (File.Exists(FileToUploadName))
+            // --- 3. Upload a File to the Record ---
+            Console.WriteLine("\n--- Uploading File ---");
+            var targetRecordForUpload = recordToUpdate; // Use the (potentially updated) record object
+            if (targetRecordForUpload != null && File.Exists(FileToUploadName))
             {
                 var fileBytes = await File.ReadAllBytesAsync(FileToUploadName);
                 var fileUpload = new KeeperFileUpload
                 {
                     Name = Path.GetFileName(FileToUploadName),
-                    Title = "Config Backup - .NET SDK",
-                    // Type = "text/plain", // SDK often infers or it can be set
+                    Title = "Config Backup - .NET SDK - " + Path.GetFileName(FileToUploadName),
                     Data = fileBytes
                 };
-
-                // Fetch the record we just created to ensure we have the full KeeperRecord object
-                var secretsForUpload = await SecretsManagerClient.GetSecretsAsync(options, new[] { newLoginRecordUid });
-                var targetRecordForUpload = secretsForUpload.Records.FirstOrDefault();
-
-                if (targetRecordForUpload != null)
-                {
-                    await SecretsManagerClient.UploadFileAsync(options, targetRecordForUpload, fileUpload);
-                    Console.WriteLine($"✅ File '{fileUpload.Name}' uploaded successfully to record UID: {newLoginRecordUid}.");
-
-                    // Verify by listing files for that record
-                    var updatedRecordSecrets = await SecretsManagerClient.GetSecretsAsync(options, new[] { newLoginRecordUid });
-                    var updatedRecord = updatedRecordSecrets.Records.FirstOrDefault();
-                    if (updatedRecord?.Files != null && updatedRecord.Files.Any(f => f.Data.name == FileToUploadName))
-                    {
-                        Console.WriteLine("    Verification: File found on record after upload.");
-                    }
-                }
-                else { Console.WriteLine($"❌ Could not re-fetch record {newLoginRecordUid} for file upload.");}
+                await SecretsManagerClient.UploadFileAsync(options, targetRecordForUpload, fileUpload);
+                Console.WriteLine($"✅ File '{fileUpload.Name}' uploaded to record UID: {targetRecordForUpload.RecordUid}.");
+                // Re-fetch to get file details in record.Files
+                targetRecordForUpload = (await SecretsManagerClient.GetSecretsAsync(options, new[] { newRecordUid })).Records.FirstOrDefault();
             }
-            else
+            else if (targetRecordForUpload == null) { Console.WriteLine("❌ Target record not available for upload."); }
+            else { Console.WriteLine($"❌ Sample file '{FileToUploadName}' not found for upload."); }
+
+            // --- 4. Download the File ---
+            KeeperFile fileToDownload = null;
+            if (targetRecordForUpload?.Files != null && targetRecordForUpload.Files.Any()){
+                fileToDownload = targetRecordForUpload.Files.FirstOrDefault(f => f.Data.name == FileToUploadName);
+            }
+            if (fileToDownload != null)
             {
-                Console.WriteLine($"❌ Sample file '{FileToUploadName}' not found for upload.");
+                Console.WriteLine($"\n--- Downloading File: {fileToDownload.Data.title} ---");
+                var downloadedBytes = await SecretsManagerClient.DownloadFileAsync(options, fileToDownload);
+                await File.WriteAllBytesAsync(DownloadedFileName, downloadedBytes);
+                Console.WriteLine($"✅ File downloaded to: {DownloadedFileName} (Size: {downloadedBytes.Length} bytes)");
             }
-            
-            // --- 3. In-Memory Configuration (Conceptual Overview) ---
-            Console.WriteLine("\n--- In-Memory Configuration (Conceptual) ---");
-            Console.WriteLine("For production, especially in containers or serverless, use InMemoryStorage.");
-            Console.WriteLine("1. Get Base64 config string from Keeper Vault (Application -> Devices -> Add Device -> Configuration File).");
-            Console.WriteLine("2. Store this string securely (e.g., environment variable, managed config service).");
-            Console.WriteLine("3. Initialize: var inMemStorage = new InMemoryStorage(yourBase64ConfigString);");
-            Console.WriteLine("4. var opts = new SecretsManagerOptions(inMemStorage);");
-            Console.WriteLine("This avoids needing ksm-config.json on the filesystem.");
+            else { Console.WriteLine("\nℹ️ File not found on record for download or record not available."); }
 
-            // --- 4. Caching (Conceptual Overview) ---
-            Console.WriteLine("\n--- Caching Secrets (Conceptual) ---");
-            Console.WriteLine("To enable caching, set ClientSideCacheRefreshIntervalSeconds in SecretsManagerOptions:");
-            Console.WriteLine("var optionsWithCache = new SecretsManagerOptions(storage, clientSideCacheRefreshIntervalSeconds: 60);");
-            Console.WriteLine("SDK then handles caching data using the provided storage for 60 seconds.");
+            // --- 5. Delete the File from Record ---
+            if (fileToDownload != null) // We need the KeeperFile object or at least its UID
+            {
+                Console.WriteLine($"\n--- Deleting File: {fileToDownload.Data.title} (UID: {fileToDownload.Uid}) from record ---");
+                // The DeleteFileAsync typically needs the record object and the file UID or KeeperFile object
+                await SecretsManagerClient.DeleteFileAsync(options, targetRecordForUpload, fileToDownload.Uid);
+                Console.WriteLine($"✅ File UID: {fileToDownload.Uid} deleted from record UID: {targetRecordForUpload.RecordUid}.");
+                // Verify by re-fetching
+                var recordAfterFileDelete = (await SecretsManagerClient.GetSecretsAsync(options, new[] { newRecordUid })).Records.FirstOrDefault();
+                Console.WriteLine($"    Files remaining on record: {recordAfterFileDelete?.Files?.Count ?? 0}");
+            }
+            else { Console.WriteLine("\nℹ️ File not available on record for deletion."); }
 
-            Console.WriteLine("\n🎉 Record creation and file management examples complete. Check your Keeper Vault!");
+            Console.WriteLine("\n🎉 Record operations, file management, and password generation examples complete.");
         }
         catch (Exception ex)
         {
             Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine($"❌ Error: {ex.Message}");
+            Console.WriteLine($"❌ GENERAL ERROR: {ex.Message}\n{ex.StackTrace}");
             Console.ResetColor();
         }
     }
 }
 ```{{copy}}
 
-## 3. Configure Shared Folder UID
+## 3. Configure Placeholders
 
--   In `CreateAndManageSecrets.cs`:
-    -   **Crucial**: Replace `[YOUR_SHARED_FOLDER_UID_HERE]` with the UID of a Shared Folder in your Keeper Vault where your KSM application has **"Can Edit"** permissions.
-    -   If needed, update `[ONE_TIME_TOKEN_IF_NEEDED]`.
+-   In your C# file (e.g., `ManageRecordsAndFiles.cs` or `Program.cs`):
+    -   Replace `[ONE_TIME_TOKEN_IF_NEEDED]` if `ksm-config.json` doesn't exist.
+    -   **Crucial**: Replace `[YOUR_SHARED_FOLDER_UID_HERE]` with the UID of a Shared Folder with "Can Edit" permissions.
 
-## 4. Update `Program.cs` to Run This Example
+## 4. Update `Program.cs` (if using a separate class)
 
-Modify `Program.cs` to call the `Main` method of `CreateAndManageSecrets`.
-
+If you created `ManageRecordsAndFiles.cs` separately, ensure `Program.cs` calls its `Main` method:
 ```csharp
+// Program.cs
 using System.Threading.Tasks;
-
 public class Program
 {
     public static async Task Main(string[] args)
     {
-        // Comment out other examples if you ran them
-        // await ListAllSecrets.Main(args);
-        // await GetSpecificDotNetSecret.Main(args);
-        
-        // Current example: Step 3 - CreateAndManageSecrets
-        await CreateAndManageSecrets.Main(args);
+        await ManageRecordsAndFiles.Main(args);
     }
 }
-```{{copy}}
+```
 
 ## 5. Run the Application
 
@@ -180,48 +184,40 @@ dotnet run
 ### Expected Output:
 
 ```
-🚀 Creating records, managing files, and discussing advanced config...
+🚀 Record Ops, File Management & Password Generation (.NET SDK)...
 
---- Creating New Login Record ---
-✅ Login Record created successfully! UID: ..., Title: My .NET Auto-Created Login
+--- Creating New Login Record with Generated Password ---
+🔒 Generated Password: <A_STRONG_GENERATED_PASSWORD>
+✅ Login Record created! UID: ..., Title: My .NET SDK Secure Login
 
---- Uploading File to New Login Record ---
-✅ File 'dotnet-sample-upload.txt' uploaded successfully to record UID: ...
-    Verification: File found on record after upload.
+--- Updating Record Notes & Adding Custom Field ---
+✅ Record UID: ... updated successfully.
 
---- In-Memory Configuration (Conceptual) ---
-...
+--- Uploading File ---
+✅ File 'dotnet-sample-upload.txt' uploaded to record UID: ...
 
---- Caching Secrets (Conceptual) ---
-...
+--- Downloading File: Config Backup - .NET SDK - dotnet-sample-upload.txt ---
+✅ File downloaded to: downloaded-dotnet-sample.txt (Size: ... bytes)
 
-🎉 Record creation and file management examples complete. Check your Keeper Vault!
+--- Deleting File: Config Backup - .NET SDK - dotnet-sample-upload.txt (UID: ...) from record ---
+✅ File UID: ... deleted from record UID: ...
+    Files remaining on record: 0
+
+🎉 Record operations, file management, and password generation examples complete.
 ```
-
-**Verify**: Check your Keeper Vault. A new record titled "My .NET Auto-Created Login" should exist in your target shared folder, with fields populated and `dotnet-sample-upload.txt` attached.
 
 ## Understanding the Code
 
--   **`KeeperRecordData`**: This class is used to define the structure for a new record.
-    -   `type`: Specifies the record type (e.g., "login", "bankAccount", or a custom type string).
-    -   `title`: The display title of the record.
-    -   `fields`: An array of `KeeperRecordField` objects for standard fields.
-    -   `custom`: An array of `KeeperRecordField` objects for custom fields.
-    -   `notes`: Text notes for the record.
--   **`KeeperRecordField`**: 
-    -   `type`: The specific type of the field (e.g., "login", "password", "text", "url", "secret").
-    -   `label`: For custom fields, this is the label you see in the UI. For standard fields, it can often be omitted if the `type` is self-descriptive.
-    -   `value`: An `object[]` array. For simple text-based fields, this usually contains a single string element (e.g., `new object[] { "your_value" }`).
--   **`SecretsManagerClient.GeneratePassword()`**: A utility to generate strong, random passwords.
--   **`SecretsManagerClient.CreateSecretAsync(options, folderUid, recordData)`**: Creates the new record in the specified `folderUid`.
--   **`KeeperFileUpload`**: Prepares a file for upload, including its `Name` (filename), `Title` (display name in Keeper), and `Data` (byte array of file content).
--   **`SecretsManagerClient.UploadFileAsync(options, keeperRecord, fileUpload)`**: Uploads the file to the specified `KeeperRecord`.
-    -   **Important**: You typically need to fetch/re-fetch the `KeeperRecord` object before uploading to ensure you have its full, up-to-date state from the server, especially its `RecordKey` which is used in the encryption process for the file.
--   **In-Memory Configuration**: The code includes a conceptual overview. The key is `new InMemoryStorage(yourBase64ConfigString)` passed to `SecretsManagerOptions`. This avoids file system dependency for the KSM config.
--   **Caching**: Also a conceptual overview. Enable by setting `ClientSideCacheRefreshIntervalSeconds` in `SecretsManagerOptions`. For example, `new SecretsManagerOptions(storage, clientSideCacheRefreshIntervalSeconds: 60)` enables caching for 60 seconds.
+-   **`SecretsManagerClient.GeneratePassword()`**: Generates strong, random passwords. Overloads exist for more specific criteria.
+-   **Record Creation (`SecretsManagerClient.CreateSecretAsync`)**: As before, but now using the generated password.
+-   **Record Update (`SecretsManagerClient.UpdateSecretAsync`)**: 
+    1.  Fetch the `KeeperRecord` to update.
+    2.  Modify its `Data` properties (e.g., `record.Data.notes`, add/update `KeeperRecordField` in `record.Data.fields` or `record.Data.custom`).
+    3.  Call `UpdateSecretAsync` with the modified `KeeperRecord` object.
+-   **File Upload (`SecretsManagerClient.UploadFileAsync`)**: Uploads a `KeeperFileUpload` object to a `KeeperRecord`.
+-   **File Download (`SecretsManagerClient.DownloadFileAsync`)**: Downloads a `KeeperFile` (obtained from `record.Files`) and returns its content as `byte[]`.
+-   **File Deletion (`SecretsManagerClient.DeleteFileAsync`)**: Deletes a specific file from a record, usually by providing the `KeeperRecord` and the `fileUid` (from the `KeeperFile` object).
 
-## Conclusion
+## Next Steps
 
-This step demonstrated creating records with diverse field types, handling file attachments, and introduced advanced configuration patterns like in-memory storage and caching. These capabilities allow for powerful and secure automation of secret management within your .NET applications.
-
-This completes the KSM .NET SDK tutorial! Please review the `finish.md` tab for a summary of what you've learned and best practices for production.
+In the next step, we'll cover Folder Management (create, list, update, delete folders) and demonstrate how to delete entire records.

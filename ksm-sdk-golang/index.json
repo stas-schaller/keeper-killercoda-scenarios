@@ -1,22 +1,22 @@
 {
-  "title": "Keeper Secrets Manager Go SDK Tutorial",
-  "description": "Learn to integrate Keeper Secrets Manager into Go applications using the official SDK, covering setup, secret retrieval, record creation, file management, and advanced configurations like caching and in-memory storage.",
+  "title": "KSM SDK: Go (Comprehensive)",
+  "description": "A comprehensive guide to the Keeper Secrets Manager Go SDK. Covers setup, auth (token, file, Base64 config), record lifecycle (create, retrieve, update, delete), password generation, file operations (upload, download, delete), folder management (create, list, update, delete), and advanced configs like caching and in-memory storage.",
   "details": {
     "steps": [
       {
-        "title": "Setup & Basic Connection",
+        "title": "Step 1: Setup, Configuration & Caching",
         "text": "step1.md"
       },
       {
-        "title": "Retrieving & Using Secrets",
+        "title": "Step 2: Retrieving Specific Secrets & Fields",
         "text": "step2.md"
       },
       {
-        "title": "Creating Records & Files",
+        "title": "Step 3: Records (Create/Update), Files & Passwords",
         "text": "step3.md"
       },
       {
-        "title": "Advanced Config & Caching",
+        "title": "Step 4: Folder Management & Record Deletion",
         "text": "step4.md"
       }
     ],

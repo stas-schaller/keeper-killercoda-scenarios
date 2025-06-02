@@ -8,9 +8,11 @@ The KSM Java SDK allows your Java applications (including Spring Boot, Quarkus, 
 
 ### Key Features:
 - **Zero-Knowledge Encryption**: Secrets are encrypted and decrypted locally; Keeper never has access to your plaintext data.
-- **Versatile Storage Options**: Supports local file storage for configuration, in-memory storage for ephemeral environments, and integration with cloud secret stores (like AWS Secrets Manager).
-- **Comprehensive Secret Management**: Retrieve, create, update, and delete records and folders.
-- **File Attachments**: Securely manage file attachments associated with your records.
+- **Versatile Storage Options**: Supports local file storage for configuration, and in-memory storage (via Base64 config string) for ephemeral environments.
+- **Comprehensive Secret Management**: Retrieve, create, update, and delete records.
+- **File Attachments**: Securely upload, download, and delete file attachments associated with your records.
+- **Folder Management**: Create, list, update (rename), and delete folders.
+- **Password Generation**: Utility to generate strong, random passwords.
 - **Caching**: Improve performance with configurable local caching of secrets.
 - **Gradle & Maven Compatible**: Easily integrate into your existing Java build systems.
 
@@ -19,18 +21,20 @@ The KSM Java SDK allows your Java applications (including Spring Boot, Quarkus, 
 By the end of this tutorial, you will be able to:
 
 1.  **Set up your Java project** with the KSM SDK and Gradle.
-2.  **Authenticate** your application with Keeper using a One-Time Token.
-3.  **Retrieve all secrets** shared with your application.
-4.  **Fetch specific secrets** by UID or title, and access individual fields and files.
-5.  **Create new records and folders** programmatically.
-6.  **Upload and download file attachments** securely.
-7.  **Implement advanced configurations**, including in-memory storage and caching.
+2.  **Authenticate** your application with Keeper using a One-Time Token or a Base64 configuration string.
+3.  **Retrieve secrets**: Fetch all secrets, query for specific records by UID or title, and access individual field values.
+4.  **Create new records** (with password generation) and folders programmatically.
+5.  **Update existing records** and their fields.
+6.  **Delete records** securely.
+7.  **Manage file attachments**: Upload, download, and delete files associated with records.
+8.  **Implement advanced configurations**, including in-memory storage and client-side caching.
 
 ## Prerequisites
 
 -   Basic understanding of Java programming and object-oriented concepts.
 -   Familiarity with a Java build tool (this tutorial uses Gradle).
 -   A Keeper Business or Enterprise account with the Secrets Manager add-on enabled.
+-   Access to your KSM Application's configuration (One-Time Token or Base64 string) and the UID of a Shared Folder it has access to (for folder/record creation).
 -   **Important**: For this tutorial, ensure you use a **test Keeper account or test credentials**. Never use your production secrets in a learning environment.
 
 ## Security Best Practices Reminder
@@ -38,6 +42,6 @@ By the end of this tutorial, you will be able to:
 -   **Never hardcode secrets** directly in your application code.
 -   Always use the **principle of least privilege** when sharing secrets with your KSM application.
 -   Regularly **rotate your One-Time Tokens** and application configurations.
--   Store KSM configuration files (`ksm-config.json`) securely with appropriate file permissions.
+-   Store KSM configuration files (`ksm-config.json`) securely with appropriate file permissions, or prefer in-memory configuration for production environments.
 
 Let's get started by setting up your Java project and connecting to Keeper!

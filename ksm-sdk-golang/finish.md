@@ -4,12 +4,24 @@ You've successfully navigated the Keeper Secrets Manager Go SDK and are now equi
 
 Here's a recap of what you've learned:
 
--   ✅ **Environment Setup**: How to set up your Go environment and integrate the KSM Go SDK into your project using Go modules.
--   ✅ **Secure Authentication**: Methods to authenticate your Go applications with Keeper, utilizing One-Time Tokens for initial setup and persistent local or in-memory configurations.
--   ✅ **Comprehensive Secret Retrieval**: Techniques to fetch all shared secrets, query for specific records by UID or title, and access a variety of field types within those records.
--   ✅ **Programmatic Secret Creation**: Skills to dynamically create new records (with standard and custom fields) and organize them within new folders in your Keeper Vault.
--   ✅ **File Attachment Management**: How to securely upload files to records and download them as needed.
--   ✅ **Advanced SDK Configurations**: Understanding of how to use in-memory storage for KSM configurations (ideal for ephemeral environments) and implement client-side caching to boost performance.
+-   ✅ **Environment Setup**: How to set up your Go environment and integrate the KSM Go SDK.
+-   ✅ **Secure Authentication**: Methods to authenticate using One-Time Tokens, local configuration files, and in-memory Base64 configuration strings.
+-   ✅ **Comprehensive Secret Retrieval**: Techniques to fetch all secrets, query specific records by UID or title, and access various field types.
+-   ✅ **Record Lifecycle Management**:
+    -   Creating new records with standard and custom fields.
+    -   Generating strong passwords using `GeneratePasswordWithOptions`.
+    -   Updating existing records and their fields (`sm.Save`).
+    -   Deleting records securely (`sm.DeleteSecrets`).
+-   ✅ **File Attachment Management**:
+    -   Uploading files to records (`sm.UploadFile`).
+    -   Downloading files from records (`file.SaveFile()`).
+    -   Deleting files from records (`sm.DeleteFiles`).
+-   ✅ **Folder Organization**:
+    -   Creating new folders (`sm.CreateFolder`).
+    -   Listing existing folders (`sm.GetFolders`).
+    -   Updating (renaming) folders (`sm.UpdateFolder`).
+    -   Deleting folders (`sm.DeleteFolder`).
+-   ✅ **Advanced SDK Configurations**: Using in-memory storage (`NewMemoryKeyValueStorage`) for KSM configurations and implementing client-side caching (`sm.SetCache` with `NewFileCache` or `NewMemoryCache`).
 
 ## Next Steps & Production Best Practices
 
@@ -17,14 +29,14 @@ When deploying Go applications using the KSM SDK in a production setting, always
 
 1.  **Secure Configuration Management**: 
     -   For production, avoid storing `ksm-config.json` in version control or directly on disk if possible. 
-    -   Prefer `NewSecretsManagerFromMemory()` initialized with a Base64 configuration string loaded from a secure source like environment variables or a dedicated configuration management service (e.g., HashiCorp Consul, etcd, AWS Parameter Store, Azure App Configuration).
-2.  **Goroutines and Concurrency**: When making SDK calls in concurrent applications (using goroutines), ensure your KSM client instances or storage access are managed safely. Typically, a single KSM client instance can be shared if its underlying storage and options are thread-safe or properly synchronized.
+    -   Prefer `NewMemoryKeyValueStorage()` initialized with a Base64 configuration string loaded from a secure source like environment variables or a dedicated configuration management service.
+2.  **Goroutines and Concurrency**: When making SDK calls in concurrent applications, ensure your KSM client instances or storage access are managed safely. A single KSM client instance can typically be shared if its underlying storage and options are thread-safe or properly synchronized.
 3.  **Error Handling**: Implement robust error handling for all SDK calls. Check for `nil` pointers and handle potential errors returned by SDK functions to make your application resilient.
 4.  **Least Privilege**: Configure KSM Application permissions in the Keeper Vault meticulously. Grant your Go application only the minimum required access (view, edit, share) to the necessary secrets and folders.
 5.  **Dependency Updates**: Regularly update the KSM Go SDK (`github.com/keeper-security/secrets-manager-go/core`) to the latest version using `go get -u` to incorporate the latest security enhancements and features.
-6.  **Caching Strategy**: If using client-side caching, carefully choose the cache duration (`ClientSideCacheRefreshIntervalSeconds` in `SecretsManagerOptions`) based on how frequently your secrets might change and your application's tolerance for stale data.
+6.  **Caching Strategy**: If using client-side caching, carefully choose the cache implementation and refresh intervals based on how frequently your secrets might change and your application's tolerance for stale data.
 7.  **Logging and Monitoring**: Integrate SDK operations with your application's logging framework. Monitor Keeper's audit logs for any unusual access patterns related to your KSM application.
-8.  **Thorough Testing**: Test your KSM integration comprehensively, including scenarios for successful secret retrieval, creation, failures (e.g., secret not found, network issues), and permission errors.
+8.  **Thorough Testing**: Test your KSM integration comprehensively, including scenarios for successful secret retrieval, creation, updates, deletions (records, files, folders), failures, and permission errors.
 
 ## Further Resources
 

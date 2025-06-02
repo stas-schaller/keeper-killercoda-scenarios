@@ -1,133 +1,62 @@
-# Step 5: Advanced Configuration & Caching
+# Step 5: Advanced Get Options, Caching & Record Deletion
 
-This final step explores advanced KSM Java SDK configurations: using in-memory storage for your KSM client configuration and implementing secret caching for performance optimization.
+This final step explores advanced options for retrieving secrets, implementing client-side caching for performance, and how to delete records using the KSM Java SDK.
 
-## 1. In-Memory Configuration Storage
+## 1. Advanced Get Secrets Options (Filtering)
 
-Instead of relying on a `ksm-config.json` file, you can initialize the KSM SDK with a Base64 encoded configuration string directly in memory. This is highly useful for environments where file system persistence is not desired or easily managed (e.g., containers, AWS Lambda, CI/CD pipelines).
-
-### How to Get the Base64 Configuration String:
-1.  Log into your Keeper Web Vault.
-2.  Navigate to **Secrets Manager** -> **Applications**.
-3.  Select or create your KSM application.
-4.  Go to the **Devices** tab.
-5.  Click **ADD DEVICE**.
-6.  Choose **Method: Configuration File**.
-7.  **Copy the displayed Base64 encoded string**. This string contains all necessary information to initialize your KSM application.
-
-### Create Java Class: InMemoryConfigDemo
-
-```bash
-touch src/main/java/com/keepersecurity/ksmsdk/javatutorial/InMemoryConfigDemo.java
-```
-`touch src/main/java/com/keepersecurity/ksmsdk/javatutorial/InMemoryConfigDemo.java`{{execute}}
-
-### Add the Java Code for In-Memory Storage
-
-Paste the following code into `src/main/java/com/keepersecurity/ksmsdk/javatutorial/InMemoryConfigDemo.java`:
-
-```java
-package com.keepersecurity.ksmsdk.javatutorial;
-
-import com.keepersecurity.secretsManager.core.*;
-import java.util.List;
-
-public class InMemoryConfigDemo {
-
-    // ⚠️ IMPORTANT: Replace with your actual Base64 encoded KSM configuration string
-    private static final String KSM_CONFIG_BASE64 = "[YOUR_KSM_CONFIG_BASE64_STRING_HERE]";
-
-    public static void main(String[] args) {
-        System.out.println("🚀 Demonstrating In-Memory KSM Configuration...");
-
-        if (KSM_CONFIG_BASE64.startsWith("[")) {
-            System.err.println("❌ Error: Please replace '[YOUR_KSM_CONFIG_BASE64_STRING_HERE]' with your actual Base64 config string.");
-            System.err.println("    You can obtain this from the Keeper Vault (Secrets Manager -> Application -> Devices -> Add Device -> Configuration File).");
-            return;
-        }
-
-        // Use InMemoryStorage and pass the Base64 configuration string directly
-        InMemoryStorage inMemoryStorage = new InMemoryStorage(KSM_CONFIG_BASE64);
-        SecretsManagerOptions options = new SecretsManagerOptions(inMemoryStorage);
-
-        try {
-            System.out.println("💾 Storage initialized in-memory.");
-            System.out.println("📡 Fetching all secrets using in-memory config...");
-            KeeperSecrets secrets = SecretsManager.getSecrets(options);
-
-            List<KeeperRecord> records = secrets.getRecords();
-            System.out.println("✅ Successfully fetched " + records.size() + " record(s) using in-memory configuration:");
-
-            if (!records.isEmpty()) {
-                for (int i = 0; i < Math.min(records.size(), 3); i++) { // Display up to 3 records
-                    KeeperRecord record = records.get(i);
-                    System.out.printf("    [%d] UID: %s, Title: %s, Type: %s%n",
-                            i + 1, record.getRecordUid(), record.getTitle(), record.getType());
-                }
-            } else {
-                System.out.println("ℹ️ No records found for this configuration.");
-            }
-
-        } catch (Exception e) {
-            System.err.println("❌ Error with in-memory configuration: " + e.getMessage());
-            e.printStackTrace();
-        }
-    }
-}
-```{{copy}}
-
-### Configure Base64 String
--   In `InMemoryConfigDemo.java`, **replace `[YOUR_KSM_CONFIG_BASE64_STRING_HERE]`** with the actual Base64 string you copied from the Keeper Vault.
-
-### Run the In-Memory Demo
-
-```bash
-gradle -PmainClass=com.keepersecurity.ksmsdk.javatutorial.InMemoryConfigDemo run --console=plain
-```
-`gradle -PmainClass=com.keepersecurity.ksmsdk.javatutorial.InMemoryConfigDemo run --console=plain`{{execute}}
+The `SecretsManager.getSecrets()` method can take a list of record UIDs to fetch specific records. If you need to filter records based on other criteria like title or type after fetching all, you would do that in your Java code by iterating through the results.
 
 ## 2. Secret Caching for Performance
 
-The KSM SDK supports caching of secrets to reduce latency and the number of API calls to Keeper servers for frequently accessed secrets.
+The KSM SDK supports caching of secrets to reduce latency and the number of API calls to Keeper servers for frequently accessed secrets. In-memory configuration using a Base64 string (covered conceptually as part of initialization elsewhere) is also a key advanced configuration.
 
-### Create Java Class: CachingDemo
+### Create/Modify Java Class: AdvancedOperationsDemo
 
 ```bash
-touch src/main/java/com/keepersecurity/ksmsdk/javatutorial/CachingDemo.java
+# Example: touch src/main/java/com/keepersecurity/ksmsdk/javatutorial/AdvancedOperationsDemo.java
+# Ensure your package structure matches.
 ```
-`touch src/main/java/com/keepersecurity/ksmsdk/javatutorial/CachingDemo.java`{{execute}}
+`# For this tutorial, we assume you are modifying an existing class or creating one with this name.`{{execute}}
 
-### Add the Java Code for Caching
+### Add/Modify the Java Code for Caching and Record Deletion
 
-Paste the following code into `src/main/java/com/keepersecurity/ksmsdk/javatutorial/CachingDemo.java`:
+Paste or update the following code into your Java file (e.g., `AdvancedOperationsDemo.java`):
 
 ```java
 package com.keepersecurity.ksmsdk.javatutorial;
 
 import com.keepersecurity.secretsManager.core.*;
 import static com.keepersecurity.secretsManager.core.SecretsManager.initializeStorage;
+
+import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-public class CachingDemo {
+public class AdvancedOperationsDemo {
 
     private static final String ONE_TIME_TOKEN = "[ONE_TIME_TOKEN_IF_NEEDED]"; // Only if ksm-config.json doesn't exist
     private static final String CONFIG_FILE_NAME = "ksm-config.json";
+    
+    // ⚠️ Replace with the UID of a record you want to use for deletion testing (e.g., created in Step 3)
+    private static String RECORD_UID_TO_DELETE = "[RECORD_UID_FOR_DELETION_TEST]";
+    // ⚠️ Replace with the UID of a folder where a test record can be created for deletion.
+    private static final String TARGET_FOLDER_UID_FOR_TEST_RECORD = "[YOUR_SHARED_FOLDER_UID_HERE]";
 
     public static void main(String[] args) throws InterruptedException {
-        System.out.println("🚀 Demonstrating KSM Secret Caching...");
+        System.out.println("🚀 Demonstrating KSM Secret Caching and Record Deletion...");
         LocalConfigStorage storage = new LocalConfigStorage(CONFIG_FILE_NAME);
+        SecretsManagerOptions optionsWithCache = null;
 
         try {
-            if (!new java.io.File(CONFIG_FILE_NAME).exists() || !ONE_TIME_TOKEN.startsWith("[")) {
+            if (!new File(CONFIG_FILE_NAME).exists() || (ONE_TIME_TOKEN != null && !ONE_TIME_TOKEN.startsWith("["))) {
                 System.out.println("🔑 Initializing KSM storage...");
                 initializeStorage(storage, ONE_TIME_TOKEN);
             }
 
             // Configure caching. Cache for 60 seconds in this example.
-            // The cache uses the same storage (e.g., ksm-config.json) to persist cached data securely.
             long cacheRefreshIntervalSeconds = 60;
-            SecretsManagerOptions optionsWithCache = new SecretsManagerOptions(storage, null, false, cacheRefreshIntervalSeconds);
+            optionsWithCache = new SecretsManagerOptions(storage, null, false, cacheRefreshIntervalSeconds);
 
             System.out.println("\n--- First secrets fetch (populates cache) ---");
             long startTime = System.nanoTime();
@@ -146,7 +75,7 @@ public class CachingDemo {
             }
 
             System.out.println("\nWaiting for cache to expire (configured for " + cacheRefreshIntervalSeconds + " seconds)...");
-            TimeUnit.SECONDS.sleep(cacheRefreshIntervalSeconds + 5); // Wait a bit longer than cache interval
+            TimeUnit.SECONDS.sleep(cacheRefreshIntervalSeconds + 5); // Wait a bit longer
 
             System.out.println("\n--- Third secrets fetch (cache expired, should fetch from server again) ---");
             startTime = System.nanoTime();
@@ -154,57 +83,104 @@ public class CachingDemo {
             long duration3 = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - startTime);
             System.out.println("✅ Fetched " + secrets3.getRecords().size() + " records in " + duration3 + " ms (from server, cache repopulated).");
 
+            // --- Record Deletion Example ---
+            System.out.println("\n--- Record Deletion Example ---");
+            // For safety, let's create a temporary record to delete, if a specific one isn't provided.
+            if (RECORD_UID_TO_DELETE.startsWith("[")) { // Check if placeholder is still there
+                System.out.println("ℹ️ RECORD_UID_TO_DELETE placeholder not replaced. Creating a temporary record for deletion test.");
+                if (TARGET_FOLDER_UID_FOR_TEST_RECORD.startsWith("[")){
+                     System.err.println("❌ Cannot create temp record: TARGET_FOLDER_UID_FOR_TEST_RECORD placeholder not replaced. Skipping deletion test.");
+                } else {
+                    KeeperRecordData tempRecData = new KeeperRecordData("Temp Record for Deletion - Java", "login", new ArrayList<>(), null, "To be deleted");
+                    RECORD_UID_TO_DELETE = SecretsManager.createSecret(optionsWithCache, TARGET_FOLDER_UID_FOR_TEST_RECORD, tempRecData);
+                    System.out.println("✅ Temporary record created for deletion test. UID: " + RECORD_UID_TO_DELETE);
+                }
+            }
+
+            if (!RECORD_UID_TO_DELETE.startsWith("[")) {
+                System.out.println("🗑️ Attempting to delete record UID: " + RECORD_UID_TO_DELETE);
+                SecretsManagerDeleteResponse deleteResponse = SecretsManager.deleteSecrets(optionsWithCache, List.of(RECORD_UID_TO_DELETE));
+                
+                boolean deletedSuccessfully = false;
+                if (deleteResponse != null && deleteResponse.getResponses() != null && !deleteResponse.getResponses().isEmpty()) {
+                    for (SecretsManagerDeleteResponse.DeleteResponseItem item : deleteResponse.getResponses()) {
+                        if (RECORD_UID_TO_DELETE.equals(item.getRecordUid()) && "success".equalsIgnoreCase(item.getStatus())) {
+                            System.out.println("✅ Record deleted successfully: " + item.getRecordUid());
+                            deletedSuccessfully = true;
+                            break;
+                        }
+                    }
+                }
+                if (!deletedSuccessfully) {
+                     System.out.println("⚠️ Record deletion may have failed or record UID was not found in response.");
+                }
+                 // Verify deletion by trying to fetch it (should fail or return no record)
+                try {
+                    KeeperSecrets postDeleteSecrets = SecretsManager.getSecrets(optionsWithCache, List.of(RECORD_UID_TO_DELETE));
+                    if (postDeleteSecrets.getRecords().isEmpty() || postDeleteSecrets.getRecordByUid(RECORD_UID_TO_DELETE) == null) {
+                        System.out.println("✅ Verification: Record UID '" + RECORD_UID_TO_DELETE + "' no longer found after deletion attempt.");
+                    } else {
+                        System.out.println("⚠️ Verification: Record UID '" + RECORD_UID_TO_DELETE + "' still found after deletion attempt.");
+                    }
+                } catch (Exception eVerify) {
+                    System.out.println("✅ Verification: Fetching deleted record UID '" + RECORD_UID_TO_DELETE + "' resulted in an error (expected). " + eVerify.getMessage());
+                }
+            } else {
+                System.out.println("ℹ️ Skipping record deletion as no valid RECORD_UID_TO_DELETE was provided or created.");
+            }
+
         } catch (Exception e) {
-            System.err.println("❌ Error during caching demo: " + e.getMessage());
+            System.err.println("❌ Error during advanced operations: " + e.getMessage());
             e.printStackTrace();
         }
+        System.out.println("\n🎉 Advanced operations demo complete.");
     }
 }
 ```{{copy}}
 
-### Configure Token (if needed)
--   In `CachingDemo.java`, update `[ONE_TIME_TOKEN_IF_NEEDED]` if your `ksm-config.json` is not yet created.
+### Configure Placeholders
 
-### Run the Caching Demo
+-   In your Java file (e.g., `AdvancedOperationsDemo.java`):
+    -   If your `ksm-config.json` isn't set up, replace `[ONE_TIME_TOKEN_IF_NEEDED]`.
+    -   Replace `[RECORD_UID_FOR_DELETION_TEST]` with the UID of a record you are okay with deleting. If you leave the placeholder, the script will attempt to create and then delete a temporary record (ensure `[YOUR_SHARED_FOLDER_UID_HERE]` is also set for this). 
+    -   Replace `[YOUR_SHARED_FOLDER_UID_HERE]` with a shared folder UID if you want the script to create a temporary record for deletion.
+
+### Run the Demo
 
 ```bash
-gradle -PmainClass=com.keepersecurity.ksmsdk.javatutorial.CachingDemo run --console=plain
+gradle -PmainClass=com.keepersecurity.ksmsdk.javatutorial.AdvancedOperationsDemo run --console=plain
 ```
-`gradle -PmainClass=com.keepersecurity.ksmsdk.javatutorial.CachingDemo run --console=plain`{{execute}}
+`gradle -PmainClass=com.keepersecurity.ksmsdk.javatutorial.AdvancedOperationsDemo run --console=plain`{{execute}}
 
 ### Expected Output:
 
+The output will show caching behavior similar to before, followed by messages about record deletion attempts and verification.
+
 ```
-🚀 Demonstrating KSM Secret Caching...
+... (caching output from before) ...
 
---- First secrets fetch (populates cache) ---
-✅ Fetched X records in Y ms (from server, cache populated).
+--- Record Deletion Example ---
+🗑️ Attempting to delete record UID: YOUR_RECORD_UID_FOR_DELETION_TEST (or a temp UID)
+✅ Record deleted successfully: YOUR_RECORD_UID_FOR_DELETION_TEST (or a temp UID)
+✅ Verification: Record UID '...' no longer found after deletion attempt.
+(or ✅ Verification: Fetching deleted record UID '...' resulted in an error (expected). ...)
 
---- Second secrets fetch (should be from cache) ---
-✅ Fetched X records in Z ms (from cache).
-⚡️ Performance improvement observed due to caching!
-
-Waiting for cache to expire (configured for 60 seconds)...
-
---- Third secrets fetch (cache expired, should fetch from server again) ---
-✅ Fetched X records in W ms (from server, cache repopulated).
+🎉 Advanced operations demo complete.
 ```
-Note: `Y`, `Z`, `W` will be actual timings. `Z` should be significantly smaller than `Y` and `W`.
 
-## Understanding Advanced Configurations
+## Understanding the Code
 
--   **`InMemoryStorage(base64ConfigString)`**: This constructor of `InMemoryStorage` allows direct initialization from a Base64 string, bypassing the need for `initializeStorage` and a file.
-    -   The Base64 string is obtained from the Keeper Vault when setting up a KSM application device with the "Configuration File" method.
-    -   This method is ideal for secure, stateless environments.
 -   **Caching (`SecretsManagerOptions` constructor)**: 
-    -   The `SecretsManagerOptions` constructor has an overload: `SecretsManagerOptions(storage, queryFunction, allowUnverifiedCertificate, clientSideCacheRefreshIntervalSeconds)`.
-    -   Setting `clientSideCacheRefreshIntervalSeconds` to a positive value (e.g., `60` for 60 seconds) enables client-side caching.
-    -   Cached data is securely stored using the provided `storage` (e.g., in `ksm-config.json` if `LocalConfigStorage` is used).
-    -   The SDK automatically manages cache validity. If secrets are fetched and the cache is valid, data is served from the cache. If expired, data is fetched from the server and the cache is updated.
+    -   The `SecretsManagerOptions` constructor overload `SecretsManagerOptions(storage, queryFunction, allowUnverifiedCertificate, clientSideCacheRefreshIntervalSeconds)` is used.
+    -   Setting `clientSideCacheRefreshIntervalSeconds` enables caching. Cached data is securely stored using the provided `storage`.
+-   **Record Deletion (`SecretsManager.deleteSecrets(options, List<String> recordUids)`)**: 
+    -   This method is used to delete one or more records.
+    -   It takes a list of record UIDs to be deleted.
+    -   The response (`SecretsManagerDeleteResponse`) contains a list of `DeleteResponseItem` objects, each indicating the status of the deletion for a specific UID.
 
 ## Conclusion
 
-This step covered advanced KSM SDK configurations. Using in-memory storage is critical for many modern deployment patterns, and caching can significantly enhance the performance of your applications by reducing reliance on network calls for frequently accessed secrets.
+This step covered advanced KSM SDK features including caching for performance and secure record deletion. These tools help you build robust and efficient applications with Keeper Secrets Manager.
 
 This concludes the KSM Java SDK tutorial! Refer to the `finish.md` tab for a summary and next steps.
 

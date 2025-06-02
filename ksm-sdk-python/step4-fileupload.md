@@ -1,169 +1,184 @@
-# Step 4: File Upload & Attachments
+# Step 4: Record Updates & File Management (Upload, Download, Delete)
 
-## File Attachments in Keeper
+This step covers updating existing records, and comprehensive file management including uploading files to records, downloading them, and deleting them from records using the KSM Python SDK.
 
-Keeper records can store file attachments alongside secret data. This is useful for:
-- **SSH keys and certificates** attached to server login records
-- **Configuration files** for applications
-- **Documentation** related to specific secrets
-- **Backup codes** and recovery information
+## 1. Prepare Your Environment
 
-## Creating Records with File Attachments
-
-Let's create a record and attach a file to demonstrate the file upload functionality.
-
-### 1. Create the File Upload Script
+- Ensure you have a `ksm-config.json` from previous steps (or a valid One-Time Token for initial setup).
+- Have the UID of a record you created in a previous step (e.g., from Step 3). This record will be used for updates and file operations.
+- Create a sample file for upload if it doesn't exist:
 
 ```bash
-touch main-create-record-upload-file.py
+echo "# Sample Python SDK Configuration File for Upload
+app_name=KSM Python Tutorial App
+version=1.0.1
+created_by=KSM Python SDK - Step 4
+timestamp=$(date)" > py-sample-config.txt
 ```
-`touch main-create-record-upload-file.py`{{execute}}
+`echo "# Sample Python SDK Configuration File for Upload
+app_name=KSM Python Tutorial App
+version=1.0.1
+created_by=KSM Python SDK - Step 4
+timestamp=$(date)" > py-sample-config.txt`{{execute}}
 
-### 2. Create a Sample File to Upload
-
-First, let's create a sample configuration file to upload:
+## 2. Create Script for Updates & File Management
 
 ```bash
-echo "# Sample Configuration File
-app_name=KSM Tutorial App
-version=1.0.0
-created_by=KSM Python SDK
-timestamp=$(date)" > sample-config.txt
+# You can reuse main.py or create a new file like main_manage_files_updates.py
+touch main.py
 ```
-`echo "# Sample Configuration File
-app_name=KSM Tutorial App
-version=1.0.0
-created_by=KSM Python SDK
-timestamp=$(date)" > sample-config.txt`{{execute}}
+`touch main.py`{{execute}}
 
-### 3. Add the File Upload Code
+## 3. Add Code for Updates and File Operations
 
-Copy and paste this code into `main-create-record-upload-file.py`:
+Copy and paste this code into your Python script (e.g., `main.py`):
 
 ```python
-from keeper_secrets_manager_core import SecretsManager
-from keeper_secrets_manager_core.dto.dtos import RecordCreate, RecordField
-from keeper_secrets_manager_core.storage import FileKeyValueStorage
 import os
+import time
+from keeper_secrets_manager_core import SecretsManager
+from keeper_secrets_manager_core.storage import FileKeyValueStorage
+from keeper_secrets_manager_core.dto.dtos import RecordField, File
 
-# Initialize the Secrets Manager
+# Initialize Secrets Manager (assuming ksm-config.json exists or token is provided for initial setup)
+ONE_TIME_TOKEN_STEP4 = os.environ.get("KSM_ONE_TIME_TOKEN_STEP4", "[ONE_TIME_TOKEN_IF_NEEDED]")
+CONFIG_FILE_NAME = "ksm-config.json"
+
+# ⚠️ Replace with the UID of a record created in a previous step (e.g., Step 3)
+# This record will be used for updates and file operations.
+TARGET_RECORD_UID = os.environ.get("KSM_TARGET_RECORD_UID_STEP4", "[UID_OF_RECORD_FROM_PREVIOUS_STEP]")
+
 secrets_manager = SecretsManager(
-    token='[ONE TIME TOKEN]',
-    config=FileKeyValueStorage('ksm-config4.json')
+    token=ONE_TIME_TOKEN_STEP4 if not os.path.exists(CONFIG_FILE_NAME) and ONE_TIME_TOKEN_STEP4 != "[ONE_TIME_TOKEN_IF_NEEDED]" else None,
+    config=FileKeyValueStorage(CONFIG_FILE_NAME)
 )
 
-print("🔐 Creating a new record with file attachment...")
+UPLOAD_FILE_PATH = './py-sample-config.txt'
+DOWNLOAD_DEST_PATH = './downloaded_py_sample_config.txt'
 
-# Create a new login record
-new_login_record = RecordCreate('login', "KSM SDK Tutorial - Record with File")
-new_login_record.fields = [
-    RecordField(field_type='login', value='fileuser@example.com'),
-    RecordField(field_type='password', value='FileUploadDemo123!')
-]
-new_login_record.notes = 'Record created with file attachment\nDemonstrates KSM file upload capability'
+def manage_record_and_files():
+    if not TARGET_RECORD_UID or TARGET_RECORD_UID == "[UID_OF_RECORD_FROM_PREVIOUS_STEP]":
+        print("❌ TARGET_RECORD_UID placeholder must be replaced with an actual Record UID from a previous step. Aborting.")
+        return
 
-try:
-    # Create the record first
-    new_record_uid = secrets_manager.create_secret('[FOLDER UID]', new_login_record)
-    print(f"✅ Successfully created record!")
-    print(f"📋 Record UID: {new_record_uid}")
-    
-    # Retrieve the newly created record
-    print("\n📁 Preparing file upload...")
-    record_to_have_attached_file = secrets_manager.get_secrets(new_record_uid)[0]
-    
-    # Define the file to upload
-    file_path = './sample-config.txt'
-    
-    # Check if file exists
-    if os.path.exists(file_path):
-        print(f"📎 Uploading file: {file_path}")
+    print(f"🚀 Managing record UID: {TARGET_RECORD_UID} and its files...")
+
+    try:
+        # --- 1. Retrieve the record to update and attach files to ---
+        print(f"\n🔍 Retrieving record UID: {TARGET_RECORD_UID}...")
+        # get_secrets() returns a list, even for a single UID
+        records = secrets_manager.get_secrets(record_uid=TARGET_RECORD_UID)
+        if not records:
+            print(f"❌ Record with UID '{TARGET_RECORD_UID}' not found. Please create it first (e.g., run Step 3).")
+            return
+        record_to_manage = records[0]
+        print(f"✅ Found record: '{record_to_manage.title}' (Type: {record_to_manage.type})")
+
+        # --- 2. Update Record Fields (e.g., notes or a custom field) ---
+        print(f"\n✏️ Updating record: {record_to_manage.title}...")
+        original_notes = record_to_manage.notes
+        record_to_manage.notes = (original_notes or "") + f"\nUpdated by Python SDK - Step 4 at {time.ctime()}"
         
-        # Perform the file upload
-        secrets_manager.upload_file_path(record_to_have_attached_file, file_path)
-        
-        print("✅ File uploaded successfully!")
-        print(f"🔗 File attached to record: {record_to_have_attached_file.title}")
-        
-        # Show file information
-        file_size = os.path.getsize(file_path)
-        print(f"📊 File size: {file_size} bytes")
-        
-    else:
-        print(f"❌ File not found: {file_path}")
-        print("💡 Make sure the sample file was created successfully")
-        
-except Exception as e:
-    print(f"❌ Error: {str(e)}")
-    print("💡 Make sure you have:")
-    print("   - Valid ONE TIME TOKEN")
-    print("   - Correct FOLDER UID")
-    print("   - Write permissions to the folder")
-    print("   - File exists and is readable")
+        # Example: Add or update a custom field
+        found_custom_field = False
+        for field in record_to_manage.fields:
+            if hasattr(field, 'label') and field.label == "SDK_Update_Status":
+                field.value = "Step 4 File Ops Complete"
+                found_custom_field = True
+                break
+        if not found_custom_field:
+            status_field = RecordField(field_type="text", label="SDK_Update_Status", value="Step 4 File Ops Initialized")
+            record_to_manage.fields.append(status_field)
+            
+        secrets_manager.update_secret(record_to_manage)
+        print(f"✅ Record '{record_to_manage.title}' updated successfully.")
+        # Re-fetch to confirm update (optional)
+        # record_to_manage = secrets_manager.get_secrets(record_uid=TARGET_RECORD_UID)[0]
+        # print(f"Updated notes: {record_to_manage.notes}")
+
+        # --- 3. Upload a File to the Record ---
+        print(f"\n📎 Uploading file '{UPLOAD_FILE_PATH}' to record '{record_to_manage.title}'...")
+        if os.path.exists(UPLOAD_FILE_PATH):
+            # upload_file_path() is a convenient method
+            uploaded_file_info = secrets_manager.upload_file_path(record_to_manage, UPLOAD_FILE_PATH)
+            print(f"✅ File uploaded successfully: '{uploaded_file_info.name}' (Size: {uploaded_file_info.size} bytes)")
+            
+            # Refresh record data to see the new file attachment details
+            record_to_manage = secrets_manager.get_secrets(record_uid=TARGET_RECORD_UID)[0]
+        else:
+            print(f"❌ File not found for upload: {UPLOAD_FILE_PATH}")
+
+        # --- 4. Download a File from the Record ---
+        if record_to_manage.files:
+            file_to_download = record_to_manage.files[0] # Assuming we download the first attached file
+            print(f"\n💾 Downloading file '{file_to_download.name}' to '{DOWNLOAD_DEST_PATH}'...")
+            
+            # download_file takes the record, file name (or UID), and destination path
+            secrets_manager.download_file(record_to_manage, file_to_download.name, DOWNLOAD_DEST_PATH)
+            print(f"✅ File '{file_to_download.name}' downloaded successfully.")
+            if os.path.exists(DOWNLOAD_DEST_PATH):
+                print(f"   Downloaded file size: {os.path.getsize(DOWNLOAD_DEST_PATH)} bytes")
+        else:
+            print("\nℹ️ No files found on the record to download.")
+
+        # --- 5. Delete a File from the Record ---
+        if record_to_manage.files:
+            file_to_delete_name = record_to_manage.files[0].name # Assuming we delete the first attached file
+            print(f"\n🗑️ Deleting file '{file_to_delete_name}' from record '{record_to_manage.title}'...")
+            
+            # delete_file_from_record takes the record and the name of the file to delete
+            secrets_manager.delete_file_from_record(record_to_manage, file_to_delete_name)
+            print(f"✅ File '{file_to_delete_name}' deleted successfully from the record.")
+
+            # Refresh record data to see that the file is gone
+            record_to_manage = secrets_manager.get_secrets(record_uid=TARGET_RECORD_UID)[0]
+            print(f"   Files remaining on record: {len(record_to_manage.files)}")
+        else:
+            print("\nℹ️ No files found on the record to delete.")
+
+    except Exception as e:
+        print(f"❌ An error occurred: {str(e)}")
+        print("💡 Common issues:")
+        print("   - Invalid or missing KSM configuration (ksm-config.json or token for setup).")
+        print(f"   - Incorrect TARGET_RECORD_UID ('{TARGET_RECORD_UID}') or record does not exist.")
+        print("   - Insufficient permissions on the record/folder.")
+        print(f"   - File '{UPLOAD_FILE_PATH}' not found for upload.")
+
+    print("\n🎉 Record update and file management demo complete.")
+
+if __name__ == '__main__':
+    manage_record_and_files()
+
 ```{{copy}}
 
 ### 4. Configure Required Parameters
 
-Replace these placeholders in your code:
+-   **`[ONE_TIME_TOKEN_IF_NEEDED]`**: If `ksm-config.json` doesn't exist, replace this (or set `KSM_ONE_TIME_TOKEN_STEP4` env var) for initial setup.
+-   **`[UID_OF_RECORD_FROM_PREVIOUS_STEP]`**: **Crucial!** Replace this placeholder (or set `KSM_TARGET_RECORD_UID_STEP4` env var) with the UID of an actual record you created in a previous step (e.g., from Step 3). This record will be modified.
 
-**`[ONE TIME TOKEN]`** - Your token from Keeper Web Vault
-
-**`[FOLDER UID]`** - The UID of a shared folder with write permissions
-
-### 5. Run the File Upload Script
+### 5. Run the Script
 
 ```bash
-python3 main-create-record-upload-file.py
+python3 main.py # or your chosen filename
 ```
-`python3 main-create-record-upload-file.py`{{execute}}
+`python3 main.py`{{execute}}
 
-## Understanding File Upload Process
+## Understanding the Code
 
-The file upload process involves several steps:
-
-1. **Create the record** first using `create_secret()`
-2. **Retrieve the record** to get the full record object
-3. **Upload the file** using `upload_file_path()`
-
-### File Upload Methods
-
-The KSM SDK provides multiple ways to upload files:
-
-```python
-# Upload from file path
-secrets_manager.upload_file_path(record, '/path/to/file.txt')
-
-# Upload from file-like object
-with open('file.txt', 'rb') as f:
-    secrets_manager.upload_file(record, f, 'filename.txt')
-
-# Upload from bytes
-file_data = b'File content as bytes'
-secrets_manager.upload_file_bytes(record, file_data, 'data.bin')
-```
-
-## File Size and Type Limitations
-
-- **Maximum file size**: Check your Keeper plan limits
-- **File types**: All file types are supported
-- **Multiple files**: You can attach multiple files to a single record
-- **File names**: Original filenames are preserved
-
-## Security Considerations
-
-- **Files are encrypted** using Keeper's zero-knowledge encryption
-- **Access control** follows the same rules as the parent record
-- **Audit trails** track file upload and download activities
-- **No file scanning** - files are stored as-is (encrypted)
-
-## Use Cases for File Attachments
-
-- **SSL/TLS certificates** with server credentials
-- **SSH private keys** with server access records
-- **API documentation** with API key records
-- **Configuration templates** with application secrets
-- **Recovery codes** with account credentials
+-   **Record Retrieval (`secrets_manager.get_secrets(record_uid=...)`)**: Fetches the specific record to be managed. It returns a list, so we take the first element.
+-   **Record Update (`record_to_manage.notes = ...`, `record_to_manage.fields.append(...)`, `secrets_manager.update_secret(record_object)`)**:
+    -   Modify attributes of the fetched record object directly (e.g., `record.notes`, `record.fields`).
+    -   To add/update fields, you can append new `RecordField` objects or find and modify existing ones in the `record.fields` list.
+    -   Call `secrets_manager.update_secret(record_object)` with the modified record object to save changes back to the Keeper Vault.
+-   **File Upload (`secrets_manager.upload_file_path(record, file_path)`)**: 
+    -   A convenient method to upload a file from a local path directly to the specified record.
+    -   Other methods like `upload_file` (for file-like objects) and `upload_file_bytes` are also available.
+-   **File Download (`secrets_manager.download_file(record, file_name_or_uid, destination_path)`)**:
+    -   Downloads the specified file (by name or its UID from `record.files[n].uid`) from the record to the given local destination path.
+-   **File Deletion (`secrets_manager.delete_file_from_record(record, file_name)`)**:
+    -   Removes the specified file attachment from the record.
+    -   The SDK handles the necessary API calls to update the record by removing the file reference.
 
 ## Next Steps
 
-In the final step, we'll explore in-memory configuration storage for containerized and serverless deployments.
+In the next step, we'll explore Folder Management (creating, listing, updating, deleting folders) and how to delete entire records.

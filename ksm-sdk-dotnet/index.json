@@ -1,19 +1,23 @@
 {
-  "title": "Keeper Secrets Manager .NET SDK Tutorial",
-  "description": "Learn to integrate Keeper Secrets Manager into .NET applications using the official SDK, covering setup, secret retrieval, record creation, file management, and advanced configurations.",
+  "title": "KSM SDK: .NET (Comprehensive)",
+  "description": "A comprehensive guide to the Keeper Secrets Manager .NET SDK. Covers setup, auth (token, file, Base64 config), record lifecycle (create, retrieve, update, delete), password generation, file operations (upload, download, delete), folder management (create, list, update, delete), and caching.",
   "details": {
     "steps": [
       {
-        "title": "Setup & Basic Connection",
+        "title": "Step 1: Setup, Configuration & Basic Connection",
         "text": "step1.md"
       },
       {
-        "title": "Retrieving & Using Secrets",
+        "title": "Step 2: Retrieving Specific Secrets & Fields",
         "text": "step2.md"
       },
       {
-        "title": "Creating Records & Files",
+        "title": "Step 3: Record Operations, Files & Password Generation",
         "text": "step3.md"
+      },
+      {
+        "title": "Step 4: Folder Management, Record Deletion & Caching",
+        "text": "step4.md"
       }
     ],
     "intro": {

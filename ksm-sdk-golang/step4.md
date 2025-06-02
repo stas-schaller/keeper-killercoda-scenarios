@@ -1,106 +1,24 @@
-# Step 4: Advanced Config & Caching
+# Step 4: Folder Management & Record Deletion
 
-This final step explores advanced KSM Go SDK configurations: using in-memory storage for your KSM client configuration (ideal for ephemeral environments) and implementing client-side secret caching for performance optimization.
+This step covers managing folders (create, list, update, delete) and deleting records using the KSM Go SDK.
 
-## 1. In-Memory Configuration Storage
+## 1. Prepare Your Environment
 
-Instead of relying on a `ksm-config.json` file, you can initialize the KSM Go SDK with a Base64 encoded configuration string directly in memory. This is especially useful for environments like Docker containers, serverless functions (e.g., AWS Lambda, Google Cloud Functions), or CI/CD pipelines where file system persistence might be restricted or undesirable.
+-   Ensure a working `ksm-config.json` from previous steps (or a One-Time Token for the first run).
+-   Have the UID of a Shared Folder where your KSM application has **"Can Edit"** permissions. This will be the parent for new folders created by the script.
 
-### How to Get the Base64 Configuration String:
-1.  Log into your Keeper Web Vault.
-2.  Navigate to **Secrets Manager** -> **Applications**.
-3.  Select or create your KSM application.
-4.  Go to the **Devices** tab.
-5.  Click **ADD DEVICE**.
-6.  Choose **Method: Configuration File**.
-7.  **Copy the displayed Base64 encoded string**. This string contains all necessary information for your application to authenticate with KSM.
+## 2. Create Go Application: `manage_folders_records.go`
 
-### Create Go Application: `in_memory_config_demo.go`
+In your `ksm-go-tutorial` project directory, create a new Go file.
 
 ```bash
-touch in_memory_config_demo.go
+touch manage_folders_records.go
 ```
-`touch in_memory_config_demo.go`{{execute}}
+`touch manage_folders_records.go`{{execute}}
 
-### Add the Go Code for In-Memory Storage
+### Add the Go Code
 
-Paste the following code into `in_memory_config_demo.go`:
-
-```go
-package main
-
-import (
-	"fmt"
-	"log"
-
-	ksm "github.com/keeper-security/secrets-manager-go/core"
-)
-
-// ⚠️ IMPORTANT: Replace with your actual Base64 encoded KSM configuration string
-const ksmConfigBase64 = "[YOUR_KSM_CONFIG_BASE64_STRING_HERE]"
-
-func main() {
-	fmt.Println("🚀 Demonstrating In-Memory KSM Configuration with Go SDK...")
-
-	if ksmConfigBase64 == "[YOUR_KSM_CONFIG_BASE64_STRING_HERE]" || ksmConfigBase64 == "" {
-		log.Fatalln("❌ Error: Please replace '[YOUR_KSM_CONFIG_BASE64_STRING_HERE]' with your actual Base64 config string.\n    You can obtain this from the Keeper Vault (Secrets Manager -> Application -> Devices -> Add Device -> Configuration File).")
-	}
-
-	// Use NewSecretsManagerFromMemory to initialize with the Base64 config string.
-	// No file-based storage object is needed for this initialization method.
-	sm := ksm.NewSecretsManagerFromMemory(ksmConfigBase64)
-
-	fmt.Println("💾 KSM Storage initialized in-memory.")
-	fmt.Println("📡 Fetching all secrets using in-memory config...")
-
-	secrets, err := sm.GetSecrets(nil) // Fetch all secrets
-	if err != nil {
-		log.Fatalf("❌ Error fetching secrets with in-memory config: %v", err)
-	}
-
-	fmt.Printf("✅ Successfully fetched %d record(s) using in-memory configuration:\n", len(secrets))
-
-	if len(secrets) > 0 {
-		// Display up to 3 records for brevity
-		for i, record := range secrets {
-			if i >= 3 {
-				break
-			}
-			fmt.Printf("    [%d] UID: %s, Title: %s, Type: %s\n",
-				i+1, record.Uid(), record.Title(), record.Type())
-		}
-	} else {
-		fmt.Println("ℹ️ No records found for this configuration.")
-	}
-}
-```{{copy}}
-
-### Configure Base64 String
--   In `in_memory_config_demo.go`, **replace `[YOUR_KSM_CONFIG_BASE64_STRING_HERE]`** with the actual Base64 string you copied from the Keeper Vault.
-
-### Run the In-Memory Demo
-
-(Assuming you update `main.go` with this code, or build and run this file directly)
-```bash
-go run main.go 
-# OR: go build in_memory_config_demo.go && ./in_memory_config_demo
-```
-`go run main.go`{{execute}}
-
-## 2. Secret Caching for Performance
-
-The KSM Go SDK allows for client-side caching of secrets to reduce API calls and improve retrieval times for frequently accessed data.
-
-### Create Go Application: `caching_demo.go`
-
-```bash
-touch caching_demo.go
-```
-`touch caching_demo.go`{{execute}}
-
-### Add the Go Code for Caching
-
-Paste the following code into `caching_demo.go`:
+Paste the following code into `manage_folders_records.go`:
 
 ```go
 package main
@@ -109,122 +27,187 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"time"
 
 	ksm "github.com/keeper-security/secrets-manager-go/core"
+	"github.com/keeper-security/secrets-manager-go/core/fields"
 )
 
-const oneTimeTokenStep4 = "[ONE_TIME_TOKEN_IF_NEEDED]" // Only if ksm-config.json doesn't exist
+const oneTimeTokenStep4 = "[ONE_TIME_TOKEN_IF_NEEDED]"
 const configFileStep4 = "ksm-config.json"
-const cacheFile = "ksm_cache.bin" // File for persisting the cache
+
+// ⚠️ Replace with UID of a Shared Folder with "Can Edit" permissions for your KSM App
+// This will serve as the root/parent for folders created in this demo.
+const parentSharedFolderUid = "[YOUR_PARENT_SHARED_FOLDER_UID_HERE]"
 
 func main() {
-	fmt.Println("🚀 Demonstrating KSM Secret Caching with Go SDK...")
+	fmt.Println("🚀 Managing folders and deleting records with Go SDK...")
 
-	// Standard file-based storage for the main KSM config
 	storage := ksm.NewFileKeyValueStorage(configFileStep4)
-
-	// Configure caching options
-	// Cache will be stored in `ksm_cache.bin` and refresh every 60 seconds.
-	cacheRefreshIntervalSeconds := time.Duration(60) * time.Second
-	optionsWithCache := &ksm.SecretsManagerOptions{
-		Storage:                            storage,
-		ClientSideCacheRefreshInterval: cacheRefreshIntervalSeconds,
-		Cache:                              ksm.NewFileCache(cacheFile), // Use FileCache for persistence
+	options := &ksm.ClientOptions{
+		Config: storage,
 	}
-
 	if _, err := os.Stat(configFileStep4); os.IsNotExist(err) && oneTimeTokenStep4 != "[ONE_TIME_TOKEN_IF_NEEDED]" {
 		fmt.Println("🔑 Initial KSM storage setup with token...")
-		optionsWithCache.Token = oneTimeTokenStep4
+		options.Token = oneTimeTokenStep4
 	}
-	sm := ksm.NewSecretsManager(optionsWithCache)
+	sm := ksm.NewSecretsManager(options)
 
-	// --- First secrets fetch (populates cache) ---
-	fmt.Println("\n--- First secrets fetch (populates cache) ---")
-	startTime := time.Now()
-	secrets1, err := sm.GetSecrets(nil)
+	// --- 1. Folder Management ---
+	fmt.Println("\n--- Folder Management Operations ---")
+	var newFolderUid string
+	var err error
+
+	// a. Create a new folder
+	newFolderName := "GoSDK_DemoFolder_" + fmt.Sprint(ksm.CurrentTimeMillis())
+	fmt.Printf("📁 Creating folder: %s under parent UID: %s\n", newFolderName, parentSharedFolderUid)
+	
+	// CreateFolderOptions specifies parameters for folder creation
+	// For creating a top-level folder within the app's view (under the main shared folder context):
+	// - FolderUid: UID of the shared folder context (e.g., the one directly shared with the KSM app)
+	// - SubFolderUid: Can be empty or nil if creating directly under the FolderUid context.
+	//   If creating inside another folder that YOU created via SDK, then SubFolderUid would be that parent folder's UID.
+	createOpts := &ksm.CreateFolderOptions{
+		FolderUid: parentSharedFolderUid, // The shared context
+		// SubFolderUid: "", // Or UID of an existing sub-folder to create within
+	}
+	createdFolder, err := sm.CreateFolder(createOpts, newFolderName, nil) // Pass nil for existing folders to avoid conflicts in this basic example
 	if err != nil {
-		log.Fatalf("Error on first fetch: %v", err)
+		log.Fatalf("❌ Error creating folder '%s': %v", newFolderName, err)
 	}
-	duration1 := time.Since(startTime)
-	fmt.Printf("✅ Fetched %d records in %s (from server, cache populated).\n", len(secrets1), duration1)
+	newFolderUid = createdFolder.Uid
+	fmt.Printf("✅ Folder '%s' created successfully! UID: %s\n", createdFolder.Name, newFolderUid)
 
-	// --- Second secrets fetch (should be from cache) ---
-	fmt.Println("\n--- Second secrets fetch (should be from cache) ---")
-	startTime = time.Now()
-	secrets2, err := sm.GetSecrets(nil)
+	// b. List all folders (within the application's scope)
+	fmt.Println("\n--- Listing Folders ---")
+	folders, err := sm.GetFolders()
 	if err != nil {
-		log.Fatalf("Error on second fetch: %v", err)
+		log.Printf("❌ Error listing folders: %v\n", err)
+	} else {
+		fmt.Printf("🔍 Found %d folder(s):\n", len(folders))
+		for _, folder := range folders {
+			fmt.Printf("  - Name: %s, UID: %s, Parent UID: %s\n", folder.Name, folder.Uid, folder.ParentUid)
+		}
 	}
-	duration2 := time.Since(startTime)
-	fmt.Printf("✅ Fetched %d records in %s (from cache).\n", len(secrets2), duration2)
 
-	if duration2 < duration1 {
-		fmt.Println("⚡️ Performance improvement observed due to caching!")
-	}
-
-	fmt.Printf("\nWaiting for cache to expire (configured for %s)...\n", cacheRefreshIntervalSeconds)
-	time.Sleep(cacheRefreshIntervalSeconds + (5 * time.Second)) // Wait a bit longer
-
-	// --- Third secrets fetch (cache expired, should fetch from server again) ---
-	fmt.Println("\n--- Third secrets fetch (cache expired, server fetch) ---")
-	startTime = time.Now()
-	secrets3, err := sm.GetSecrets(nil)
+	// c. Update the created folder (rename)
+	updatedFolderName := newFolderName + "_Renamed"
+	fmt.Printf("\n✏️ Renaming folder '%s' (UID: %s) to '%s'\n", newFolderName, newFolderUid, updatedFolderName)
+	_, err = sm.UpdateFolder(newFolderUid, updatedFolderName, nil) // Pass nil for existing folders
 	if err != nil {
-		log.Fatalf("Error on third fetch: %v", err)
+		log.Printf("❌ Error renaming folder %s: %v\n", newFolderUid, err)
+	} else {
+		fmt.Printf("✅ Folder %s renamed successfully to %s.\n", newFolderUid, updatedFolderName)
 	}
-	duration3 := time.Since(startTime)
-	fmt.Printf("✅ Fetched %d records in %s (from server, cache repopulated).\n", len(secrets3), duration3)
 
-	// Clean up cache file for the demo
-	os.Remove(cacheFile)
-	fmt.Printf("\n🧹 Cache file '%s' removed for demo purposes.\n", cacheFile)
+	// --- 2. Create a Record in the New Folder (for deletion test) ---
+	fmt.Println("\n--- Creating a Test Record for Deletion ---")
+	testRecordData := ksm.NewRecordCreate("login", "GoSDK_ToDelete")
+	testRecordData.Fields = append(testRecordData.Fields, fields.NewLogin("delete_me@example.com"))
+	testRecordUid, err := sm.CreateSecretWithRecordData("", newFolderUid, testRecordData) // Create in the new folder
+	if err != nil {
+		log.Fatalf("❌ Error creating test record for deletion: %v", err)
+	}
+	fmt.Printf("✅ Test record '%s' created successfully in folder %s. UID: %s\n", testRecordData.Title, newFolderUid, testRecordUid)
+
+	// --- 3. Delete the Test Record ---
+	fmt.Printf("\n--- Deleting Test Record (UID: %s) ---\n", testRecordUid)
+	deleteResult, err := sm.DeleteSecrets([]string{testRecordUid})
+	if err != nil {
+		log.Printf("❌ Error deleting record %s: %v\n", testRecordUid, err)
+	} else if len(deleteResult) > 0 && deleteResult[0].Status == "success" {
+		fmt.Printf("✅ Record %s deleted successfully.\n", deleteResult[0].Uid)
+	} else {
+		fmt.Printf("⚠️ Record %s deletion may have failed or response format unexpected: %v\n", testRecordUid, deleteResult)
+	}
+
+	// --- 4. Delete the Created Folder (and its contents) ---
+	// Note: Deleting a folder might require it to be empty or use a 'force' option.
+	// The Go SDK's DeleteFolder takes `forceDelete bool`.
+	fmt.Printf("\n--- Deleting Folder '%s' (UID: %s) ---\n", updatedFolderName, newFolderUid)
+	deleteFolderResult, err := sm.DeleteFolder([]string{newFolderUid}, true) // Force delete if non-empty
+	if err != nil {
+		log.Printf("❌ Error deleting folder %s: %v\n", newFolderUid, err)
+	} else if len(deleteFolderResult) > 0 && deleteFolderResult[0].Status == "success" {
+		fmt.Printf("✅ Folder %s deleted successfully.\n", deleteFolderResult[0].Uid)
+	} else {
+		fmt.Printf("⚠️ Folder %s deletion may have failed or response format unexpected: %v\n", newFolderUid, deleteFolderResult)
+	}
+
+	fmt.Println("\n🎉 Folder management and record deletion examples complete. Check your Keeper Vault!")
 }
+
 ```{{copy}}
 
-### Configure Token (if needed for `ksm-config.json`)
--   In `caching_demo.go`, update `[ONE_TIME_TOKEN_IF_NEEDED]` if your `ksm-config.json` is not yet created from previous steps.
+## 3. Configure Parent Shared Folder UID
 
-### Run the Caching Demo
+-   In `manage_folders_records.go`:
+    -   **Crucial**: Replace `[YOUR_PARENT_SHARED_FOLDER_UID_HERE]` with the UID of a Shared Folder in your Keeper Vault where your KSM application has **"Can Edit"** permissions. This folder will act as the parent for the new folder created in this script.
+    -   If needed (i.e., `ksm-config.json` doesn't exist from previous steps), update `[ONE_TIME_TOKEN_IF_NEEDED]`.
 
-(Assuming you update `main.go` with this code, or build and run this file directly)
+## 4. Update `main.go` to Run This Example (Optional)
+
+Copy the content of `manage_folders_records.go` into `main.go`, or build and run this specific file:
+
 ```bash
-go run main.go 
-# OR: go build caching_demo.go && ./caching_demo
+go build manage_folders_records.go
+./manage_folders_records
+```
+
+## 5. Run the Application
+
+Assuming you've updated `main.go` or are running `manage_folders_records` directly:
+
+```bash
+go run main.go
+# OR if you built it: ./manage_folders_records
 ```
 `go run main.go`{{execute}}
 
-### Expected Output:
+### Expected Output (will vary based on success of each operation):
 
 ```
-🚀 Demonstrating KSM Secret Caching with Go SDK...
+🚀 Managing folders and deleting records with Go SDK...
 
---- First secrets fetch (populates cache) ---
-✅ Fetched X records in Yms (from server, cache populated).
+--- Folder Management Operations ---
+📁 Creating folder: GoSDK_DemoFolder_...
+✅ Folder 'GoSDK_DemoFolder_...' created successfully! UID: ...
 
---- Second secrets fetch (should be from cache) ---
-✅ Fetched X records in Zms (from cache).
-⚡️ Performance improvement observed due to caching!
+--- Listing Folders ---
+🔍 Found X folder(s):
+  - Name: GoSDK_DemoFolder_..., UID: ..., Parent UID: YOUR_PARENT_SHARED_FOLDER_UID_HERE
+  ...
 
-Waiting for cache to expire (configured for 60s)...
+✏️ Renaming folder 'GoSDK_DemoFolder_...' (UID: ...) to 'GoSDK_DemoFolder_..._Renamed'
+✅ Folder ... renamed successfully to GoSDK_DemoFolder_..._Renamed.
 
---- Third secrets fetch (cache expired, server fetch) ---
-✅ Fetched X records in Wms (from server, cache repopulated).
+--- Creating a Test Record for Deletion ---
+✅ Test record 'GoSDK_ToDelete' created successfully in folder .... UID: ...
 
-🧹 Cache file 'ksm_cache.bin' removed for demo purposes.
+--- Deleting Test Record (UID: ...) ---
+✅ Record ... deleted successfully.
+
+--- Deleting Folder 'GoSDK_DemoFolder_..._Renamed' (UID: ...) ---
+✅ Folder ... deleted successfully.
+
+🎉 Folder management and record deletion examples complete. Check your Keeper Vault!
 ```
-(Timings `Y`, `Z`, `W` will vary. `Z` should be significantly faster.)
 
-## Understanding Advanced Configurations
+**Verify**: Check your Keeper Vault. A folder should have been created, listed, renamed, then a record created inside it, that record deleted, and finally the folder itself deleted.
 
--   **`ksm.NewSecretsManagerFromMemory(base64ConfigString)`**: This function initializes the KSM client directly from a Base64 encoded configuration string. It bypasses the need for `FileKeyValueStorage` or an on-disk `ksm-config.json` file, making it ideal for secure, stateless environments.
--   **Caching (`SecretsManagerOptions`)**: To enable client-side caching:
-    -   Set `ClientSideCacheRefreshInterval` in `SecretsManagerOptions` to a `time.Duration` (e.g., `60 * time.Second`).
-    -   Provide a `Cache` implementation in `SecretsManagerOptions`. The SDK provides `ksm.NewFileCache("cache_filename.bin")` for file-based persistent caching and `ksm.NewMemoryCache()` for in-memory caching (non-persistent across application restarts).
-    -   The SDK then automatically handles storing/retrieving secrets from the cache based on the refresh interval.
+## Understanding the Code
+
+-   **`sm.CreateFolder(createOpts *CreateFolderOptions, name string, existingFolders []*KeeperFolder)`**: Creates a new folder.
+    -   `createOpts.FolderUid`: UID of the parent shared context (e.g., your app's main shared folder).
+    -   `createOpts.SubFolderUid`: Optional. UID of a sub-folder (that you created) to create this new folder within.
+    -   `name`: The desired name for the new folder.
+    -   `existingFolders`: Can often be `nil` for basic creation; used by SDK for internal checks.
+-   **`sm.GetFolders()`**: Lists all folders accessible to the KSM application.
+-   **`sm.UpdateFolder(folderUid, newName string, existingFolders []*KeeperFolder)`**: Renames a folder.
+-   **`sm.DeleteSecrets([]string{recordUid})`**: Deletes one or more records given their UIDs. Returns a slice of `DeleteStatus` objects.
+-   **`sm.DeleteFolder([]string{folderUid}, forceDelete bool)`**: Deletes one or more folders. Set `forceDelete` to `true` to attempt deletion even if the folder is not empty (behavior depends on backend/SDK logic regarding contained records).
 
 ## Conclusion
 
-This step covered advanced KSM Go SDK configurations, including in-memory storage for flexibility in various deployment models and client-side caching to optimize performance. With these tools, you can build highly secure and efficient Go applications leveraging Keeper Secrets Manager.
+This step demonstrated how to manage the lifecycle of folders and records, including creation, listing, updating (renaming for folders), and deletion using the KSM Go SDK. These operations allow for programmatic organization and cleanup of secrets.
 
-This completes the KSM Go SDK tutorial! Please review the `finish.md` tab for a summary and important next steps for production deployment.
+This completes the KSM Go SDK tutorial! Please review the `finish.md` tab for a summary of what you've learned and important next steps for production deployment.

@@ -3,18 +3,26 @@
 You've successfully learned how to integrate Keeper Secrets Manager into your Java applications. You now have the skills to:
 
 -   ✅ **Set up and configure** the KSM Java SDK in a Gradle project.
--   ✅ **Authenticate** your applications securely using One-Time Tokens and local configuration storage.
+-   ✅ **Authenticate** your applications securely using One-Time Tokens, local configuration storage (`LocalConfigStorage`), and in-memory Base64 configuration strings (`InMemoryStorage`).
 -   ✅ **Retrieve all shared secrets** and fetch specific records by UID or title.
 -   ✅ **Access various field types**, custom fields, and notes within your records.
--   ✅ **Create new records and folders** programmatically to manage your secrets dynamically.
--   ✅ **Handle file attachments**: Upload, download, and manage files associated with records.
--   ✅ **Implement advanced configurations** like in-memory storage for ephemeral environments and caching for performance optimization.
+-   ✅ **Manage Record Lifecycle**:
+    -   Create new records (`SecretsManager.createSecret()`) with various field types.
+    -   Generate strong passwords using `SecretsManager.generatePassword()`.
+    -   Update existing records (`SecretsManager.updateSecret()`).
+    -   Delete records (`SecretsManager.deleteSecrets()`).
+-   ✅ **Handle File Attachments**:
+    -   Upload files to records (`SecretsManager.uploadFile()`).
+    -   Download files from records (`SecretsManager.downloadFile()`).
+    -   Delete files from records (`SecretsManager.deleteFile()`).
+-   ✅ **Manage Folders**: Create (`SecretsManager.createFolder()`), list, update, and delete folders.
+-   ✅ **Implement advanced configurations** like in-memory storage and client-side caching (`SecretsManagerOptions`).
 
 ## Next Steps & Best Practices
 
 As you move towards production, consider these important steps:
 
-1.  **Secure Configuration Storage**: For production, avoid committing `ksm-config.json`. Instead, use environment variables for the Base64 configuration string with `InMemoryStorage`, or integrate with managed secret stores (e.g., AWS Secrets Manager, Azure Key Vault, HashiCorp Vault) to store the KSM configuration itself.
+1.  **Secure Configuration Storage**: For production, avoid committing `ksm-config.json`. Instead, use environment variables for the Base64 configuration string with `InMemoryStorage`, or integrate with managed secret stores to store the KSM configuration itself.
 2.  **Robust Error Handling**: Implement comprehensive error handling, retry mechanisms, and logging around KSM SDK calls.
 3.  **Principle of Least Privilege**: Ensure your KSM application in the Keeper Vault only has access to the secrets it absolutely needs.
 4.  **Regular Audits**: Regularly review KSM application permissions and audit logs in your Keeper Admin Console.

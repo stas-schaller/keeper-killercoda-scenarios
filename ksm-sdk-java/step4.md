@@ -1,29 +1,32 @@
-# Step 4: File Attachments & Management
+# Step 4: Record Updates & File Management
 
-Keeper Secrets Manager allows you to securely store and manage file attachments associated with your records. This step covers uploading, downloading, and listing file attachments using the KSM Java SDK.
+This step covers updating existing records, and comprehensive file management including uploading files to records, downloading them, and deleting them from records using the KSM Java SDK.
 
 ## 1. Prepare Your Environment
 
 -   Ensure you have a working `ksm-config.json`.
--   You will need the UID of an existing record where your KSM application has **"Can Edit"** permission (to upload files) and **"Can View"** permission (to download/list files).
--   Create a sample file in your project directory to upload, e.g., `sample-attachment.txt`.
+-   You will need the UID of an existing record (e.g., created in Step 3) where your KSM application has **"Can Edit"** permission.
+-   Create a sample file in your project directory to upload, e.g., `sample-java-attachment.txt`.
 
 ```bash
-echo "This is a sample file for KSM Java SDK attachment testing." > sample-attachment.txt
-ls -l sample-attachment.txt
+echo "This is a sample file for KSM Java SDK attachment testing - V1." > sample-java-attachment.txt
+ls -l sample-java-attachment.txt
 ```
-`echo "This is a sample file for KSM Java SDK attachment testing." > sample-attachment.txt && ls -l sample-attachment.txt`{{execute}}
+`echo "This is a sample file for KSM Java SDK attachment testing - V1." > sample-java-attachment.txt && ls -l sample-java-attachment.txt`{{execute}}
 
-## 2. Create Java Class: ManageFileAttachments
+## 2. Create/Modify Java Class: ManageRecordAndFiles
+
+Ensure you have a Java class for these operations (e.g., `ManageRecordAndFiles.java`).
 
 ```bash
-touch src/main/java/com/keepersecurity/ksmsdk/javatutorial/ManageFileAttachments.java
+# Example: touch src/main/java/com/keepersecurity/ksmsdk/javatutorial/ManageRecordAndFiles.java
+# Ensure your package structure matches.
 ```
-`touch src/main/java/com/keepersecurity/ksmsdk/javatutorial/ManageFileAttachments.java`{{execute}}
+`# For this tutorial, we assume you are modifying an existing class or creating one with this name.`{{execute}}
 
-### Add the Java Code
+### Add/Modify the Java Code
 
-Paste the following code into `src/main/java/com/keepersecurity/ksmsdk/javatutorial/ManageFileAttachments.java`:
+Update your Java file with the following code. It demonstrates record updates, file upload, download, and deletion.
 
 ```java
 package com.keepersecurity.ksmsdk.javatutorial;
@@ -35,116 +38,117 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Date;
 
-public class ManageFileAttachments {
+public class ManageRecordAndFiles {
 
     private static final String ONE_TIME_TOKEN = "[ONE_TIME_TOKEN_IF_NEEDED]";
     private static final String CONFIG_FILE_NAME = "ksm-config.json";
 
-    // ⚠️ Replace with the UID of a record where your KSM App has edit & view permissions
-    private static final String TARGET_RECORD_UID_FOR_FILES = "[YOUR_RECORD_UID_FOR_FILES]";
-    private static final String SAMPLE_FILE_TO_UPLOAD = "sample-attachment.txt";
-    private static final String DOWNLOADED_FILE_NAME = "downloaded-sample.txt";
+    // ⚠️ Replace with the UID of a record created in a previous step (e.g., Step 3)
+    private static final String TARGET_RECORD_UID = "[YOUR_RECORD_UID_FOR_OPERATIONS]";
+    private static final String SAMPLE_FILE_TO_UPLOAD = "sample-java-attachment.txt";
+    private static final String DOWNLOADED_FILE_NAME = "downloaded-java-sample.txt";
 
     public static void main(String[] args) {
-        System.out.println("🚀 Managing file attachments...");
+        System.out.println("🚀 Updating records and managing file attachments...");
         LocalConfigStorage storage = new LocalConfigStorage(CONFIG_FILE_NAME);
+        SecretsManagerOptions options = null;
 
         try {
-            if (!new File(CONFIG_FILE_NAME).exists() || !ONE_TIME_TOKEN.startsWith("[")) {
+            if (!new File(CONFIG_FILE_NAME).exists() || (ONE_TIME_TOKEN != null && !ONE_TIME_TOKEN.startsWith("["))) {
                 System.out.println("🔑 Initializing KSM storage...");
                 initializeStorage(storage, ONE_TIME_TOKEN);
             }
-            SecretsManagerOptions options = new SecretsManagerOptions(storage);
+            options = new SecretsManagerOptions(storage);
 
-            // --- 1. Upload a File to the Record ---
+            // --- 1. Retrieve the Record ---
+            System.out.println("\n--- Retrieving Record for Operations ---");
+            KeeperSecrets secrets = SecretsManager.getSecrets(options, List.of(TARGET_RECORD_UID));
+            KeeperRecord recordToManage = secrets.getRecordByUid(TARGET_RECORD_UID);
+
+            if (recordToManage == null) {
+                System.err.println("❌ Error: Target record UID '" + TARGET_RECORD_UID + "' not found. Please create it first.");
+                return;
+            }
+            System.out.println("✅ Found record: '" + recordToManage.getTitle() + "' (UID: " + recordToManage.getRecordUid() + ")");
+
+            // --- 2. Update Record Fields ---
+            System.out.println("\n--- Updating Record Fields ---");
+            // Modify existing notes
+            String originalNotes = recordToManage.getNotes() != null ? recordToManage.getNotes() : "";
+            recordToManage.setNotes(originalNotes + "\nUpdated by Java SDK at " + new Date().toString());
+
+            // Add or update a custom field
+            boolean customFieldUpdated = false;
+            for (KeeperRecordField field : recordToManage.getCustom()) {
+                if (field instanceof Text && "SDK_Status".equals(((Text) field).getLabel())) {
+                    ((Text) field).getValue().set(0, "File Ops In Progress"); // Assuming single value text field
+                    customFieldUpdated = true;
+                    break;
+                }
+            }
+            if (!customFieldUpdated) {
+                recordToManage.getCustom().add(new Text("SDK_Status", "SDK Operation Status", new ArrayList<>(List.of("Initial Update"))));
+            }
+            
+            SecretsManager.updateSecret(options, recordToManage); // Save changes
+            System.out.println("✅ Record fields updated successfully.");
+            // Re-fetch to confirm (optional)
+            // recordToManage = SecretsManager.getSecrets(options, List.of(TARGET_RECORD_UID)).getRecordByUid(TARGET_RECORD_UID);
+            // System.out.println("    New Notes: " + recordToManage.getNotes());
+
+            // --- 3. Upload a File ---
             System.out.println("\n--- Uploading File ---");
-            File fileToUpload = new File(SAMPLE_FILE_TO_UPLOAD);
-            if (!fileToUpload.exists()) {
-                System.err.println("❌ Error: Sample file '" + SAMPLE_FILE_TO_UPLOAD + "' not found. Please create it.");
+            File fileToUploadObj = new File(SAMPLE_FILE_TO_UPLOAD);
+            if (!fileToUploadObj.exists()) {
+                System.err.println("❌ Error: Sample file '" + SAMPLE_FILE_TO_UPLOAD + "' not found.");
                 return;
             }
-
-            // To upload, first get the target record
-            // We fetch only the specific record to ensure we have the latest version/details
-            KeeperSecrets secretsForUpload = SecretsManager.getSecrets(options, List.of(TARGET_RECORD_UID_FOR_FILES));
-            KeeperRecord recordForUpload = secretsForUpload.getRecordByUid(TARGET_RECORD_UID_FOR_FILES);
-
-            if (recordForUpload == null) {
-                System.err.println("❌ Error: Target record UID '" + TARGET_RECORD_UID_FOR_FILES + "' not found for upload.");
-                return;
-            }
-
-            // Create KeeperFileUpload object
-            // Title is how it appears in Keeper, Name is the actual filename
             KeeperFileUpload fileUploadData = new KeeperFileUpload(
-                    fileToUpload.getName(), // name (actual filename)
-                    "SDK Uploaded - " + fileToUpload.getName(), // title (display name in Keeper)
-                    Files.probeContentType(fileToUpload.toPath()), // type (optional, attempts to detect MIME type)
-                    Files.readAllBytes(fileToUpload.toPath()) // data
-            );
-
-            System.out.println("📎 Uploading '" + fileUploadData.getName() + "' with title '" + fileUploadData.getTitle() + "' to record UID: " + recordForUpload.getRecordUid());
-            SecretsManager.uploadFile(options, recordForUpload, fileUploadData);
+                    fileToUploadObj.getName(), "SDK Upload - " + fileToUploadObj.getName(),
+                    Files.probeContentType(fileToUploadObj.toPath()), Files.readAllBytes(fileToUploadObj.toPath()));
+            System.out.println("📎 Uploading '" + fileUploadData.getName() + "' to record UID: " + recordToManage.getRecordUid());
+            SecretsManager.uploadFile(options, recordToManage, fileUploadData);
             System.out.println("✅ File uploaded successfully!");
+            recordToManage = SecretsManager.getSecrets(options, List.of(TARGET_RECORD_UID)).getRecordByUid(TARGET_RECORD_UID); // Refresh record
 
-            // --- 2. List Files for the Record ---
-            System.out.println("\n--- Listing Files for Record ---");
-            // Re-fetch the record to see the newly uploaded file and other existing files
-            KeeperSecrets secretsForListing = SecretsManager.getSecrets(options, List.of(TARGET_RECORD_UID_FOR_FILES));
-            KeeperRecord recordForListing = secretsForListing.getRecordByUid(TARGET_RECORD_UID_FOR_FILES);
-
-            if (recordForListing != null && recordForListing.getFiles() != null && !recordForListing.getFiles().isEmpty()) {
-                System.out.println("📄 Files attached to record '" + recordForListing.getTitle() + "' (UID: " + recordForListing.getRecordUid() + "):");
-                for (KeeperFile kf : recordForListing.getFiles()) {
-                    KeeperFileData fileData = kf.getData(); // KeeperFileData holds name, title, size, etc.
-                    System.out.printf("    - Title: %s (Name: %s, UID: %s, Size: %d bytes, Type: %s)%n",
-                            fileData.getTitle(), fileData.getName(), kf.getFileUid(), fileData.getSize(), fileData.getType());
-                }
-            } else {
-                System.out.println("ℹ️ No files found for record UID: " + (recordForListing != null ? recordForListing.getRecordUid() : TARGET_RECORD_UID_FOR_FILES));
-            }
-
-            // --- 3. Download a File from the Record ---
+            // --- 4. Download a File ---
             System.out.println("\n--- Downloading File ---");
-            if (recordForListing != null && recordForListing.getFiles() != null && !recordForListing.getFiles().isEmpty()) {
-                // For this example, let's try to download the file we just uploaded by its title.
-                // In a real scenario, you might know the file UID or iterate to find the specific file.
-                String uploadedFileTitle = "SDK Uploaded - " + SAMPLE_FILE_TO_UPLOAD;
-                KeeperFile fileToDownload = null;
-                for(KeeperFile kf : recordForListing.getFiles()){
-                    if(kf.getData().getTitle().equals(uploadedFileTitle)){
-                        fileToDownload = kf;
-                        break;
-                    }
-                }
-
-                if (fileToDownload != null) {
-                    System.out.println("📥 Downloading file with Title: '" + fileToDownload.getData().getTitle() + "' (UID: " + fileToDownload.getFileUid() + ")");
-                    byte[] downloadedBytes = SecretsManager.downloadFile(options, fileToDownload);
-                    
-                    try (FileOutputStream fos = new FileOutputStream(DOWNLOADED_FILE_NAME)) {
-                        fos.write(downloadedBytes);
-                        System.out.println("✅ File downloaded successfully to: " + DOWNLOADED_FILE_NAME);
-                        System.out.println("    Size: " + downloadedBytes.length + " bytes");
-                        // Verify content (optional)
-                        // String content = new String(downloadedBytes);
-                        // System.out.println("    Content preview: " + content.substring(0, Math.min(content.length(), 30)) + "...");
-                    } catch (IOException e) {
-                        System.err.println("❌ Error saving downloaded file: " + e.getMessage());
-                    }
-                } else {
-                    System.out.println("ℹ️ File with title '" + uploadedFileTitle + "' not found for download.");
+            if (recordToManage.getFiles() != null && !recordToManage.getFiles().isEmpty()) {
+                KeeperFile fileToDownload = recordToManage.getFiles().get(0); // Download the first file
+                System.out.println("📥 Downloading file: '" + fileToDownload.getData().getTitle() + "' (UID: " + fileToDownload.getFileUid() + ")");
+                byte[] downloadedBytes = SecretsManager.downloadFile(options, fileToDownload);
+                try (FileOutputStream fos = new FileOutputStream(DOWNLOADED_FILE_NAME)) {
+                    fos.write(downloadedBytes);
+                    System.out.println("✅ File downloaded to: " + DOWNLOADED_FILE_NAME + " (Size: " + downloadedBytes.length + " bytes)");
+                } catch (IOException e) {
+                    System.err.println("❌ Error saving downloaded file: " + e.getMessage());
                 }
             } else {
-                System.out.println("ℹ️ No files available on the record to download.");
+                System.out.println("ℹ️ No files on record to download.");
             }
 
-            System.out.println("\n🎉 File management operations complete. Check your Keeper Vault and local directory for results.");
+            // --- 5. Delete a File from the Record ---
+            System.out.println("\n--- Deleting File from Record ---");
+             if (recordToManage.getFiles() != null && !recordToManage.getFiles().isEmpty()) {
+                KeeperFile fileToDelete = recordToManage.getFiles().get(0); // Delete the first file for this example
+                System.out.println("🗑️ Attempting to delete file: '" + fileToDelete.getData().getTitle() + "' (UID: " + fileToDelete.getFileUid() + ")");
+                SecretsManager.deleteFile(options, recordToManage.getRecordUid(), fileToDelete.getFileUid());
+                System.out.println("✅ File deletion request sent for UID: " + fileToDelete.getFileUid());
+                // Re-fetch record to verify
+                recordToManage = SecretsManager.getSecrets(options, List.of(TARGET_RECORD_UID)).getRecordByUid(TARGET_RECORD_UID);
+                System.out.println("    Files remaining on record: " + (recordToManage.getFiles() != null ? recordToManage.getFiles().size() : 0));
+            } else {
+                System.out.println("ℹ️ No files on record to delete.");
+            }
+
+            System.out.println("\n🎉 Record update and file management operations complete.");
 
         } catch (Exception e) {
-            System.err.println("❌ Error during file management operations: " + e.getMessage());
+            System.err.println("❌ Error during operations: " + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -153,59 +157,60 @@ public class ManageFileAttachments {
 
 ## 3. Configure Target Record UID
 
--   In `ManageFileAttachments.java`:
-    -   **Crucial**: Replace `[YOUR_RECORD_UID_FOR_FILES]` with the UID of an existing record in your Keeper Vault where your KSM application has appropriate permissions (Edit for upload, View for list/download).
-    -   If needed, update `[ONE_TIME_TOKEN_IF_NEEDED]`.
+-   In your Java file (e.g., `ManageRecordAndFiles.java`):
+    -   **Crucial**: Replace `[YOUR_RECORD_UID_FOR_OPERATIONS]` with the UID of an existing record (e.g., one created in Step 3) where your KSM application has **"Can Edit"** permissions.
+    -   If needed, update `[ONE_TIME_TOKEN_IF_NEEDED]` for initial `ksm-config.json` setup.
 
 ## 4. Run the Application
 
+Ensure your `build.gradle` is configured to run the correct main class (e.g., `com.keepersecurity.ksmsdk.javatutorial.ManageRecordAndFiles`).
+
 ```bash
-gradle -PmainClass=com.keepersecurity.ksmsdk.javatutorial.ManageFileAttachments run --console=plain
+gradle -PmainClass=com.keepersecurity.ksmsdk.javatutorial.ManageRecordAndFiles run --console=plain
 ```
-`gradle -PmainClass=com.keepersecurity.ksmsdk.javatutorial.ManageFileAttachments run --console=plain`{{execute}}
+`gradle -PmainClass=com.keepersecurity.ksmsdk.javatutorial.ManageRecordAndFiles run --console=plain`{{execute}}
 
 ### Expected Output:
 
 ```
-🚀 Managing file attachments...
+🚀 Updating records and managing file attachments...
+
+--- Retrieving Record for Operations ---
+✅ Found record: 'My Secure Login - Java SDK' (UID: YOUR_RECORD_UID_FOR_OPERATIONS)
+
+--- Updating Record Fields ---
+✅ Record fields updated successfully.
 
 --- Uploading File ---
-📎 Uploading 'sample-attachment.txt' with title 'SDK Uploaded - sample-attachment.txt' to record UID: YOUR_RECORD_UID_FOR_FILES
+📎 Uploading 'sample-java-attachment.txt' to record UID: YOUR_RECORD_UID_FOR_OPERATIONS
 ✅ File uploaded successfully!
 
---- Listing Files for Record ---
-📄 Files attached to record 'Your Record Title' (UID: YOUR_RECORD_UID_FOR_FILES):
-    - Title: SDK Uploaded - sample-attachment.txt (Name: sample-attachment.txt, UID: ..., Size: ..., Type: text/plain)
-    ...
-
 --- Downloading File ---
-📥 Downloading file with Title: 'SDK Uploaded - sample-attachment.txt' (UID: ...)
-✅ File downloaded successfully to: downloaded-sample.txt
-    Size: ... bytes
+📥 Downloading file: 'SDK Upload - sample-java-attachment.txt' (UID: ...)
+✅ File downloaded to: downloaded-java-sample.txt (Size: ... bytes)
 
-🎉 File management operations complete. Check your Keeper Vault and local directory for results.
+--- Deleting File from Record ---
+🗑️ Attempting to delete file: 'SDK Upload - sample-java-attachment.txt' (UID: ...)
+✅ File deletion request sent for UID: ...
+    Files remaining on record: 0
+
+🎉 Record update and file management operations complete.
 ```
 
 **Verify**: 
-- Check the target record in your Keeper Vault; the new file `SDK Uploaded - sample-attachment.txt` should be attached.
-- Check your project directory; the file `downloaded-sample.txt` should exist and contain the content of `sample-attachment.txt`.
+- Check the target record in your Keeper Vault; its notes/custom fields should be updated, and the file should have been attached and then removed.
+- Check your project directory for `downloaded-java-sample.txt`.
 
 ## Understanding the Code
 
--   **`KeeperFileUpload`**: This class is used to prepare a file for uploading. You provide the `name` (original filename), `title` (display name in Keeper), `type` (MIME type, optional), and the file `data` as a byte array.
--   **`SecretsManager.uploadFile(options, record, fileUploadData)`**: Uploads the prepared file to the specified `KeeperRecord`.
-    -   The `record` object must be an up-to-date instance of `KeeperRecord` (it's good practice to fetch it just before upload if you don't already have it).
--   **Listing Files**: After fetching a `KeeperRecord`, its `getFiles()` method returns a `List<KeeperFile>`. Each `KeeperFile` object has:
-    -   `getFileUid()`: The unique ID of the file attachment.
-    -   `getData()`: Returns a `KeeperFileData` object which contains metadata like `name`, `title`, `size`, and `type`.
--   **`SecretsManager.downloadFile(options, keeperFile)`**: Downloads the specified `KeeperFile` and returns its content as a byte array.
-
-## Important Notes on File Handling
-
--   **Permissions**: Ensure your KSM application has "Can Edit" permission on the record to upload files and "Can View" to list/download files.
--   **File Size Limits**: Keeper has limits on the size of individual file attachments, which may depend on your subscription plan. The SDK might also impose practical limits for very large files due to memory constraints during upload/download.
--   **Error Handling**: Always include robust error handling for file operations (e.g., file not found, network issues, permission denied).
+-   **Record Update (`record.setNotes()`, `record.getCustom().add()`, `SecretsManager.updateSecret()`)**:
+    -   First, retrieve the `KeeperRecord` object.
+    -   Modify its properties directly (e.g., `setNotes()`, or get a list of fields like `getCustom()` and add/modify `KeeperRecordField` objects within it).
+    -   Call `SecretsManager.updateSecret(options, recordToUpdate)` to persist the changes.
+-   **File Upload (`SecretsManager.uploadFile()`)**: As covered previously, uploads a `KeeperFileUpload` object to a `KeeperRecord`.
+-   **File Download (`SecretsManager.downloadFile()`)**: Downloads a `KeeperFile` and returns its content as `byte[]`.
+-   **File Deletion (`SecretsManager.deleteFile(options, recordUid, fileUid)`)**: Deletes a specific file from a record, identified by the record's UID and the file's UID.
 
 ## Next Steps
 
-In the final step of this tutorial, you'll explore advanced configuration options, including in-memory storage for KSM configuration and secret caching for improved performance.
+In the final step, we will focus on Folder Management (creating, listing, updating, deleting folders) and deleting entire records.
