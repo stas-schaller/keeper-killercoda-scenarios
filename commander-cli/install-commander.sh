@@ -3,14 +3,17 @@
 echo "📦 Updating package lists..."
 apt update -qq
 
-echo "🐍 Installing Python virtual environment packages..."
-apt install -y python3-venv python3-pip python3-full
+echo "🐍 Installing Python packages (avoiding problematic python3-venv)..."
+apt install -y python3-pip python3-dev python3-setuptools
 
 echo "🔧 Creating virtual environment..."
-python3 -m venv /opt/keeper-env
+python3 -m venv /opt/keeper-env --without-pip
 
 echo "⚡ Activating virtual environment..."
 source /opt/keeper-env/bin/activate
+
+echo "📈 Installing pip in virtual environment..."
+curl -sS https://bootstrap.pypa.io/get-pip.py | python
 
 echo "📈 Upgrading pip and installing build tools..."
 pip install --upgrade pip setuptools wheel
