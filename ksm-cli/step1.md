@@ -9,13 +9,23 @@ ksm --version
 ```
 `ksm --version`{{execute}}
 
-**If the command is not found**, activate the virtual environment:
+**If the command is not found**, try these alternatives:
 
+### Option 1: Activate the virtual environment
 ```bash
 source /opt/ksm-env/bin/activate
 ksm --version
 ```
 `source /opt/ksm-env/bin/activate`{{execute}}
+
+### Option 2: Use Python module directly
+```bash
+source /opt/ksm-env/bin/activate
+python -m keeper_secrets_manager_cli --version
+```
+`python -m keeper_secrets_manager_cli --version`{{execute}}
+
+**Note**: For the rest of this tutorial, if `ksm` doesn't work, you can replace `ksm` with `python -m keeper_secrets_manager_cli` in all commands.
 
 ## Understanding KSM CLI
 
@@ -35,6 +45,12 @@ To start using KSM CLI, you need to initialize it with a One-Time Access Token f
 ksm profile init --token XX:XXXX
 ```
 `ksm profile init --token XX:XXXX`{{copy}}
+
+**Alternative if ksm command doesn't work:**
+```bash
+python -m keeper_secrets_manager_cli profile init --token XX:XXXX
+```
+`python -m keeper_secrets_manager_cli profile init --token XX:XXXX`{{copy}}
 
 ## Verify Configuration
 

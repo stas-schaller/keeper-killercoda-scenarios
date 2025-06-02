@@ -28,14 +28,14 @@ echo "🛠️ Creating ksm command wrapper..."
 cat > /usr/local/bin/ksm << 'EOF'
 #!/bin/bash
 source /opt/ksm-env/bin/activate
-exec ksm "$@"
+exec python -m keeper_secrets_manager_cli "$@"
 EOF
 
 chmod +x /usr/local/bin/ksm
 
 echo "🧪 Testing ksm command..."
 source /opt/ksm-env/bin/activate
-ksm --version > /dev/null 2>&1 && echo "✅ ksm command is working!" || echo "⚠️ ksm command needs manual activation"
+/usr/local/bin/ksm --version > /dev/null 2>&1 && echo "✅ ksm command is working!" || echo "⚠️ ksm command needs manual activation"
 
 echo "🎉 KSM CLI installation completed successfully!"
 echo "💡 If ksm command is not found, run: source /opt/ksm-env/bin/activate" 
