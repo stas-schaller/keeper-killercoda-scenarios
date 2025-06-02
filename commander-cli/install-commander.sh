@@ -1,5 +1,10 @@
 #!/bin/bash
 
+# Redirect all output to log file to keep terminal clean
+exec > /tmp/keeper-install.log 2>&1
+
+echo "Starting Keeper Commander CLI installation..."
+
 # Update package lists
 apt update -qq
 
@@ -20,7 +25,6 @@ pip install pyOpenSSL --upgrade
 pip install keepercommander keeper-secrets-manager-core
 
 # Verify installations
-echo "Verifying installations..."
 python -c "import keepercommander; print(f'Keeper Commander version: {keepercommander.__version__}')" 2>/dev/null || echo "Keeper Commander installed successfully"
 
 # Make the virtual environment available globally
@@ -35,10 +39,7 @@ EOF
 
 chmod +x /usr/local/bin/keeper
 
-echo "✅ Keeper Commander CLI installation completed!"
-echo "🐍 Python version: $(python --version)"
-echo "📦 Virtual environment: /opt/keeper-env"
-echo "🚀 Ready to use 'keeper' command!"
+echo "Installation completed successfully!"
 
 # Signal completion to foreground script
 touch /tmp/keeper-setup-complete
