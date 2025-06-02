@@ -1,37 +1,40 @@
 {
-  "title": "KSM SDK: GoLang",
-  "description": "",
+  "title": "Keeper Secrets Manager Go SDK Tutorial",
+  "description": "Learn to integrate Keeper Secrets Manager into Go applications using the official SDK, covering setup, secret retrieval, record creation, file management, and advanced configurations like caching and in-memory storage.",
   "details": {
     "steps": [
       {
-        "title": "Install Package",
+        "title": "Setup & Basic Connection",
         "text": "step1.md"
       },
       {
-        "title": "Sample: One-Time Token",
+        "title": "Retrieving & Using Secrets",
         "text": "step2.md"
       },
       {
-        "title": "Sample: Initialized Config",
+        "title": "Creating Records & Files",
         "text": "step3.md"
       },
       {
-        "title": "Beta Cache Usage Example",
+        "title": "Advanced Config & Caching",
         "text": "step4.md"
       }
     ],
     "intro": {
-      "text": "intro.md"
+      "text": "intro.md",
+      "code": "install-ksm-sdk-golang.sh"
+    },
+    "finish": {
+      "text": "finish.md"
     }
   },
   "environment": {
-    "uieditorpath": "/root/ksm-sample",
-    "hideintro": true, 
-    "hidefinish": true,
-    "uilayout": "editor-terminal"
+    "uilayout": "editor-terminal",
+    "hideintro": false,
+    "hidefinish": false
   },
   "backend": {
-    "imageid": "golang"
+    "imageid": "ubuntu"
   },
   "interface": {
     "layout": "ide"

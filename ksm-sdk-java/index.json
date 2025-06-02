@@ -1,42 +1,41 @@
 {
-  "title": "KSM SDK: Java",
-  "description": "",
+  "title": "Keeper Secrets Manager Java SDK Tutorial",
+  "description": "Learn to integrate Keeper Secrets Manager into Java applications using the official SDK, covering setup, secret retrieval, caching, record creation, and file management.",
   "details": {
     "steps": [
       {
-        "title": "Setup and List Records",
+        "title": "Setup & Basic Connection",
         "text": "step1.md"
       },
       {
-        "title": "Create Simple a Record",
+        "title": "Retrieving Specific Secrets",
         "text": "step2.md"
       },
       {
-        "title": "Create Advanced a Record",
+        "title": "Creating Records & Folders",
         "text": "step3.md"
       },
       {
-        "title": "Update a Record",
+        "title": "File Attachments & Management",
         "text": "step4.md"
       },
       {
-        "title": "Delete a Record",
+        "title": "Advanced Configuration & Caching",
         "text": "step5.md"
-      },
-      {
-        "title": "List Records",
-        "text": "step6.md"
       }
     ],
     "intro": {
       "text": "intro.md",
-      "foreground": "init.sh"
+      "code": "install-ksm-sdk-java.sh"
+    },
+    "finish": {
+      "text": "finish.md"
     }
   },
   "environment": {
-    "hideintro": true,
-    "hidefinish": true,
-    "uilayout": "editor-terminal"
+    "uilayout": "editor-terminal",
+    "hideintro": false,
+    "hidefinish": false
   },
   "backend": {
     "imageid": "ubuntu"

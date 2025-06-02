@@ -25,8 +25,7 @@ export KSM_CONFIG_BASE64="your_base64_config_here"
 
 # Verify it's set (don't show the actual value)
 echo "KSM_CONFIG_BASE64 is set: $([ -n "$KSM_CONFIG_BASE64" ] && echo 'YES' || echo 'NO')"
-```
-`export KSM_CONFIG_BASE64="demo_config" && echo "KSM_CONFIG_BASE64 is set: $([ -n "$KSM_CONFIG_BASE64" ] && echo 'YES' || echo 'NO')"`{{execute}}
+```{{copy}}
 
 ## Production Deployment Strategies
 

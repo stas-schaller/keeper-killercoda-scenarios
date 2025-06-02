@@ -59,8 +59,7 @@ if first_duration > 0:
 print(f"\n--- Secret Details ---")
 for i, secret in enumerate(all_secrets, 1):
     print(f"Secret {i}: {secret.title} ({secret.type})")
-```
-`{{copy}}`
+```{{copy}}
 
 ### 3. Configure Your Token
 

@@ -15,8 +15,7 @@ The KSM Ansible plugin needs a configuration file to authenticate with Keeper. I
 
 ```bash
 keeper_ansible --token [ONE TIME TOKEN]
-```
-`keeper_ansible --token [ONE TIME TOKEN]`{{copy}}
+```{{copy}}
 
 **⚠️ Important**: Replace `[ONE TIME TOKEN]` with your actual token from Keeper Web Vault.
 

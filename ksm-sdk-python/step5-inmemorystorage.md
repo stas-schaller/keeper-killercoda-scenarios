@@ -1,4 +1,3 @@
-
 # Step 5: In-Memory Configuration
 
 ## Why Use In-Memory Storage?
@@ -104,8 +103,7 @@ except Exception as e:
     print("   - Expired or revoked application")
     print("   - Network connectivity problems")
     print("   - Incorrect environment variable format")
-```
-`{{copy}}`
+```{{copy}}
 
 ### 4. Set Environment Variable (Demo)
 
@@ -134,7 +132,7 @@ RUN pip install keeper-secrets-manager-core
 COPY app.py /app/
 ENV KSM_CONFIGB64=""
 CMD ["python", "/app/app.py"]
-```
+```{{copy}}
 
 ### Kubernetes Deployment
 ```yaml
@@ -154,7 +152,7 @@ spec:
             secretKeyRef:
               name: ksm-config
               key: config-b64
-```
+```{{copy}}
 
 ### AWS Lambda
 ```python
@@ -167,7 +165,7 @@ def lambda_handler(event, context):
     sm = SecretsManager(config=InMemoryKeyValueStorage(config_b64))
     secrets = sm.get_secrets()
     return {'statusCode': 200, 'body': f'Found {len(secrets)} secrets'}
-```
+```{{copy}}
 
 ## Security Best Practices
 

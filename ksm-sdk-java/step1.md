@@ -1,89 +1,194 @@
-### 1. Create Java Project
+# Step 1: Setup & Basic Connection
 
-```
+This step guides you through setting up a new Gradle project, adding the Keeper Secrets Manager (KSM) Java SDK, and writing your first application to connect to Keeper and list shared secrets.
+
+## 1. Initialize Gradle Project
+
+First, create a new Java application project using Gradle. This command sets up a basic project structure.
+
+```bash
 gradle init \
---project-name ksmsample \
---package com.keepersecurity.ksmsample \
+--project-name ksmsdk-java-tutorial \
+--package com.keepersecurity.ksmsdk.javatutorial \
 --type java-application \
 --dsl groovy \
 --test-framework junit
-```{{execute}}
-
-
-### 2. Replace `build.gradle` with the code below:
-
 ```
+`gradle init --project-name ksmsdk-java-tutorial --package com.keepersecurity.ksmsdk.javatutorial --type java-application --dsl groovy --test-framework junit`{{execute}}
+
+This creates a new directory `ksmsdk-java-tutorial` with your project.
+
+## 2. Configure `build.gradle`
+
+Next, update your `build.gradle` file to include the KSM Java SDK dependency. Replace the entire content of `ksmsdk-java-tutorial/build.gradle` with the following:
+
+```groovy
 plugins {
     id 'java'
     id 'application'
 }
-
-group 'com.keepersecurity.secrets-manager'
-version '1.0-SNAPSHOT'
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    implementation 'com.keepersecurity.secrets-manager:core:16.3.+'
+    // Use the latest version of the Keeper Secrets Manager SDK for Java
+    implementation 'com.keepersecurity.secrets-manager:core:+' // '+' fetches the latest version
 }
 
 application {
     // Define the main class for the application.
-    mainClassName = project.hasProperty("mainClass") ? project.getProperty("mainClass") : "NULL"
+    // This will be set dynamically when running specific examples.
+    mainClass = project.hasProperty("mainClass") ? project.getProperty("mainClass") : "com.keepersecurity.ksmsdk.javatutorial.ListAllSecrets"
+}
+
+// Ensure UTF-8 encoding for cross-platform compatibility
+compileJava {
+    options.encoding = 'UTF-8'
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
 }
 ```{{copy}}
 
-### 3. Create Java class to list records:
+Navigate into your project directory:
+`cd ksmsdk-java-tutorial`{{execute}}
 
-#### Create file
-`touch src/main/java/com/keepersecurity/ksmsample/KSMListRecords.java`{{execute}}
+## 3. Create Your First KSM Application: List All Secrets
 
-#### Place code below into the created file, which is under `src/main/java/com/keepersecurity/ksmsample/`
+Let's create a Java class to connect to KSM and list all secrets shared with your application.
 
+### Create the Java File
+
+Ensure you are in the `ksmsdk-java-tutorial` directory.
+
+```bash
+mkdir -p src/main/java/com/keepersecurity/ksmsdk/javatutorial
+touch src/main/java/com/keepersecurity/ksmsdk/javatutorial/ListAllSecrets.java
 ```
-package com.keepersecurity.ksmsample;
+`mkdir -p src/main/java/com/keepersecurity/ksmsdk/javatutorial && touch src/main/java/com/keepersecurity/ksmsdk/javatutorial/ListAllSecrets.java`{{execute}}
+
+### Add the Java Code
+
+Paste the following code into `src/main/java/com/keepersecurity/ksmsdk/javatutorial/ListAllSecrets.java`:
+
+```java
+package com.keepersecurity.ksmsdk.javatutorial;
 
 import com.keepersecurity.secretsManager.core.*;
 import static com.keepersecurity.secretsManager.core.SecretsManager.initializeStorage;
 import java.util.List;
 
-public class KSMListRecords {
+public class ListAllSecrets {
 
-    public static void getSecrets(){
-        // oneTimeToken is used only once to initialize the storage
-        // after the first run, subsequent calls will use ksm-config1.json
-        String oneTimeToken = "[ONE TIME TOKEN]";
-        LocalConfigStorage storage = new LocalConfigStorage("ksm-config1.json");
+    // ⚠️ IMPORTANT: Replace with your actual One-Time Token from Keeper Vault
+    private static final String ONE_TIME_TOKEN = "[ONE_TIME_TOKEN_HERE]";
+    private static final String CONFIG_FILE_NAME = "ksm-config.json";
+
+    public static void main(String[] args) {
+        System.out.println("🚀 Attempting to connect to Keeper and list secrets...");
+
+        // Use LocalConfigStorage for storing KSM configuration locally
+        LocalConfigStorage storage = new LocalConfigStorage(CONFIG_FILE_NAME);
+
         try {
-            initializeStorage(storage, oneTimeToken);
+            // Initialize storage with the One-Time Token (only needed for the first run)
+            // Subsequent runs will use the generated ksm-config.json
+            System.out.println("🔑 Initializing KSM storage with token (if first run)...");
+            initializeStorage(storage, ONE_TIME_TOKEN);
+            System.out.println("💾 Storage initialized. Using config: " + CONFIG_FILE_NAME);
+
+            // Set up options for the SecretsManager client
             SecretsManagerOptions options = new SecretsManagerOptions(storage);
 
+            // Retrieve all secrets shared with this application
+            System.out.println("📡 Fetching all secrets...");
             KeeperSecrets secrets = SecretsManager.getSecrets(options);
 
-            //get records from secrets
             List<KeeperRecord> records = secrets.getRecords();
+            System.out.println("✅ Successfully fetched " + records.size() + " record(s):");
 
-            for (KeeperRecord record : records) {
-                System.out.println(record.getRecordUid());
+            if (records.isEmpty()) {
+                System.out.println("\nℹ️ No records found. Ensure records are shared with your KSM application in the Keeper Vault.");
+            } else {
+                System.out.println("\n--- All Shared Records ---");
+                for (int i = 0; i < records.size(); i++) {
+                    KeeperRecord record = records.get(i);
+                    System.out.printf("[%d] Record UID: %s%n", i + 1, record.getRecordUid());
+                    System.out.printf("    Title: %s%n", record.getTitle());
+                    System.out.printf("    Type: %s%n", record.getType());
+                    System.out.printf("    Fields Count: %d%n", record.getData().getFields().size());
+                    if (record.getFiles() != null) {
+                        System.out.printf("    Files Count: %d%n", record.getFiles().size());
+                    }
+                    System.out.println("---");
+                }
             }
 
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            System.err.println("❌ Error communicating with Keeper Secrets Manager: " + e.getMessage());
+            e.printStackTrace();
+            System.err.println("\n💡 Troubleshooting Tips:");
+            System.err.println("- Ensure your ONE_TIME_TOKEN is correct and has not been used before.");
+            System.err.println("- Check network connectivity to Keeper servers.");
+            System.err.println("- Verify that records are shared with the KSM application in your Keeper Vault.");
         }
-    }
-
-    public static void main(String[] args) {
-        getSecrets();
     }
 }
 ```{{copy}}
 
-### 4. Modify code
+## 4. Configure Your One-Time Token
 
-Replace `[ONE TIME TOKEN]` with the code you have generated in the Keeper Web Vault
+-   In the `ListAllSecrets.java` file, **replace `[ONE_TIME_TOKEN_HERE]`** with a valid One-Time Token obtained from your Keeper Vault.
+    -   To get a token: Log into Keeper Web Vault -> Secrets Manager -> Applications -> Select/Create Application -> Devices -> Add Device -> Method: One-Time Token.
 
-### 5. Execute Java code:
+## 5. Run the Application
 
-`gradle -PmainClass=com.keepersecurity.ksmsample.KSMListRecords run`{{execute}}
+Execute the Java application using Gradle. This command compiles and runs your `ListAllSecrets` class.
+
+```bash
+gradle -PmainClass=com.keepersecurity.ksmsdk.javatutorial.ListAllSecrets run --console=plain
+```
+`gradle -PmainClass=com.keepersecurity.ksmsdk.javatutorial.ListAllSecrets run --console=plain`{{execute}}
+
+### Expected Output:
+
+You should see a list of your shared secrets' UIDs, titles, types, and field/file counts, or an appropriate error message if issues occur.
+
+```
+🚀 Attempting to connect to Keeper and list secrets...
+🔑 Initializing KSM storage with token (if first run)...
+💾 Storage initialized. Using config: ksm-config.json
+📡 Fetching all secrets...
+✅ Successfully fetched X record(s):
+
+--- All Shared Records ---
+[1] Record UID: abcXYZ123...
+    Title: My Sample Login
+    Type: login
+    Fields Count: 2
+    Files Count: 1
+---
+...
+```
+
+## Understanding the Code
+
+-   **`LocalConfigStorage`**: Manages the local `ksm-config.json` file, which stores encrypted application keys and connection details after the first successful token-based initialization.
+-   **`initializeStorage(storage, ONE_TIME_TOKEN)`**: This is crucial for the first run. It uses the One-Time Token to securely establish a persistent configuration in `ksm-config.json`.
+-   **`SecretsManagerOptions`**: Used to configure the KSM client, primarily by providing the storage mechanism.
+-   **`SecretsManager.getSecrets(options)`**: Fetches all records and associated data (like files, folders) shared with the KSM application defined by the configuration.
+-   **`KeeperSecrets` & `KeeperRecord`**: These classes hold the retrieved secret data. `record.getTitle()`, `record.getType()`, `record.getData().getFields()`, and `record.getFiles()` are used to access specific details.
+
+## Troubleshooting
+
+-   **Token Already Used**: Ensure your One-Time Token is fresh. They are single-use.
+-   **No Records Found**: Verify in your Keeper Vault that records are shared with the KSM application whose token you are using.
+-   **Network Issues**: Check your internet connection and any firewall rules that might block access to Keeper servers.
+-   **Gradle Build Errors**: Ensure `build.gradle` is correctly configured and all dependencies are resolved. Try `gradle clean build --refresh-dependencies`.
+
+In the next step, we'll explore how to retrieve specific secrets and their fields.

@@ -1,4 +1,3 @@
-
 # Step 3: Creating Records
 
 ## Programmatic Record Creation
@@ -64,8 +63,7 @@ except Exception as e:
     print("   - Valid ONE TIME TOKEN")
     print("   - Correct FOLDER UID")
     print("   - Write permissions to the folder")
-```
-`{{copy}}`
+```{{copy}}
 
 ### 3. Configure Required Parameters
 

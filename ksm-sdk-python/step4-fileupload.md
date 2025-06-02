@@ -1,4 +1,3 @@
-
 # Step 4: File Upload & Attachments
 
 ## File Attachments in Keeper
@@ -101,8 +100,7 @@ except Exception as e:
     print("   - Correct FOLDER UID")
     print("   - Write permissions to the folder")
     print("   - File exists and is readable")
-```
-`{{copy}}`
+```{{copy}}
 
 ### 4. Configure Required Parameters
 

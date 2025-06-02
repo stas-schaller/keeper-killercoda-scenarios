@@ -1,29 +1,33 @@
 {
-  "title": "KSM SDK: .NET",
-  "description": "",
+  "title": "Keeper Secrets Manager .NET SDK Tutorial",
+  "description": "Learn to integrate Keeper Secrets Manager into .NET applications using the official SDK, covering setup, secret retrieval, record creation, file management, and advanced configurations.",
   "details": {
     "steps": [
       {
-        "title": "Setup and List Records",
-        "text": "step1.md",
-        "code": "init.sh"
+        "title": "Setup & Basic Connection",
+        "text": "step1.md"
       },
       {
-        "title": "Create a Record (Simple Login)",
+        "title": "Retrieving & Using Secrets",
         "text": "step2.md"
       },
       {
-        "title": "Create a Record (Advanced Custom Type)",
+        "title": "Creating Records & Files",
         "text": "step3.md"
       }
-    ]
-    
+    ],
+    "intro": {
+      "text": "intro.md",
+      "code": "install-ksm-sdk-dotnet.sh"
+    },
+    "finish": {
+      "text": "finish.md"
+    }
   },
   "environment": {
-    "showide": false,
-    "hideintro": true,
-    "hidefinish": true,
-    "uilayout": "editor-terminal"
+    "uilayout": "editor-terminal",
+    "hideintro": false,
+    "hidefinish": false
   },
   "backend": {
     "imageid": "ubuntu"

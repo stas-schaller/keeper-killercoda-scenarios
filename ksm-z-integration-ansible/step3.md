@@ -1,7 +1,3 @@
-
-
-
-
 # Step 3: Advanced Playbook Examples
 
 ## Database Server Automation with KSM
