@@ -1,24 +1,15 @@
 # Step 1: Setup & Connect to Keeper
 
-## Activate the Environment
-
-First, activate the Keeper Commander CLI environment:
-
-```bash
-source /opt/keeper-env/bin/activate
-```
-`source /opt/keeper-env/bin/activate`{{execute}}
-
 ## Verify Installation
 
-Now verify that Keeper Commander CLI is working:
+First, verify that Keeper Commander CLI is working:
 
 ```bash
-python -m keepercommander.cli --version
+python3 -m keepercommander.cli --version
 ```
-`python -m keepercommander.cli --version`{{execute}}
+`python3 -m keepercommander.cli --version`{{execute}}
 
-**Note**: For all commands in this tutorial, use `python -m keepercommander.cli` instead of just `keeper`.
+**Note**: For all commands in this tutorial, use `python3 -m keepercommander.cli`.
 
 ## Understanding Keeper Data Centers
 
@@ -30,39 +21,39 @@ Choose the appropriate command based on your account's data center location:
 
 ### 🇺🇸 United States (Default)
 ```bash
-python -m keepercommander.cli shell
+python3 -m keepercommander.cli shell
 ```
-`python -m keepercommander.cli shell`{{execute}}
+`python3 -m keepercommander.cli shell`{{execute}}
 
 ### 🇪🇺 European Union
 ```bash
-python -m keepercommander.cli shell --server keepersecurity.eu
+python3 -m keepercommander.cli shell --server keepersecurity.eu
 ```
-`python -m keepercommander.cli shell --server keepersecurity.eu`{{execute}}
+`python3 -m keepercommander.cli shell --server keepersecurity.eu`{{execute}}
 
 ### 🇦🇺 Australia
 ```bash
-python -m keepercommander.cli shell --server keepersecurity.com.au
+python3 -m keepercommander.cli shell --server keepersecurity.com.au
 ```
-`python -m keepercommander.cli shell --server keepersecurity.com.au`{{execute}}
+`python3 -m keepercommander.cli shell --server keepersecurity.com.au`{{execute}}
 
 ### 🇺🇸 Government Cloud
 ```bash
-python -m keepercommander.cli shell --server govcloud.keepersecurity.us
+python3 -m keepercommander.cli shell --server govcloud.keepersecurity.us
 ```
-`python -m keepercommander.cli shell --server govcloud.keepersecurity.us`{{execute}}
+`python3 -m keepercommander.cli shell --server govcloud.keepersecurity.us`{{execute}}
 
 ### 🇨🇦 Canada
 ```bash
-python -m keepercommander.cli shell --server keepersecurity.ca
+python3 -m keepercommander.cli shell --server keepersecurity.ca
 ```
-`python -m keepercommander.cli shell --server keepersecurity.ca`{{execute}}
+`python3 -m keepercommander.cli shell --server keepersecurity.ca`{{execute}}
 
 ### 🇯🇵 Japan
 ```bash
-python -m keepercommander.cli shell --server keepersecurity.jp
+python3 -m keepercommander.cli shell --server keepersecurity.jp
 ```
-`python -m keepercommander.cli shell --server keepersecurity.jp`{{execute}}
+`python3 -m keepercommander.cli shell --server keepersecurity.jp`{{execute}}
 
 ## What Happens Next
 
