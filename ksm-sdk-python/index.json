@@ -1,42 +1,41 @@
 {
-  "title": "KSM SDK: Python",
-  "description": "",
+  "title": "Keeper Secrets Manager Python SDK Tutorial",
+  "description": "Learn to integrate Keeper Secrets Manager into Python applications using the official SDK",
   "details": {
     "steps": [
       {
-        "title": "Setup",
+        "title": "Basic Connection & Retrieval",
         "text": "step1.md"
       },
       {
-        "title": "Caching",
+        "title": "Caching for Performance",
         "text": "step2.md"
       },
       {
-        "title": "Record Creation (Simple)",
+        "title": "Creating Records",
         "text": "step3.md"
       },
       {
-        "title": "Record Creation and File Upload (Simple)",
+        "title": "File Upload & Attachments",
         "text": "step4-fileupload.md"
       },
       {
-        "title": "Retrieve Records using In-Memery Storage",
+        "title": "In-Memory Configuration",
         "text": "step5-inmemorystorage.md"
       }
     ],
     "intro": {
       "text": "intro.md",
-      "code": "init.sh"
+      "code": "install-ksm-sdk.sh"
     }
-
   },
   "environment": {
-    "hideintro": true, 
+    "hideintro": false, 
     "hidefinish": true,
     "uilayout": "editor-terminal"
   },
   "backend": {
-    "imageid": "python"
+    "imageid": "ubuntu"
   },
   "interface": {
     "layout": "ide"
