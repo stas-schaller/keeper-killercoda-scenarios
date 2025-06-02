@@ -21,33 +21,13 @@ echo ""
 echo -e "${YELLOW}🚀 Initializing your secure environment...${NC}"
 echo ""
 
-# Progress steps
-steps=(
-    "🐍 Setting up Python 3.12 environment"
-    "📦 Installing security packages"
-    "🔧 Configuring Keeper Commander CLI"
-    "⚡ Finalizing setup"
-)
-
-# Show progress with animation
-for i in "${!steps[@]}"; do
-    echo -e "${BLUE}${steps[$i]}${NC}"
-    
-    # Animated progress bar
-    echo -n "   ["
-    for j in {1..20}; do
-        echo -n "█"
-        sleep 0.1
-    done
-    echo -e "] ${GREEN}✓${NC}"
-    echo ""
-done
-
-# Wait for actual installation to complete
-echo -e "${YELLOW}⏳ Waiting for installation to complete...${NC}"
+# Simple progress without showing steps
+echo -e "${BLUE}Setting up Python 3.12 and Keeper Commander CLI...${NC}"
 echo ""
 
-# Clean progress dots
+# Wait for actual installation to complete with clean spinner
+echo -e "${YELLOW}⏳ Installing packages (this may take a moment)...${NC}"
+
 progress_count=0
 while [ ! -f /tmp/keeper-setup-complete ]; do
     case $((progress_count % 4)) in
