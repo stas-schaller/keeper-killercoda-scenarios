@@ -1,31 +1,24 @@
 # Step 1: Initialize & Configure KSM CLI
 
-## Verify Installation
+## Activate the Environment
 
-First, let's verify that the Keeper Secrets Manager CLI has been installed correctly:
+First, activate the KSM CLI environment:
 
-```bash
-ksm --version
-```
-`ksm --version`{{execute}}
-
-**If the command is not found**, try these alternatives:
-
-### Option 1: Activate the virtual environment
 ```bash
 source /opt/ksm-env/bin/activate
-ksm --version
 ```
 `source /opt/ksm-env/bin/activate`{{execute}}
 
-### Option 2: Use Python module directly
+## Verify Installation
+
+Now verify that the Keeper Secrets Manager CLI is working:
+
 ```bash
-source /opt/ksm-env/bin/activate
 python -m keeper_secrets_manager_cli --version
 ```
 `python -m keeper_secrets_manager_cli --version`{{execute}}
 
-**Note**: For the rest of this tutorial, if `ksm` doesn't work, you can replace `ksm` with `python -m keeper_secrets_manager_cli` in all commands.
+**Note**: For all commands in this tutorial, use `python -m keeper_secrets_manager_cli` instead of just `ksm`.
 
 ## Understanding KSM CLI
 
@@ -42,12 +35,6 @@ To start using KSM CLI, you need to initialize it with a One-Time Access Token f
 **⚠️ Important**: Replace `XX:XXXX` with your actual One-Time Access Token from Keeper.
 
 ```bash
-ksm profile init --token XX:XXXX
-```
-`ksm profile init --token XX:XXXX`{{copy}}
-
-**Alternative if ksm command doesn't work:**
-```bash
 python -m keeper_secrets_manager_cli profile init --token XX:XXXX
 ```
 `python -m keeper_secrets_manager_cli profile init --token XX:XXXX`{{copy}}
@@ -57,18 +44,18 @@ python -m keeper_secrets_manager_cli profile init --token XX:XXXX
 After initialization, verify your configuration:
 
 ```bash
-ksm profile list
+python -m keeper_secrets_manager_cli profile list
 ```
-`ksm profile list`{{execute}}
+`python -m keeper_secrets_manager_cli profile list`{{execute}}
 
 ## Test Connection
 
 Test that you can connect to your Keeper vault:
 
 ```bash
-ksm secret list
+python -m keeper_secrets_manager_cli secret list
 ```
-`ksm secret list`{{execute}}
+`python -m keeper_secrets_manager_cli secret list`{{execute}}
 
 **Note**: If you see an error, make sure you've replaced `XX:XXXX` with your actual token and that your Keeper account has Secrets Manager enabled.
 
@@ -77,8 +64,8 @@ ksm secret list
 The KSM CLI stores its configuration in a local file. You can view the configuration location:
 
 ```bash
-ksm config show
+python -m keeper_secrets_manager_cli config show
 ```
-`ksm config show`{{execute}}
+`python -m keeper_secrets_manager_cli config show`{{execute}}
 
 This configuration contains encrypted connection details and is safe to store locally.

@@ -35,7 +35,8 @@ chmod +x /usr/local/bin/ksm
 
 echo "🧪 Testing ksm command..."
 source /opt/ksm-env/bin/activate
-/usr/local/bin/ksm --version > /dev/null 2>&1 && echo "✅ ksm command is working!" || echo "⚠️ ksm command needs manual activation"
+python -m keeper_secrets_manager_cli --version > /dev/null 2>&1 && echo "✅ ksm command is working!" || echo "⚠️ ksm command needs manual activation"
 
 echo "🎉 KSM CLI installation completed successfully!"
-echo "💡 If ksm command is not found, run: source /opt/ksm-env/bin/activate" 
+echo "💡 To use ksm: source /opt/ksm-env/bin/activate"
+echo "💡 Then run: python -m keeper_secrets_manager_cli [command]" 

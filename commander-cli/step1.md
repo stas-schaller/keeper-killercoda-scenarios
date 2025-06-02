@@ -1,21 +1,24 @@
 # Step 1: Setup & Connect to Keeper
 
-## Verify Installation
+## Activate the Environment
 
-First, let's verify that Keeper Commander CLI has been installed correctly:
-
-```bash
-keeper --version
-```
-`keeper --version`{{execute}}
-
-**If the command is not found**, activate the virtual environment:
+First, activate the Keeper Commander CLI environment:
 
 ```bash
 source /opt/keeper-env/bin/activate
-keeper --version
 ```
 `source /opt/keeper-env/bin/activate`{{execute}}
+
+## Verify Installation
+
+Now verify that Keeper Commander CLI is working:
+
+```bash
+python -m keepercommander.cli --version
+```
+`python -m keepercommander.cli --version`{{execute}}
+
+**Note**: For all commands in this tutorial, use `python -m keepercommander.cli` instead of just `keeper`.
 
 ## Understanding Keeper Data Centers
 
@@ -27,43 +30,43 @@ Choose the appropriate command based on your account's data center location:
 
 ### 🇺🇸 United States (Default)
 ```bash
-keeper shell
+python -m keepercommander.cli shell
 ```
-`keeper shell`{{execute}}
+`python -m keepercommander.cli shell`{{execute}}
 
 ### 🇪🇺 European Union
 ```bash
-keeper shell --server keepersecurity.eu
+python -m keepercommander.cli shell --server keepersecurity.eu
 ```
-`keeper shell --server keepersecurity.eu`{{execute}}
+`python -m keepercommander.cli shell --server keepersecurity.eu`{{execute}}
 
 ### 🇦🇺 Australia
 ```bash
-keeper shell --server keepersecurity.com.au
+python -m keepercommander.cli shell --server keepersecurity.com.au
 ```
-`keeper shell --server keepersecurity.com.au`{{execute}}
+`python -m keepercommander.cli shell --server keepersecurity.com.au`{{execute}}
 
 ### 🇺🇸 Government Cloud
 ```bash
-keeper shell --server govcloud.keepersecurity.us
+python -m keepercommander.cli shell --server govcloud.keepersecurity.us
 ```
-`keeper shell --server govcloud.keepersecurity.us`{{execute}}
+`python -m keepercommander.cli shell --server govcloud.keepersecurity.us`{{execute}}
 
 ### 🇨🇦 Canada
 ```bash
-keeper shell --server keepersecurity.ca
+python -m keepercommander.cli shell --server keepersecurity.ca
 ```
-`keeper shell --server keepersecurity.ca`{{execute}}
+`python -m keepercommander.cli shell --server keepersecurity.ca`{{execute}}
 
 ### 🇯🇵 Japan
 ```bash
-keeper shell --server keepersecurity.jp
+python -m keepercommander.cli shell --server keepersecurity.jp
 ```
-`keeper shell --server keepersecurity.jp`{{execute}}
+`python -m keepercommander.cli shell --server keepersecurity.jp`{{execute}}
 
 ## What Happens Next
 
-When you run the `keeper shell` command:
+When you run the command:
 
 1. **Connection Established**: Commander connects to your specified data center
 2. **Authentication Prompt**: You'll be asked for your email and master password
