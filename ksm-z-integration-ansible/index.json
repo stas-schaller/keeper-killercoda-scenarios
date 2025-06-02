@@ -1,30 +1,37 @@
 {
-  "noindex": true,
-  "title": "KSM Integration: Ansible",
-  "description": "",
+  "title": "Keeper Secrets Manager Integration with Ansible",
+  "description": "Learn to integrate Keeper Secrets Manager with Ansible for secure automation and configuration management",
   "details": {
     "steps": [
       {
-        "title": "Install Ansible",
+        "title": "Setup & Installation",
         "text": "step1.md"
       },
       {
-        "title": "",
+        "title": "Configuration & Basic Usage",
         "text": "step2.md"
+      },
+      {
+        "title": "Advanced Playbook Examples",
+        "text": "step3.md"
+      },
+      {
+        "title": "Production Best Practices",
+        "text": "step4.md"
       }
     ],
     "intro": {
       "text": "intro.md",
-      "code": "install-ansible-ubuntu.sh"
+      "code": "install-ansible-ksm.sh"
     }
   },
   "environment": {
     "uieditorpath": "/root/my-playbooks",
-    "hideintro": true,
+    "hideintro": false,
     "hidefinish": true,
     "uilayout": "editor-terminal"
   },
   "backend": {
-    "imageid": "python"
+    "imageid": "ubuntu"
   }
 }

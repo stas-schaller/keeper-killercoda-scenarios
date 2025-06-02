@@ -41,9 +41,12 @@ for i, secret in enumerate(all_secrets, 1):
     print(f"Type: {secret.type}")
     print(f"UID: {secret.uid}")
     # Print field information (without sensitive values)
-    print(f"Fields: {len(secret.fields)} field(s)")
-```
-`{{copy}}`
+    fields = secret.dict.get('fields', [])
+    print(f"Fields: {len(fields)} field(s)")
+    if fields:
+        field_types = [field.get('type', 'unknown') for field in fields]
+        print(f"Field types: {', '.join(field_types)}")
+```{{copy}}
 
 ### 3. Configure Your Token
 

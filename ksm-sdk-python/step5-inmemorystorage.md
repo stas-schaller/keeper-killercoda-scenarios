@@ -85,11 +85,14 @@ try:
         print(f"📝 Title: {secret.title}")
         print(f"🔑 Type: {secret.type}")
         print(f"🆔 UID: {secret.uid}")
-        print(f"📋 Fields: {len(secret.fields)} field(s)")
+        
+        # Get fields from the record dictionary
+        fields = secret.dict.get('fields', [])
+        print(f"📋 Fields: {len(fields)} field(s)")
         
         # Show field types (without values for security)
-        field_types = [field.type for field in secret.fields if hasattr(field, 'type')]
-        if field_types:
+        if fields:
+            field_types = [field.get('type', 'unknown') for field in fields]
             print(f"🏷️  Field types: {', '.join(field_types)}")
     
     print(f"\n🎉 In-memory configuration working perfectly!")
