@@ -1,1 +1,9 @@
-keeper-secrets-manager-cli
+# Keeper Secrets Manager CLI Dependencies
+# Requires Python 3.12+
+
+keeper-secrets-manager-cli>=16.0.0
+cryptography>=41.0.0
+
+# Additional dependencies for optimal Python 3.12+ performance
+setuptools>=68.0.0
+wheel>=0.41.0

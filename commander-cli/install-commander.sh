@@ -34,7 +34,4 @@ EOF
 
 chmod +x /usr/local/bin/keeper
 
-echo "🎉 Installation completed successfully!"
-
-# Signal completion to foreground script
-touch /tmp/keeper-setup-complete
+echo "🎉 Keeper Commander CLI installation completed successfully!"

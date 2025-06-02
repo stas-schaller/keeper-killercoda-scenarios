@@ -1,31 +1,35 @@
 {
   "noindex": true,
-  "title": "Secrets Manager CLI",
-  "environment": {
-    "hideintro": true,
-    "hidefinish": true,
-    "uilayout": "terminal"
-  },
+  "title": "Keeper Secrets Manager CLI Tutorial",
+  "description": "Learn how to use Keeper Secrets Manager CLI to securely access and manage your secrets from the command line. This interactive tutorial covers installation, authentication, secret retrieval, and automation integration.",
   "details": {
     "steps": [
       {
-        "title": "Pre-requisites",
+        "title": "Step 1 - Initialize & Configure KSM CLI",
         "text": "step1.md"
       },
       {
-        "title": "KSM Secrets Setup",
+        "title": "Step 2 - Secret Management Operations",
         "text": "step2.md"
       },
       {
-        "title": "Other commands example",
+        "title": "Step 3 - Advanced Usage & Automation",
         "text": "step3.md"
       }
     ],
     "intro": {
       "text": "intro.md",
-      "code": "foreground.sh",
-      "credits": ""
+      "credits": "Keeper Security",
+      "code": "install-ksm.sh"
     }
+  },
+  "time": "15-20 minutes",
+  "difficulty": "Beginner",
+  "environment": {
+    "hideintro": false,
+    "hidefinish": true,
+    "uilayout": "terminal",
+    "showdashboard": true
   },
   "backend": {
     "imageid": "python"

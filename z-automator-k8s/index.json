@@ -1,0 +1,26 @@
+{
+  "title": "Keeper Automator In Kubernetes",
+  "description": "",
+  "details": {
+    "steps": [
+      {
+        "title": "Configure",
+        "text": "step1.md"
+      },
+      {
+        "title": "Step 1",
+        "text": "step2.md"
+      }
+    ],
+    "intro": {
+      "text": "intro.md"
+    }
+  },
+  "environment": {
+    "hideintro": true,
+    "hidefinish": true
+  },
+  "backend": {
+    "imageid": "kubernetes-kubeadm-1node"
+  }
+}
