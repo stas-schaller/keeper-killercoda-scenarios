@@ -9,6 +9,14 @@ ksm --version
 ```
 `ksm --version`{{execute}}
 
+**If the command is not found**, activate the virtual environment:
+
+```bash
+source /opt/ksm-env/bin/activate
+ksm --version
+```
+`source /opt/ksm-env/bin/activate`{{execute}}
+
 ## Understanding KSM CLI
 
 The KSM CLI provides secure access to your Keeper vault through the Secrets Manager. It uses:
