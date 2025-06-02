@@ -43,7 +43,5 @@ This table provides a quick overview of the key features covered in each Keeper 
 **Notes:**
 - All SDKs inherently support the full range of KSM capabilities (listing, getting, creating, updating, deleting records/folders/files). The table reflects what is *emphasized and demonstrated within the tutorial steps* of this repository.
 - For CLI tools (KSM CLI), many features are available through their rich command sets, even if not every single one is part of a specific tutorial step.
-- The JavaScript, Go, Python, and Java SDK tutorials are now highly comprehensive, demonstrating a wide array of features with verified SDK calls.
-- The .NET SDK tutorial has also been significantly updated to cover a broad range of features.
 
 This matrix should help users navigate to the scenario that best fits their learning goals or integration needs.
