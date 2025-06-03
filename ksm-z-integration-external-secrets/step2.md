@@ -103,6 +103,8 @@ EOF
 
 ## 4. Test the Integration
 
+> **Note**: Wait for few seconds for the application to fully start up before accessing the URL.
+
 You can now access the application at:
 [View Running Service]({{TRAFFIC_HOST1_30000}})
 
@@ -125,7 +127,20 @@ The webpage displays a **JSON response** containing request information and envi
 - `PASSWORD_FROM_KEEPER`: The password from your KSM record
 - These values should match the login and password fields from your Keeper Security record
 
-## How it Works
+## 5. Test Automatic Secret Updates
+
+To see the integration in action, try changing the secret values in Keeper:
+
+1. **Go to your Keeper Vault** and find the record with UID `[RECORD UID]` that you used in the ExternalSecret configuration
+2. **Modify the login or password** for this record
+3. **Save the changes** in Keeper
+4. **Wait for the sync**: The values will automatically update in Kubernetes after the `refreshInterval` (30 seconds as configured in our ExternalSecret)
+5. **Refresh the test webpage** to see the updated values in the JSON response
+6. **Check the pod restart**: If you have Reloader installed, the application pod will restart automatically to pick up the new secrets
+
+> **Tip**: You can watch the secret updates in real-time with: `kubectl get secret my-external-secrets-values -o yaml --watch`
+
+## 6. How it Works
 
 1. External Secrets Operator syncs secrets from KSM to Kubernetes
 2. Our application reads these secrets as environment variables
@@ -134,6 +149,6 @@ The webpage displays a **JSON response** containing request information and envi
    - Reloader detects the change and restarts the application
    - The application picks up the new secret values
 
-## Next Steps
+## 7. Next Steps
 
 You've successfully completed the integration! The application will automatically update whenever secrets change in KSM.
