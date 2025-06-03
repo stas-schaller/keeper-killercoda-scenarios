@@ -1,35 +1,34 @@
 {
-  "title": "KSM Integration: PowerShell",
-  "description": "",
+  "title": "KSM Integration: PowerShell Secret Management",
+  "description": "Learn to integrate Keeper Secrets Manager with PowerShell using Microsoft's SecretManagement module. Securely access, manage, and update secrets from your Keeper Vault in PowerShell scripts.",
   "details": {
     "steps": [
       {
-        "title": "Install PowerShell",
-        "text": "step0.md"
-      },
-      {
-        "title": "Configure KSM",
+        "title": "Step 1: Installation and Vault Registration",
         "text": "step1.md"
       },
       {
-        "title": "Usage",
+        "title": "Step 2: Using Keeper Secrets with PowerShell",
         "text": "step2.md"
       },
       {
-        "title": "Cleanup",
+        "title": "Step 3: Cleanup",
         "text": "step3.md"
       }
     ],
     "intro": {
       "text": "intro.md",
-      "code": "install-powershell-ubuntu.sh"
+      "courseData": "install-powershell-ubuntu.sh"
+    },
+    "finish": {
+      "text": "finish.md"
     }
   },
   "environment": {
     "showide": false,
-    "hideintro": true, 
-    "hidefinish": true,
-    "uilayout": "terminal"
+    "hideintro": false,
+    "hidefinish": false,
+    "uilayout": "editor-terminal"
   },
   "backend": {
     "imageid": "ubuntu"

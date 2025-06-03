@@ -1,22 +1,29 @@
 {
   "noindex": true,
-  "title": "KSM Integration: GitLab",
-  "description": "",
+  "title": "KSM Integration: GitLab CI/CD",
+  "description": "Learn to securely integrate Keeper Secrets Manager with GitLab CI/CD pipelines to dynamically fetch secrets like passwords, API keys, and files at runtime.",
   "details": {
     "steps": [
       {
-        "title": "",
+        "title": "Step 1: Configure KSM Application & GitLab CI/CD Variable",
         "text": "step1.md"
+      },
+      {
+        "title": "Step 2: Using KSM CLI in GitLab CI/CD Pipelines",
+        "text": "step2.md"
       }
     ],
     "intro": {
       "text": "intro.md"
+    },
+    "finish": {
+      "text": "finish.md"
     }
   },
   "environment": {
-    "hideintro": true,
-    "hidefinish": true,
-    "uilayout": "terminal"
+    "hideintro": false,
+    "hidefinish": false,
+    "uilayout": "editor-terminal"
   },
   "backend": {
     "imageid": "ubuntu"
