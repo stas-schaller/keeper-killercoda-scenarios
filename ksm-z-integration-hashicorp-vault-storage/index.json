@@ -1,6 +1,6 @@
 {
   "title": "KSM Integration: Hashicorp Vault",
-  "description": "",
+  "description": "Learn how to integrate Keeper Secrets Manager (KSM) with Hashicorp Vault to securely manage and access your secrets.",
   "details": {
     "steps": [
       {
@@ -14,13 +14,16 @@
     ],
     "intro": {
       "text": "intro.md",
-      "code": "install-hashicorp-vault-ubuntu.sh"
+      "courseData": "install-hashicorp-vault-ubuntu.sh"
+    },
+    "finish": {
+      "text": "finish.md"
     }
   },
   "environment": {
     "uieditorpath": "/root/hashicorp-vault",
-    "hideintro": true,
-    "hidefinish": true,
+    "hideintro": false,
+    "hidefinish": false,
     "uilayout": "editor-terminal"
   },
   "backend": {

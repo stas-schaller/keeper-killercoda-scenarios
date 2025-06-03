@@ -30,7 +30,7 @@ As you prepare to use the KSM .NET SDK in production environments, keep these cr
     -   For production, prefer `MemoryKeyValueStorage` initialized with a Base64 configuration string passed via secure environment variables or a managed configuration service (e.g., Azure Key Vault, AWS Systems Manager Parameter Store).
 2.  **Asynchronous Operations**: Utilize the `async` and `await` patterns available in the SDK for non-blocking secret retrieval, especially in web applications or services.
 3.  **Error Handling & Resilience**: Implement robust error handling (try-catch blocks), logging, and potentially retry mechanisms for KSM SDK operations to handle transient network issues or API errors.
-4.  **Least Privilege Principle**: Strictly enforce the principle of least privilege. Ensure the KSM application in your Keeper Vault only has the minimum necessary permissions (view, edit, share) for the specific secrets it needs to access.
+4.  **Least Privilege Principle**: Strictly enforce the principle of least privilege. Ensure the KSM application in your Keeper Vault only has the minimum necessary permissions (view or edit) for the specific secrets it needs to access.
 5.  **Dependency Management**: Keep the `Keeper.SecretsManager` NuGet package updated to the latest stable version to benefit from security updates and new features.
 6.  **Caching Strategy**: Evaluate if client-side caching (configurable in `SecretsManagerOptions`) is beneficial for your application's performance profile. Configure cache duration appropriately.
 7.  **Audit Trails**: Regularly review audit logs in your Keeper Admin Console to monitor how and when your applications are accessing secrets.
