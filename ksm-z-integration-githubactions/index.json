@@ -1,26 +1,29 @@
 {
   "noindex": true,
   "title": "KSM Integration: GitHub Actions",
-  "description": "",
+  "description": "Learn to securely inject Keeper Secrets Manager (KSM) secrets into GitHub Actions workflows using the KSM GitHub Action.",
   "details": {
     "steps": [
       {
-        "title": "Configure Secrets",
+        "title": "Step 1: Configure KSM Application & GitHub Secrets",
         "text": "step1.md",
         "code": "install-prereqs.sh"
       },
       {
-        "title": "Configure GitHub Action",
+        "title": "Step 2: Configure and Use KSM in GitHub Action",
         "text": "step2.md"
       }
     ],
     "intro": {
       "text": "intro.md"
+    },
+    "finish": {
+      "text": "finish.md"
     }
   },
   "environment": {
-    "hideintro": true,
-    "hidefinish": true,
+    "hideintro": false,
+    "hidefinish": false,
     "uilayout": "terminal"
   },
   "backend": {
