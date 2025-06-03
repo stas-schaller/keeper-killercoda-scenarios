@@ -14,10 +14,43 @@ helm repo add external-secrets https://charts.external-secrets.io
 helm install external-secrets \
 external-secrets/external-secrets \
 -n external-secrets \
---create-namespace
+--create-namespace \
+--wait
 ```{{execute}}
 
-## 2. Create KSM Configuration Secret
+## 2. Wait for External Secrets Operator to be Ready
+
+Let's ensure the External Secrets Operator is fully ready before proceeding:
+
+```bash
+kubectl wait --for=condition=available --timeout=300s deployment/external-secrets -n external-secrets
+```{{execute}}
+
+```bash
+kubectl wait --for=condition=available --timeout=300s deployment/external-secrets-webhook -n external-secrets
+```{{execute}}
+
+```bash
+kubectl wait --for=condition=available --timeout=300s deployment/external-secrets-cert-controller -n external-secrets
+```{{execute}}
+
+## 3. Verify CRDs are Available
+
+Let's verify that the Custom Resource Definitions are properly installed:
+
+```bash
+kubectl wait --for condition=established --timeout=60s crd/secretstores.external-secrets.io
+```{{execute}}
+
+```bash
+kubectl wait --for condition=established --timeout=60s crd/externalsecrets.external-secrets.io
+```{{execute}}
+
+```bash
+kubectl get crd | grep external-secrets
+```{{execute}}
+
+## 4. Create KSM Configuration Secret
 
 We need to create a Kubernetes secret to store the KSM configuration. This secret will be used by External Secrets to authenticate with Keeper Security.
 
@@ -35,7 +68,7 @@ data:
 EOF
 ```{{copy}}
 
-## 3. Create SecretStore
+## 5. Create SecretStore
 
 The SecretStore defines how External Secrets should connect to KSM. We'll create one that uses our KSM configuration secret.
 
@@ -58,7 +91,7 @@ spec:
 EOF
 ```{{copy}}
 
-## 4. Create ExternalSecret
+## 6. Create ExternalSecret
 
 Finally, we'll create an ExternalSecret that defines which secrets to fetch from KSM and how to store them in Kubernetes.
 
