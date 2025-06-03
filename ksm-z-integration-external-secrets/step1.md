@@ -10,6 +10,14 @@ First, let's add the External Secrets Helm repository and install the operator:
 helm repo add external-secrets https://charts.external-secrets.io
 ```{{execute}}
 
+Now we'll install the External Secrets Operator. This command will:
+- Create the `external-secrets` namespace
+- Deploy the operator with all its components (controller, webhook, cert-controller)
+- Install the required Custom Resource Definitions (CRDs)
+- Wait for all deployments to be ready
+
+> **Note**: This installation typically takes about 2 minutes to complete. The `--wait` flag ensures all components are fully ready before proceeding.
+
 ```bash
 helm install external-secrets \
 external-secrets/external-secrets \
@@ -76,7 +84,7 @@ The SecretStore defines how External Secrets should connect to KSM. We'll create
 
 ```bash
 kubectl apply -f - <<EOF
-apiVersion: external-secrets.io/v1beta1   
+apiVersion: external-secrets.io/v1
 kind: SecretStore
 metadata:
   name: my-external-secrets-secretstore   # name of the SecretStore where retrieved secrets will be stored
@@ -99,7 +107,7 @@ Finally, we'll create an ExternalSecret that defines which secrets to fetch from
 
 ```bash
 kubectl apply -f - <<EOF
-apiVersion: external-secrets.io/v1beta1
+apiVersion: external-secrets.io/v1
 kind: ExternalSecret
 metadata:
   name: ksm-external-secret
