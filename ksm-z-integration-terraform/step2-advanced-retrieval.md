@@ -124,7 +124,7 @@ resource "local_file" "login_secret_details" {
 2.  Replace `[UID_OF_LOGIN_RECORD]` with the UID of an existing Login record in your Keeper Vault.
 3.  Run `terraform init`{{execute}} to initialize providers.
 4.  Run `terraform apply -auto-approve`{{execute}} to fetch the data and create the local file.
-5.  Inspect the output values and the generated `login_secret_details.txt`{{open}} file.
+5.  Inspect the output values and the generated `login_secret_details.txt` file.
 
 **B. Using the Generic `secretsmanager_record` Data Source**
 

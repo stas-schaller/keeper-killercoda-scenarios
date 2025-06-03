@@ -49,4 +49,4 @@ Execute Terraform steps
 `terraform apply -auto-approve`{{execute}}
 
 View terraform state file.
-`terraform.tfstate`{{open}} 
+`terraform.tfstate`
