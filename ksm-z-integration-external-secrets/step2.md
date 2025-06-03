@@ -2,7 +2,9 @@
 
 In this step, we'll deploy a sample application that uses the secrets from KSM and set up automatic reloading when secrets change.
 
-## 1. Install Reloader
+## 1. Install Reloader (Demo Enhancement)
+
+> **Note**: Stakater Reloader is **not required** for the External Secrets integration to function. Secrets will sync from KSM to Kubernetes automatically. We're installing it for **demo purposes only** to show how applications can automatically restart when secrets change, which is helpful for seeing updated secrets without manual intervention.
 
 First, let's install Stakater Reloader, which will automatically reload our application when secrets change:
 
@@ -104,9 +106,24 @@ EOF
 You can now access the application at:
 [View Running Service]({{TRAFFIC_HOST1_30000}})
 
-The web page will display all environment variables, including:
+The webpage displays a **JSON response** containing request information and environment variables. Look for the `env` section in the JSON output to find your KSM secrets:
+
+```json
+{
+  "env": {
+    "USERNAME_FROM_KEEPER": "your-username-from-keeper",
+    "PASSWORD_FROM_KEEPER": "your-password-from-keeper",
+    "DEMO_GREETING": "Hello from the environment",
+    "DEMO_FAREWELL": "Such a sweet sorrow",
+    ...
+  }
+}
+```
+
+**What to look for:**
 - `USERNAME_FROM_KEEPER`: The username from your KSM record
 - `PASSWORD_FROM_KEEPER`: The password from your KSM record
+- These values should match the login and password fields from your Keeper Security record
 
 ## How it Works
 
