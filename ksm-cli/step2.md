@@ -42,6 +42,8 @@ ksm secret get [UID]
 
 **🔒 Security Note**: Sensitive data is displayed in plaintext. Ensure your terminal is secure.
 
+**💡 Pro Tip**: Use `--unmask` to show passwords in table views: `ksm secret get [UID] --unmask`
+
 ## Retrieve Specific Fields
 
 You can retrieve specific fields from a secret:
@@ -170,4 +172,6 @@ The KSM CLI provides flexible ways to retrieve and work with your secret data. Y
 - Avoid storing secrets in environment variables in production
 - Clear terminal history after working with secrets
 
-**💡 Next Steps**: In Step 3, you'll learn automation techniques for using these secrets in scripts and CI/CD pipelines.
+**💡 Next Steps**: In Step 3, you'll learn how to work with file attachments, and in Step 4, you'll learn automation techniques for using these secrets in scripts and CI/CD pipelines.
+
+**📚 Official Documentation**: [KSM CLI Reference Guide](https://docs.keeper.io/en/keeperpam/secrets-manager/secrets-manager-command-line-interface)

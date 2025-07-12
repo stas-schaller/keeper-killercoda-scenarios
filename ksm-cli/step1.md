@@ -28,10 +28,10 @@ The KSM CLI provides secure access to your Keeper vault through the Secrets Mana
 
 **Where to find your token:**
 1. Log into your Keeper vault
-2. Go to **Settings** → **Secrets Manager**
+2. Go to **Secrets Manager**
 3. Create or select an Application
-4. Click **"One-Time Access Token"**
-5. Copy the token (format: `US:ABC123...`)
+4. Click **"Add New Device"**
+5. Copy the One-Time Access Token (format: `US:ABC123...`)
 
 ## Initialize Your Client Device
 
@@ -89,3 +89,5 @@ ksm config show
 **❌ "Access denied" error**: Check that Secrets Manager is enabled in your Keeper account and the application has the correct permissions.
 
 **💡 Real-world use case**: You've just set up secure CLI access that developers can use in CI/CD pipelines, local development, and production deployments without hardcoded secrets.
+
+**📚 Learn More**: [Official KSM CLI Documentation](https://docs.keeper.io/en/keeperpam/secrets-manager/secrets-manager-command-line-interface)

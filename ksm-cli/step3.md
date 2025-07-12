@@ -1,269 +1,266 @@
-# Step 3: Advanced Usage & Automation
+# Step 3: Working with Files
 
-**Learning Objective**: Learn automation techniques for CI/CD pipelines, scripts, and production deployments.
+**Learning Objective**: Learn to securely store, retrieve, and manage file attachments in your Keeper vault.
 
-## Prerequisites
-You'll use these techniques when:
-- Building CI/CD pipelines (GitHub Actions, Jenkins, etc.)
-- Creating deployment scripts
-- Setting up containerized applications
-- Automating secret rotation
+## Understanding File Storage in Keeper
 
-## Environment Variable Configuration
+Keeper can store any type of file as encrypted attachments to secret records:
+- **Certificates**: `.pem`, `.crt`, `.p12`, `.key` files
+- **Configuration files**: `.json`, `.yaml`, `.conf`, `.ini`
+- **Documentation**: `.pdf`, `.docx`, `.txt`, `.md`
+- **Images**: `.png`, `.jpg`, `.gif`, `.svg`
+- **Archives**: `.zip`, `.tar.gz`, `.7z`
+- **Any file type**: No restrictions on file extensions
 
-**Why use environment variables?** In production and CI/CD environments, you can't store config files. Environment variables provide a secure way to pass configuration.
+## List Files in a Secret
 
-### Export Configuration to Environment Variable
-
-First, export your profile configuration as Base64-encoded data:
-
-```bash
-ksm profile export
-```
-`ksm profile export`{{execute}}
-
-**✅ Expected Output**: A long Base64-encoded string (your encrypted configuration).
-
-### Set Configuration as Environment Variable
-
-Copy the output and set it as an environment variable:
+First, let's see if any of your secrets contain file attachments:
 
 ```bash
-export KSM_CONFIG='[PASTE_THE_BASE64_OUTPUT_HERE]'
+ksm secret get Wyd4dgLyAwaI4k-ScH8TJg
 ```
-`export KSM_CONFIG='[PASTE_THE_BASE64_OUTPUT_HERE]'`{{copy}}
+`ksm secret get Wyd4dgLyAwaI4k-ScH8TJg`{{execute}}
 
-**⚠️ Action Required**: Replace the placeholder with the actual Base64 string from the previous command.
+**🔍 What to look for**: If the secret contains files, you'll see a "Files" section showing file names, sizes, and types.
 
-### Test Environment Variable Configuration
+**💡 Pro Tip**: You can use any secret UID from your `ksm secret list` output. The UID above is from the "Configuration Files" record in the test vault.
 
-Verify that KSM CLI works with the environment variable:
+## Create a Test File to Upload
+
+Let's create a sample configuration file to work with:
 
 ```bash
-ksm secret list
+cat > sample-config.json << 'EOF'
+{
+  "database": {
+    "host": "localhost",
+    "port": 5432,
+    "name": "myapp"
+  },
+  "api": {
+    "version": "v1",
+    "timeout": 30
+  }
+}
+EOF
 ```
-`ksm secret list`{{execute}}
+`cat > sample-config.json << 'EOF'
+{
+  "database": {
+    "host": "localhost",
+    "port": 5432,
+    "name": "myapp"
+  },
+  "api": {
+    "version": "v1",
+    "timeout": 30
+  }
+}
+EOF`{{execute}}
 
-**🔍 What happened?** KSM CLI used the environment variable instead of the local config file.
+**✅ Expected Output**: File created successfully.
 
-## Secret Notation for Automation
+## Upload a File to a Secret
 
-**Notation syntax** provides a URL-like way to reference specific secret fields in scripts. Format: `keeper://[UID]/field/[field_name]`
-
-### Get Password Using Notation
-Use a UID from your secret list:
+Upload the configuration file to one of your secrets:
 
 ```bash
-export MY_PASSWORD=$(ksm secret notation keeper://[RECORD_UID]/field/password)
+ksm secret upload --uid [RECORD_UID] --file sample-config.json --title "Application Configuration"
 ```
-`export MY_PASSWORD=$(ksm secret notation keeper://[RECORD_UID]/field/password)`{{copy}}
+`ksm secret upload --uid [RECORD_UID] --file sample-config.json --title "Application Configuration"`{{copy}}
 
-**⚠️ Action Required**: Replace `[RECORD_UID]` with an actual UID from Step 2.
+**⚠️ Action Required**: Replace `[RECORD_UID]` with an actual UID from your secret list (try the "Configuration Files" record).
 
-### Verify the Retrieved Password
+**✅ Expected Output**: No output means successful upload.
+
+### Alternative Upload Methods
+
+Upload without a custom title (uses filename):
 ```bash
-echo "Password retrieved: $MY_PASSWORD"
+ksm secret upload --uid [RECORD_UID] --file sample-config.json
 ```
-`echo "Password retrieved: $MY_PASSWORD"`{{execute}}
+`ksm secret upload --uid [RECORD_UID] --file sample-config.json`{{copy}}
 
-**✅ Expected Output**: Shows the actual password from your secret.
+## Verify File Upload
 
-### Get Other Fields Using Notation
-Common field names: `login`, `password`, `url`, `notes`
-
-```bash
-export MY_USERNAME=$(ksm secret notation keeper://[RECORD_UID]/field/login)
-export MY_URL=$(ksm secret notation keeper://[RECORD_UID]/field/url)
-```
-`export MY_USERNAME=$(ksm secret notation keeper://[RECORD_UID]/field/login)`{{copy}}
-
-**💡 Pro Tip**: Use `ksm secret get [UID]` first to see all available field names for a record.
-
-## File Operations
-
-KSM CLI can handle file attachments and downloads:
-
-### Download a File from a Secret
-```bash
-ksm secret download --uid [RECORD_UID] --name "certificate.pem" --file-output "/tmp/certificate.pem"
-```
-`ksm secret download --uid [RECORD_UID] --name "certificate.pem" --file-output "/tmp/certificate.pem"`{{copy}}
-
-### Verify Downloaded File
-```bash
-file /tmp/certificate.pem
-ls -la /tmp/certificate.pem
-```
-`file /tmp/certificate.pem`{{execute}}
-
-### Upload a File to a Secret
-```bash
-ksm secret upload --uid [RECORD_UID] --file "/path/to/local/file.txt"
-```
-`ksm secret upload --uid [RECORD_UID] --file "/path/to/local/file.txt"`{{copy}}
-
-## Real-World Automation Examples
-
-### Database Connection Script
-Securely connect to databases without hardcoded credentials:
+Check that your file was uploaded successfully:
 
 ```bash
-#!/bin/bash
-# Get database credentials from Keeper
-DB_HOST=$(ksm secret notation keeper://[DB_RECORD_UID]/field/url)
-DB_USER=$(ksm secret notation keeper://[DB_RECORD_UID]/field/login)
-DB_PASS=$(ksm secret notation keeper://[DB_RECORD_UID]/field/password)
-
-# Connect to database
-psql "postgresql://$DB_USER:$DB_PASS@$DB_HOST/myapp"
+ksm secret get [RECORD_UID]
 ```
+`ksm secret get [RECORD_UID]`{{copy}}
 
-**⚠️ Replace**: `[DB_RECORD_UID]` with a database record UID from your vault.
+**✅ Expected Output**: You should now see a "Files" section listing your uploaded file with name, size, and type.
 
-### API Integration Script
-Securely use API keys in automated requests:
+## Download Files from Secrets
+
+Download a file from a secret to your local system:
 
 ```bash
-#!/bin/bash
-# Get API key from Keeper
-API_KEY=$(ksm secret notation keeper://[API_RECORD_UID]/field/password)
-
-# Make authenticated API request
-curl -H "Authorization: Bearer $API_KEY" \
-     -H "Content-Type: application/json" \
-     https://api.example.com/v1/data
+ksm secret download --uid [RECORD_UID] --name "sample-config.json" --file-output "downloaded-config.json"
 ```
+`ksm secret download --uid [RECORD_UID] --name "sample-config.json" --file-output "downloaded-config.json"`{{copy}}
 
-**🔒 Security Benefit**: API keys are never stored in code or config files.
+**✅ Expected Output**: File downloaded successfully.
 
-## CI/CD Integration Examples
-
-### GitHub Actions Integration
-Add KSM_CONFIG as a repository secret, then use it in workflows:
-
-```yaml
-steps:
-  - name: Install KSM CLI
-    run: pip install keeper-secrets-manager-cli
-    
-  - name: Get secrets from Keeper
-    env:
-      KSM_CONFIG: ${{ secrets.KSM_CONFIG }}
-    run: |
-      export DB_PASSWORD=$(ksm secret notation keeper://[DB_UID]/field/password)
-      export API_KEY=$(ksm secret notation keeper://[API_UID]/field/password)
-      # Use secrets in deployment
-      ./deploy.sh
-```
-
-### Docker Integration
-Inject secrets into containers without Dockerfiles containing credentials:
+### Verify the Downloaded File
 
 ```bash
-# Get secret and pass to container
-DB_PASS=$(ksm secret notation keeper://[UID]/field/password)
-docker run -e DATABASE_PASSWORD="$DB_PASS" myapp:latest
+cat downloaded-config.json
 ```
+`cat downloaded-config.json`{{execute}}
 
-**🔒 Security Benefit**: Secrets never appear in Docker images or container definitions.
+**✅ Expected Output**: Should show the same JSON content you uploaded.
 
-## Advanced Configuration
+## Alternative Download Methods
 
-### Multiple Environment Profiles
-Manage different environments (dev, staging, prod) with separate profiles:
+### Download to Standard Output
+Useful for piping to other commands:
 
 ```bash
-# Create environment-specific profiles
-ksm profile init --token [PROD_TOKEN] --profile-name production
-ksm profile init --token [STAGING_TOKEN] --profile-name staging
+ksm secret download --uid [RECORD_UID] --name "sample-config.json" --file-output stdout
 ```
-`ksm profile init --token [TOKEN] --profile-name production`{{copy}}
+`ksm secret download --uid [RECORD_UID] --name "sample-config.json" --file-output stdout`{{copy}}
+
+### Download with Folder Creation
+Create directories automatically if they don't exist:
 
 ```bash
-# Use specific profile for commands
-ksm --profile-name production secret list
+ksm secret download --uid [RECORD_UID] --name "sample-config.json" --file-output "/tmp/app-configs/config.json" --create-folders
 ```
-`ksm --profile-name production secret list`{{copy}}
+`ksm secret download --uid [RECORD_UID] --name "sample-config.json" --file-output "/tmp/app-configs/config.json" --create-folders`{{copy}}
 
-**💡 Use Case**: Different teams can access different vaults (prod vs staging) with the same CLI.
+## Using File Notation for Automation
 
-### Configuration Management
-Useful commands for managing profiles and troubleshooting:
+Access file content using Keeper's notation syntax:
 
 ```bash
-# Show current configuration
-ksm config show
+export CONFIG_CONTENT=$(ksm secret notation "keeper://[RECORD_UID]/file/sample-config.json")
+echo "$CONFIG_CONTENT"
 ```
-`ksm config show`{{execute}}
+`export CONFIG_CONTENT=$(ksm secret notation "keeper://[RECORD_UID]/file/sample-config.json")`{{copy}}
 
+**⚠️ Action Required**: Replace `[RECORD_UID]` with your actual record UID.
+
+**🔍 What happened?**: The file content is retrieved as Base64-encoded data, perfect for scripts and automation.
+
+## Real-World File Use Cases
+
+### SSL Certificate Management
 ```bash
-# List all available profiles
-ksm profile list
-```
-`ksm profile list`{{execute}}
+# Upload certificate files
+ksm secret upload --uid [SSL_RECORD_UID] --file server.crt --title "SSL Certificate"
+ksm secret upload --uid [SSL_RECORD_UID] --file server.key --title "Private Key"
 
+# Download for deployment
+ksm secret download --uid [SSL_RECORD_UID] --name "server.crt" --file-output "/etc/ssl/certs/server.crt"
+ksm secret download --uid [SSL_RECORD_UID] --name "server.key" --file-output "/etc/ssl/private/server.key"
+```
+
+### Application Configuration Deployment
 ```bash
-# Export profile for CI/CD use
-ksm profile export
+# Get config file content and deploy
+ksm secret download --uid [CONFIG_UID] --name "app-config.json" --file-output stdout > /app/config.json
+
+# Or use notation in deployment scripts
+CONFIG=$(ksm secret notation "keeper://[CONFIG_UID]/file/app-config.json")
+echo "$CONFIG" | base64 -d > /app/config.json
 ```
-`ksm profile export`{{execute}}
 
-## Security Best Practices for Production
-
-### 🔒 Essential Security Rules
-1. **Environment Variables**: Store `KSM_CONFIG` in secure CI/CD secret storage (never in code)
-2. **Token Rotation**: Regularly generate new One-Time Access Tokens
-3. **Least Privilege**: Grant applications access only to secrets they actually need
-4. **No Logging**: Ensure secrets never appear in application logs or console output
-5. **Error Handling**: Always handle cases where secret retrieval might fail
-
-### ❌ Common Mistakes to Avoid
-- Storing secrets in environment variables in production (use notation instead)
-- Committing KSM_CONFIG to version control
-- Using the same profile for all environments
-- Not clearing terminal history after working with secrets
-
-### ✅ Production-Ready Pattern
+### Docker Secrets Integration
 ```bash
-#!/bin/bash
-set -e  # Exit on any error
+# Download secret files for Docker containers
+ksm secret download --uid [SECRET_UID] --name "docker-secret.txt" --file-output "/var/run/secrets/app-secret"
 
-# Verify KSM CLI is available
-if ! command -v ksm &> /dev/null; then
-    echo "Error: KSM CLI not installed"
-    exit 1
-fi
-
-# Get secret with error handling
-if DB_PASS=$(ksm secret notation keeper://[UID]/field/password 2>/dev/null); then
-    # Use secret securely
-    ./deploy-app.sh
-else
-    echo "Error: Could not retrieve database password"
-    exit 1
-fi
+# Or pipe directly to Docker
+ksm secret download --uid [SECRET_UID] --name "secret.txt" --file-output stdout | docker secret create app-secret -
 ```
 
-## Next Steps & Resources
+## File Security Features
 
-**🎉 Congratulations!** You now know how to:
-- Set up secure CLI access to your Keeper vault
-- Retrieve and search secrets safely
-- Use caching for performance
-- Integrate secrets into automation and CI/CD pipelines
-- Follow security best practices
+**🔒 Automatic Encryption**: All files are automatically encrypted before upload using AES encryption.
 
-### Getting Help
-- Built-in help: `ksm --help`
-- Command-specific help: `ksm secret --help`
-- [Official KSM CLI Documentation](https://docs.keeper.io/secrets-manager/secrets-manager/secrets-manager-command-line-interface)
+**🔑 Access Control**: File access is controlled by the same permissions as the parent secret record.
 
-### Real-World Applications
-Now you can eliminate hardcoded secrets from:
-- 💻 Application deployments
-- 🚀 CI/CD pipelines  
-- 📦 Docker containers
-- 📄 Infrastructure scripts
-- ☁️ Cloud configurations
+**📝 Metadata Protection**: File names, sizes, and types are also encrypted and protected.
 
-**💡 Pro Tip**: Start with one application and gradually migrate all your secrets to Keeper for centralized, secure secret management.
+**🔄 Version Control**: While KSM doesn't provide file versioning, you can upload new versions by uploading files with the same name.
+
+## Working with Different File Types
+
+### Text Files
+```bash
+# View content directly
+ksm secret download --uid [UID] --name "readme.txt" --file-output stdout
+
+# Edit and re-upload workflow
+ksm secret download --uid [UID] --name "config.txt" --file-output "temp-config.txt"
+nano temp-config.txt  # Edit the file
+ksm secret upload --uid [UID] --file "temp-config.txt" --title "Updated Config"
+```
+
+### Binary Files
+```bash
+# Download binary files (certificates, executables, etc.)
+ksm secret download --uid [UID] --name "app.exe" --file-output "application.exe"
+chmod +x application.exe
+```
+
+### Archive Files
+```bash
+# Download and extract archives
+ksm secret download --uid [UID] --name "backup.tar.gz" --file-output "backup.tar.gz"
+tar -xzf backup.tar.gz
+```
+
+## Troubleshooting File Operations
+
+### Common Issues
+
+**❌ "File not found" error**: 
+- Check the exact filename using `ksm secret get [UID]`
+- File names are case-sensitive
+
+**❌ "Directory doesn't exist" error**:
+- Use `--create-folders` flag when downloading
+- Or create the directory first: `mkdir -p /path/to/directory`
+
+**❌ "Permission denied" error**:
+- Ensure you have write permissions to the download location
+- Check that the secret record allows file access
+
+### File Size Considerations
+
+- **No hard size limits** in KSM CLI
+- **Large files**: May take longer to upload/download
+- **Network timeouts**: Consider network stability for very large files
+- **Storage quotas**: Check your Keeper account storage limits
+
+## Best Practices for File Management
+
+### Security
+- **Sensitive files**: Always store certificates, keys, and config files in Keeper rather than on disk
+- **Access control**: Use separate records for files with different access requirements
+- **File naming**: Use descriptive names and titles for easy identification
+
+### Organization
+- **Group related files**: Store related files (cert + key + config) in the same record
+- **Clear titles**: Use descriptive titles that explain the file's purpose
+- **Documentation**: Use the record's notes field to document file contents
+
+### Automation
+- **CI/CD integration**: Download config files and certificates during deployment
+- **Rotation**: Automate certificate and key rotation by uploading new versions
+- **Backup**: Use file downloads to create automated backups of critical configurations
+
+## Next Steps
+
+**🎉 Great work!** You now know how to:
+- Upload any type of file to Keeper secrets
+- Download files for local use or deployment
+- Use file notation for automation scripts
+- Apply security best practices for file management
+
+**💡 Next Steps**: In Step 4, you'll learn advanced automation techniques for integrating file operations into CI/CD pipelines and production deployments.
+
+**📚 Learn More**: [Official KSM CLI Documentation](https://docs.keeper.io/en/keeperpam/secrets-manager/secrets-manager-command-line-interface)

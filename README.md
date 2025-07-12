@@ -13,7 +13,7 @@ This table provides a quick overview of the key features covered in each Keeper 
 |  - Base64/In-Memory Config     | ✅         | ✅       | ✅       | ✅       | ✅             | ✅      | ✅      | ✅        | ✅              |
 | **List All Shared Records**    | ✅         | ✅       | ✅       | ✅       | ✅             | ➖      | ✅      | ➖        | ✅              |
 | **Get Specific Record by UID** | ✅         | ✅       | ✅       | ✅       | ✅             | ✅      | ✅      | ✅        | ✅              |
-| **Get Specific Record by Title**| ✅         | ✅       | ✅       | ✅       | ✅             | ➖      | 🛠️      | ➖        | ➖              |
+| **Get Specific Record by Title**| ✅         | ✅       | ✅       | ✅       | ✅             | ➖      | ✅      | ➖        | ➖              |
 | **Access Record Fields**       | ✅         | ✅       | ✅       | ✅       | ✅             | ✅      | ✅      | ✅        | ✅              |
 |  - Standard Fields             | ✅         | ✅       | ✅       | ✅       | ✅             | ✅      | ✅      | ✅        | ✅              |
 |  - Custom Fields               | ✅         | ✅       | ✅       | ✅       | ✅             | ➖      | ✅      | ✅        | ✅              |
@@ -31,7 +31,7 @@ This table provides a quick overview of the key features covered in each Keeper 
 | **File Upload to Record**      | ✅         | ✅       | ✅       | ✅       | ✅             | ➖      | ✅      | ✅        | ➖              |
 | **File Download from Record**  | ✅         | ✅       | ✅       | ✅       | ✅             | ✅      | ✅      | ✅        | ➖              |
 | **File Delete from Record**    | ✅         | ✅       | ✅       | ✅       | ✅             | ➖      | ➖      | ✅        | ➖              |
-| **Client-Side Caching**        | ✅         | ✅       | ✅       | ✅       | ✅             | ✅      | ➖      | ➖        | ➖              |
+| **Client-Side Caching**        | ✅         | ✅       | ✅       | ✅       | ✅             | ✅      | ✅      | ➖        | ➖              |
 | **CLI/Tool Specific Features** | N/A        | N/A      | N/A      | N/A      | N/A            | ✅      | ✅      | N/A       | ✅              |
 
 **Legend:**

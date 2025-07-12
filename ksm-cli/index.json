@@ -13,8 +13,12 @@
         "text": "step2.md"
       },
       {
-        "title": "Step 3 - Advanced Usage & Automation",
+        "title": "Step 3 - Working with Files",
         "text": "step3.md"
+      },
+      {
+        "title": "Step 4 - Advanced Usage & Automation",
+        "text": "step4.md"
       }
     ],
     "intro": {
@@ -23,7 +27,7 @@
       "code": "install-ksm.sh"
     }
   },
-  "time": "15-20 minutes",
+  "time": "20-25 minutes",
   "difficulty": "Beginner",
   "environment": {
     "hideintro": false,
