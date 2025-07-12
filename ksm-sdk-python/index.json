@@ -8,20 +8,20 @@
         "text": "step1.md"
       },
       {
-        "title": "Step 2: Specific Secret Retrieval & Caching",
+        "title": "Step 2: Caching & Advanced Secret Retrieval",
         "text": "step2.md"
       },
       {
-        "title": "Step 3: Creating Records & Password Generation",
+        "title": "Step 3: Record Creation & Updates",
         "text": "step3.md"
       },
       {
-        "title": "Step 4: Record Updates & File Management",
-        "text": "step4-fileupload.md"
+        "title": "Step 4: File Operations",
+        "text": "step4.md"
       },
       {
-        "title": "Step 5: Folder Management & Record Deletion (with Caching)",
-        "text": "step5-inmemorystorage.md"
+        "title": "Step 5: Folder Management & Advanced Features",
+        "text": "step5.md"
       }
     ],
     "intro": {

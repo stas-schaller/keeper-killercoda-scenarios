@@ -8,10 +8,10 @@ Throughout these steps, you've become proficient in using the KSM Python SDK to 
 -   ✅ **Authenticate** with Keeper using various methods:
     -   One-Time Tokens with `FileKeyValueStorage` for initial setup.
     -   Persistent `FileKeyValueStorage` (e.g., `ksm-config.json`).
-    -   `MemoryKeyValueStorage` with a Base64 encoded configuration string for in-memory setup.
+    -   `InMemoryKeyValueStorage` with a Base64 encoded configuration string for in-memory setup.
 -   ✅ **Retrieve secrets**: List all shared records and fetch specific records by UID or title.
 -   ✅ **Access record data**: Work with standard fields, custom fields, and notes.
--   ✅ **Implement Client-Side Caching**: Use `InMemoryCache` (or other cache types) with `SecretsManagerOptions` to improve performance.
+-   ✅ **Implement Client-Side Caching**: Use `KSMCache.caching_post_function` to improve performance with encrypted local caching.
 -   ✅ **Manage Record Lifecycle**:
     -   Create new records (`secrets_manager.create_secret()`) with various field types.
     -   Generate strong passwords using `generate_password()` from `keeper_secrets_manager_core.utils`.
@@ -31,7 +31,7 @@ Throughout these steps, you've become proficient in using the KSM Python SDK to 
 
 As you integrate the KSM Python SDK into your production applications, remember these key considerations:
 
-1.  **Secure Configuration**: For production, using `MemoryKeyValueStorage` with a Base64 configuration string loaded from environment variables or a secure vault is highly recommended over on-disk config files.
+1.  **Secure Configuration**: For production, using `InMemoryKeyValueStorage` with a Base64 configuration string loaded from environment variables or a secure vault is highly recommended over on-disk config files.
 2.  **Error Handling**: Implement comprehensive error handling for all SDK calls (e.g., `try...except` blocks) to manage potential API errors, network issues, or permission problems gracefully.
 3.  **Least Privilege**: Always configure your KSM Application in the Keeper Vault with the minimum necessary permissions for the secrets and folders it needs to access.
 4.  **Logging**: Integrate SDK operations with your application's logging framework, ensuring not to log sensitive data directly.

@@ -18,11 +18,11 @@ The Keeper Secrets Manager (KSM) Python SDK provides a powerful, secure way to i
 
 In this interactive tutorial, you will:
 
-1.  **Connect to Keeper**: Set up basic authentication (token, file config, Base64 config) and retrieve secrets.
-2.  **Implement Caching**: Improve performance with intelligent caching.
-3.  **Create Records**: Programmatically add new secrets to your vault, including password generation.
-4.  **Manage Records & Files**: Update records, and handle file uploads, downloads, and deletions.
-5.  **Organize with Folders**: Create, list, update, and delete folders, and delete records.
+1.  **Connect to Keeper**: Set up authentication with file-based and in-memory configurations.
+2.  **Implement Caching**: Improve performance with intelligent caching and advanced retrieval techniques.
+3.  **Create Records**: Programmatically create and update secrets with password generation.
+4.  **File Operations**: Upload, download, and manage file attachments securely.
+5.  **Advanced Features**: Folder management and enterprise-level organizational patterns.
 
 ## Prerequisites
 
