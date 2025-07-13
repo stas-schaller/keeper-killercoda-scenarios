@@ -120,6 +120,7 @@ if KSM_CONFIG_BASE64 and KSM_CONFIG_BASE64 != "[YOUR_KSM_CONFIG_BASE64_STRING_HE
 else:
     print("⏭️  Skipping In-Memory Config: Replace '[YOUR_KSM_CONFIG_BASE64_STRING_HERE]' with your config.")
     print("📋 Get Base64 config: Keeper Vault → Secrets Manager → Applications → Add Device → Configuration File")
+```{{copy}}
 
 ## 3. Configure Your Credentials
 

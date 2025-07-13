@@ -1,15 +1,15 @@
 # Step 2: Caching & Advanced Secret Retrieval
 
-**Learning Objective**: Learn performance optimization through caching and advanced secret retrieval techniques.
+**Learning Objective**: Learn resilience through caching and advanced secret retrieval techniques.
 
 ## Why Use Caching?
 
-When your application frequently accesses secrets, caching can significantly improve performance by:
-- **Reducing API calls** to Keeper servers (fewer network requests)
-- **Faster secret retrieval** from local cache (milliseconds vs seconds)
-- **Better user experience** with reduced latency
-- **Lower bandwidth usage** for repeated requests
+Caching provides resilience and reliability for your applications by:
 - **Offline resilience** when network is temporarily unavailable
+- **Reducing API calls** to Keeper servers during outages
+- **Fallback capability** when network connectivity is poor
+- **Reliable secret access** even during temporary service interruptions
+- **Enhanced application stability** through local encrypted storage
 
 ## Understanding KSM Caching
 
@@ -43,26 +43,17 @@ from keeper_secrets_manager_core.storage import FileKeyValueStorage, InMemoryKey
 ONE_TIME_TOKEN = os.environ.get("KSM_TOKEN", "[YOUR_ONE_TIME_TOKEN_HERE]")
 KSM_CONFIG_BASE64 = os.environ.get("KSM_CONFIG", "[YOUR_KSM_CONFIG_BASE64_STRING_HERE]")
 
-def test_performance(secrets_manager, config_name):
-    """Test and measure performance with and without caching"""
+def test_caching_resilience(secrets_manager, config_name):
+    """Test caching functionality for resilience"""
     print(f"\n🔄 Testing {config_name} - First retrieval (will cache results)...")
-    start_time = time.time()
     all_secrets = secrets_manager.get_secrets()
-    first_duration = time.time() - start_time
+    print(f"✅ Retrieved {len(all_secrets)} secret(s) and cached for resilience")
     
-    print(f"✅ Retrieved {len(all_secrets)} secret(s) in {first_duration:.3f} seconds")
-    
-    print(f"\n🚀 Testing {config_name} - Second retrieval (from cache)...")
-    start_time = time.time()
+    print(f"\n🚀 Testing {config_name} - Second retrieval (demonstrates cache availability)...")
     all_secrets_cached = secrets_manager.get_secrets()
-    second_duration = time.time() - start_time
+    print(f"⚡ Retrieved {len(all_secrets_cached)} secret(s) - cache is available for offline use")
     
-    print(f"⚡ Retrieved {len(all_secrets_cached)} secret(s) in {second_duration:.3f} seconds")
-    
-    # Show performance improvement
-    if first_duration > 0:
-        improvement = ((first_duration - second_duration) / first_duration) * 100
-        print(f"📊 Performance improvement: {improvement:.1f}% faster with cache!")
+    print(f"🛡️ Cache provides resilience: secrets accessible even during network issues")
     
     return all_secrets
 
@@ -124,7 +115,7 @@ if ONE_TIME_TOKEN and ONE_TIME_TOKEN != "[YOUR_ONE_TIME_TOKEN_HERE]":
             custom_post_function=KSMCache.caching_post_function  # Enable caching
         )
         
-        secrets = test_performance(secrets_manager_file, "File-Based Config")
+        secrets = test_caching_resilience(secrets_manager_file, "File-Based Config")
         demonstrate_specific_retrieval(secrets_manager_file, secrets)
         
     except Exception as e:
@@ -142,7 +133,7 @@ if KSM_CONFIG_BASE64 and KSM_CONFIG_BASE64 != "[YOUR_KSM_CONFIG_BASE64_STRING_HE
             custom_post_function=KSMCache.caching_post_function  # Enable caching
         )
         
-        secrets = test_performance(secrets_manager_memory, "In-Memory Config")
+        secrets = test_caching_resilience(secrets_manager_memory, "In-Memory Config")
         demonstrate_specific_retrieval(secrets_manager_memory, secrets)
         
     except Exception as e:
@@ -171,17 +162,17 @@ python3 step2-caching.py
 `python3 step2-caching.py`{{execute}}
 
 **✅ Expected Output**:
-- Performance metrics showing speed improvements
-- Secret retrieval demonstrations
+- Caching resilience demonstration
+- Secret retrieval demonstrations  
 - Field access examples
-- Cache efficiency measurements
+- Cache availability confirmation
 
 ## 🔍 Understanding the Output
 
 You should see:
-1. **First retrieval**: Takes longer as it fetches from Keeper servers and caches the response
-2. **Second retrieval**: Much faster (often 10-100x) as it uses cached data
-3. **Performance metrics**: Shows percentage speed improvement with caching
+1. **First retrieval**: Fetches from Keeper servers and caches the response for resilience
+2. **Second retrieval**: Demonstrates cache availability for offline scenarios
+3. **Resilience confirmation**: Shows cache is available during network issues
 4. **Advanced retrieval**: Demonstrates getting specific secrets by UID
 5. **Field access**: Shows how to access different types of secret fields
 
@@ -209,16 +200,12 @@ You should see:
 
 ### **Storage Locations**:
 - **Default location**: `ksm_cache.bin` in current directory
-- **Custom location**: Set `KSM_CACHE_DIR` environment variable
 - **In-memory caching**: Works with both file and memory storage
 
 ### **Cache Files**:
 ```bash
 # Default cache file
 ls -la ksm_cache.bin
-
-# Custom cache directory
-export KSM_CACHE_DIR="/tmp/ksm_cache"
 ```
 
 ## 🎯 Best Practices
@@ -270,11 +257,11 @@ for secret in secrets:
 
 **❌ Slow performance with caching**: Check that `custom_post_function=KSMCache.caching_post_function` is set
 
-**❌ "Permission denied" on cache file**: Check write permissions in current directory or set `KSM_CACHE_DIR`
+**❌ "Permission denied" on cache file**: Check write permissions in current directory
 
 ## Next Steps
 
-**💡 Real-world use case**: You now have high-performance secret access patterns for production applications.
+**💡 Real-world use case**: You now have resilient secret access patterns for production applications.
 
 **🔜 Coming up**: In Step 3, you'll learn how to create and update records programmatically.
 

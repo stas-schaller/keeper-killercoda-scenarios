@@ -336,6 +336,7 @@ def main():
 
 if __name__ == "__main__":
     main()
+```{{copy}}
 
 ## 3. Configure Required Parameters
 

@@ -6,7 +6,6 @@
 This step covers advanced organizational and management operations:
 - **Creating and managing folders** programmatically
 - **Organizing records** into logical folder structures
-- **Folder permissions** and sharing concepts
 - **Bulk operations** for records and folders
 - **Advanced SDK features** for enterprise workflows
 
@@ -14,7 +13,6 @@ This step covers advanced organizational and management operations:
 
 ### **Business Benefits**:
 - **Organized secret hierarchy** for teams and projects
-- **Access control** through folder-level permissions
 - **Bulk operations** for managing large secret inventories
 - **Automated organization** of secrets by environment or purpose
 - **Compliance and auditing** through structured secret management
@@ -33,10 +31,6 @@ This step covers advanced organizational and management operations:
 - **Shared folders**: Folders accessible to multiple applications
 - **Personal folders**: Private folders for specific applications
 
-### **Permission Levels**:
-- **View**: Read-only access to folder contents
-- **Edit**: Can modify records within the folder
-- **Manage**: Can create/delete folders and manage permissions
 
 ### 1. Create the Folder Management Script
 
@@ -49,7 +43,7 @@ touch step5-folders.py
 
 ### 2. Add Folder Management Code
 
-**⚠️ Important**: You'll need a parent folder UID where your application has "Can Edit" permissions.
+**⚠️ Important**: You'll need a parent folder UID where your application can create folders.
 
 Copy and paste this code into `step5-folders.py`:
 
@@ -140,7 +134,7 @@ def create_demo_folder_structure(secrets_manager):
     
     if not PARENT_FOLDER_UID or PARENT_FOLDER_UID == "[YOUR_PARENT_FOLDER_UID_HERE]":
         print("⏭️  Skipping folder creation: Parent folder UID not provided")
-        print("💡 To test folder creation, provide a parent folder UID with edit permissions")
+        print("💡 To test folder creation, provide a parent folder UID where you can create folders")
         return None
     
     try:
@@ -174,7 +168,7 @@ def create_demo_folder_structure(secrets_manager):
             
     except Exception as e:
         print(f"❌ Error creating folder structure: {e}")
-        print("💡 Make sure your application has 'Can Edit' permissions on the parent folder")
+        print("💡 Make sure your application can create folders in the parent folder")
         return None
 
 def create_demo_records_in_folder(secrets_manager, folder_uid):
@@ -296,7 +290,7 @@ def cleanup_demo_resources(secrets_manager, record_uids, folder_uid):
             print("    ℹ️  Folder deletion method not available in this SDK version")
         except Exception as e:
             print(f"    ❌ Error deleting folder {folder_uid}: {e}")
-            print("    💡 Folder may need to be empty or you may lack permissions")
+            print("    💡 Folder may need to be empty or folder creation may not be available")
 
 def main():
     """Main execution function"""
@@ -348,6 +342,7 @@ def main():
 
 if __name__ == "__main__":
     main()
+```{{copy}}
 
 ## 3. Configure Required Parameters
 
@@ -357,14 +352,13 @@ if __name__ == "__main__":
 - `[YOUR_KSM_CONFIG_BASE64_STRING_HERE]` → Your Base64 configuration
 
 ### **Parent Folder UID (optional for folder creation)**:
-`[YOUR_PARENT_FOLDER_UID_HERE]` → UID of a shared folder with edit permissions
+`[YOUR_PARENT_FOLDER_UID_HERE]` → UID of a shared folder where you can create folders
 
 **How to get Parent Folder UID:**
 1. Log into Keeper Web Vault
 2. Navigate to a shared folder
 3. Right-click → **"Get Info"**
 4. Copy the **Folder UID**
-5. Ensure your application has **"Can Edit"** permissions
 
 **⚠️ Note**: Folder listing works without parent UID, but creation requires it.
 
@@ -488,10 +482,10 @@ def robust_secret_operation(secrets_manager, operation_func, *args, **kwargs):
 
 ## 🔒 Enterprise Security Considerations
 
-### **Access Control Patterns**:
-- ✅ **Principle of least privilege** - Only grant necessary permissions
-- ✅ **Folder-level permissions** for team-based access control
-- ✅ **Regular access reviews** to ensure permissions are current
+### **Organizational Patterns**:
+- ✅ **Principle of least privilege** - Only access necessary folders
+- ✅ **Consistent folder structure** for team-based organization
+- ✅ **Regular cleanup** to maintain organized structure
 - ✅ **Audit logging** for all folder and record operations
 
 ### **Organizational Best Practices**:
@@ -520,36 +514,31 @@ for env in environments:
 ### **Team Onboarding Automation**:
 ```python
 # Automated team folder setup
-def setup_team_folder(team_name, team_members):
+def setup_team_folder(team_name):
     team_folder = secrets_manager.create_folder(f"Team_{team_name}")
-    for member in team_members:
-        grant_folder_access(team_folder, member, permission='edit')
     return team_folder
 ```
 
 ### **Compliance and Auditing**:
 ```python
 # Generate compliance reports
-def generate_folder_access_report():
+def generate_folder_report():
     folders = secrets_manager.get_folders_all()
     report = []
     for folder in folders:
-        access_info = get_folder_permissions(folder.uid)
         report.append({
             'folder': folder.name,
-            'permissions': access_info,
-            'last_modified': folder.last_modified
+            'folder_uid': folder.uid,
+            'created_time': getattr(folder, 'created_time', 'N/A')
         })
     return report
 ```
 
 ## Troubleshooting
 
-**❌ "Insufficient permissions" error**: Check that your application has "Can Edit" permissions on the parent folder
-
 **❌ "Folder not found" error**: Verify the parent folder UID exists and is accessible
 
-**❌ "Cannot create folder" error**: Ensure you have the correct permissions and the parent folder exists
+**❌ "Cannot create folder" error**: Ensure the parent folder exists and folder creation is supported
 
 **❌ Slow bulk operations**: Consider implementing batching and caching strategies
 
