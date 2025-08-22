@@ -97,9 +97,9 @@ ksm secret update --uid [UID] --field login=newusername
 
 ### Update Custom Fields
 ```bash
-ksm secret update --uid [UID] --field [FIELD_NAME]=[NEW_VALUE]
+ksm secret update --uid [UID] --custom-field [FIELD_NAME]=[NEW_VALUE]
 ```
-`ksm secret update --uid [UID] --field [FIELD_NAME]=[NEW_VALUE]`{{copy}}
+`ksm secret update --uid [UID] --custom-field [FIELD_NAME]=[NEW_VALUE]`{{copy}}
 
 ## Additional Secret Operations
 
@@ -149,10 +149,14 @@ ksm --cache secret list
 By default, cache is stored as `ksm_cache.bin` in the current directory. You can customize the location:
 
 ```bash
+mkdir /tmp/ksm_cache
 export KSM_CACHE_DIR="/tmp/ksm_cache"
 ksm --cache secret list
 ```
-`export KSM_CACHE_DIR="/tmp/ksm_cache"`{{execute}}
+
+`mkdir /tmp/ksm_cache && \ 
+export KSM_CACHE_DIR="/tmp/ksm_cache" && \
+ksm --cache secret list`{{execute}}
 
 ### Disable Caching
 ```bash

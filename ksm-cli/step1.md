@@ -44,7 +44,7 @@ ksm profile init --token XX:XXXX
 ```
 `ksm profile init --token XX:XXXX`{{copy}}
 
-**✅ Expected Output**: `Added profile _default to INI config file`
+**✅ Expected Output**: Added profile _default to INI config file...
 
 ## Verify Configuration
 
