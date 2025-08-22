@@ -64,13 +64,6 @@ When you run the command:
 3. **Two-Factor Authentication**: If enabled, you'll need to provide your 2FA code
 4. **Interactive Shell**: You'll enter the Keeper Commander interactive environment
 
-## Troubleshooting Connection Issues
-
-If you encounter connection problems:
-
-- **Check Data Center**: Ensure you're connecting to the correct regional server
-- **Network Access**: Verify your network allows HTTPS connections to Keeper servers
-- **Credentials**: Double-check your email address and master password
-- **2FA**: Ensure your two-factor authentication device is available
+In the next step you will log in to your shell.
 
 **⚠️ Security Reminder**: This is a learning environment. Use test credentials only!

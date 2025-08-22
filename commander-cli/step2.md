@@ -16,6 +16,17 @@ login
 - Your master password
 - Two-factor authentication code (if enabled)
 
+## Troubleshooting Connection Issues
+
+If you encounter connection problems:
+
+- **Check Data Center**: Ensure you're connecting to the correct regional server
+- **Network Access**: Verify your network allows HTTPS connections to Keeper servers
+- **Credentials**: Double-check your email address and master password
+- **2FA**: Ensure your two-factor authentication device is available
+
+**⚠️ Security Reminder**: This is a learning environment. Use test credentials only!
+
 ## 👤 Verify Your Identity
 
 After logging in, confirm your authentication status and account information:
@@ -48,6 +59,24 @@ ls
 ```
 `ls`{{execute}}
 
+
+## 📊 Understanding the Output
+
+When you run `ls -l`{{execute}}, you'll see columns showing
+
+### Folders
+- **Folder  UID**: The  UID of your folder
+- **Name**: The name of your folder
+- **Flags**: The folder's flags, such as 'S' for shared
+- **Parent  UID**: The parent folder's UID
+
+### Files
+- **Record  UID**: The  UID of your record
+- **Type**: The type of the record
+- **Title**: The title of the record
+- **Description**: Additional information about the record
+
+
 ## 🔍 Additional Useful Commands
 
 ### Search for Records
@@ -65,22 +94,6 @@ help
 ```
 `help`{{execute}}
 
-### Show Current Folder
-Display your current location in the vault:
-
-```bash
-pwd
-```
-`pwd`{{execute}}
-
-## 📊 Understanding the Output
-
-When you run `ls -l`, you'll see columns showing:
-- **Record Title**: The name of your record
-- **Login**: Username or email associated with the record
-- **URL**: Website or application URL
-- **Notes**: Additional information about the record
-- **Shared**: Whether the record is shared with others
 
 ## 🎯 Next Steps
 
