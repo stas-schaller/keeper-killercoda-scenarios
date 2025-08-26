@@ -33,6 +33,6 @@
     "hidefinish": true
   },
   "backend": {
-    "imageid": "ubuntu"
+    "imageid": "python"
   }
 }
