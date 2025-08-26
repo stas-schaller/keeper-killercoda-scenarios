@@ -12,9 +12,9 @@ ansible --version
 
 ### Verify KSM Plugin Installation
 ```bash
-python3 -c "import keeper_secrets_manager_ansible; print('✅ KSM Ansible plugin is installed and ready!')"
+python3 -c "import keeper_secrets_manager_ansible; print('✅ KSM Ansible plugin is installed and ready')"
 ```
-`python3 -c "import keeper_secrets_manager_ansible; print('✅ KSM Ansible plugin is installed and ready!')"`{{execute}}
+`python3 -c "import keeper_secrets_manager_ansible; print('✅ KSM Ansible plugin is installed and ready')"`{{execute}}
 
 ## Configure Environment for KSM Plugin
 
