@@ -17,13 +17,14 @@ Keeper can store any type of file as encrypted attachments to secret records:
 First, let's see if any of your secrets contain file attachments:
 
 ```bash
-ksm secret get Wyd4dgLyAwaI4k-ScH8TJg
+ksm secret get [UID]
 ```
-`ksm secret get Wyd4dgLyAwaI4k-ScH8TJg`{{execute}}
+`ksm secret get [UID]`{{copy}}
+
+**⚠️ Action Required**: Replace `[UID]` with an actual UID from the output of `ksm secret list`.
 
 **🔍 What to look for**: If the secret contains files, you'll see a "Files" section showing file names, sizes, and types.
 
-**💡 Pro Tip**: You can use any secret UID from your `ksm secret list` output. The UID above is from the "Configuration Files" record in the test vault.
 
 ## Create a Test File to Upload
 
@@ -44,7 +45,9 @@ cat > sample-config.json << 'EOF'
 }
 EOF
 ```
-`cat > sample-config.json << 'EOF'
+
+```
+cat > sample-config.json << 'EOF'
 {
   "database": {
     "host": "localhost",
@@ -56,7 +59,8 @@ EOF
     "timeout": 30
   }
 }
-EOF`{{execute}}
+EOF
+```{{execute}}
 
 **✅ Expected Output**: File created successfully.
 
@@ -71,7 +75,7 @@ ksm secret upload --uid [RECORD_UID] --file sample-config.json --title "Applicat
 
 **⚠️ Action Required**: Replace `[RECORD_UID]` with an actual UID from your secret list (try the "Configuration Files" record).
 
-**✅ Expected Output**: No output means successful upload.
+**✅ Expected Output**: The following is the new file UID ...
 
 ### Alternative Upload Methods
 
@@ -102,6 +106,8 @@ ksm secret download --uid [RECORD_UID] --name "sample-config.json" --file-output
 `ksm secret download --uid [RECORD_UID] --name "sample-config.json" --file-output "downloaded-config.json"`{{copy}}
 
 **✅ Expected Output**: File downloaded successfully.
+
+**👀 Beware**: If you receive `Error: Cannot find a file named sample-config.json` try uploading a file with that name or use `Application Configuration` for name --name entry above.
 
 ### Verify the Downloaded File
 
@@ -135,12 +141,10 @@ ksm secret download --uid [RECORD_UID] --name "sample-config.json" --file-output
 Access file content using Keeper's notation syntax:
 
 ```bash
-export CONFIG_CONTENT=$(ksm secret notation "keeper://[RECORD_UID]/file/sample-config.json")
+export CONFIG_CONTENT=$(ksm secret notation "keeper://[RECORD_UID]/file/Application Configuration)
 echo "$CONFIG_CONTENT"
 ```
-`export CONFIG_CONTENT=$(ksm secret notation "keeper://[RECORD_UID]/file/sample-config.json")`{{copy}}
-
-**⚠️ Action Required**: Replace `[RECORD_UID]` with your actual record UID.
+`export CONFIG_CONTENT=$(ksm secret notation "keeper://[RECORD_UID]/file/Application Configuration")`{{copy}}
 
 **🔍 What happened?**: The file content is retrieved as Base64-encoded data, perfect for scripts and automation.
 
